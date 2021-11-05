@@ -25,3 +25,5 @@ slash = SlashCommand(client, sync_commands=True)
                      required=False)])
 async def translate(ctx, sourcelang="key"):
     await ctx.send(content=sourcelang)
+
+client.run(open("token.txt").read)
