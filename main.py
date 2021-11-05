@@ -13,7 +13,7 @@ guild_ids = [906169345007304724]
              options=[
                  create_option(
                      name="string",
-                     description="The string to translate",
+                     description="The string or key to translate",
                      option_type=3,
                      required=True),
                  create_option(
