@@ -1,2 +1,2 @@
-import discord.py
+import discord
 from discord_slash import SlashCommand
