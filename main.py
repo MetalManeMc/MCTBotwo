@@ -1,6 +1,9 @@
 import discord
-from discord_slash import SlashCommand, create_option
+from discord_slash import SlashCommand
+from discord_slash.utils.manage_commands import create_option
 
+client = discord.Client(intents=discord.Intents.all())
+slash = SlashCommand(client, sync_commands=True) 
 
 @slash.slash(name="translate",
              description="Translates a Minecraft string from a language to another.",
