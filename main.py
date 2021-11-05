@@ -3,7 +3,10 @@ from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option
 
 client = discord.Client(intents=discord.Intents.all())
-slash = SlashCommand(client, sync_commands=True) 
+slash = SlashCommand(client, sync_commands=True)
+
+guild_ids = [906169345007304724]
+
 
 @slash.slash(name="translate",
              description="Translates a Minecraft string from a language to another.",
@@ -22,8 +25,9 @@ slash = SlashCommand(client, sync_commands=True)
                      name="target",
                      description="Source language code. Will be the translation key if not defined",
                      option_type=3,
-                     required=False)])
+                     required=False)],
+             guild_ids=guild_ids)
 async def translate(ctx, string,  sourcelang="key", target="key"):
-    await ctx.send(content=string + sourcelang + target)
+    await ctx.send(content=f"{string}, {sourcelang}, {target}")
 
 client.run(open("token.txt").read())
