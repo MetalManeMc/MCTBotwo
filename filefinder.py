@@ -1,17 +1,15 @@
+# This filters the lang files from the assets
+
 import os
 import json
 
-langs=json.load(open("langcodes.json"))
-codes=[]
-keep=[]
+langs = json.load(open("langcodes.json"))
+codes = []
 
 for lang in langs:
     codes.append(langs[lang]["hash"])
 
 for dirpath, dirnames, filenames in os.walk("objects"):
     for file in filenames:
-        if file in codes:
-            keep.append(file)
-
-print(keep)
-print(len(keep))
+        if file not in codes:
+            os.remove(os.path.join(dirpath, file))
