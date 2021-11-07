@@ -14,4 +14,4 @@ for dirpath, dirnames, filenames in os.walk("objects"):
         if file not in codes:
             os.remove(os.path.join(dirpath, file))
         else:
-            os.rename(os.path.join(dirpath, file), file + ".json")
+            os.rename(os.path.join(dirpath, file), os.path.join(dirpath, file) + ".json")
