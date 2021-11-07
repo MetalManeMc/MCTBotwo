@@ -32,7 +32,7 @@ guild_ids = [906169345007304724]
              ],
              guild_ids = guild_ids
             )
-async def translate(ctx, string,  sourcelang="key", target="key"):
+async def translate(ctx, string,  sourcelang = "key", target = "key"):
     await ctx.send(content = f"{string}, {sourcelang}, {target}")
 
 client.run(open("token.txt").read())
