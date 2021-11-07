@@ -6,6 +6,9 @@ import json
 langs = json.load(open("langcodes.json"))   # Opens the language index (from the minecraft assets)
 codes = []
 
+def rename(initname):
+    pass
+
 for lang in langs:                          # For all element in the index
     codes.append(langs[lang]["hash"])       # Notes the "hash", which is the code of used for the game to know which assets are which
 
@@ -14,7 +17,8 @@ for dirpath, dirnames, filenames in os.walk("objects"): # Runs through the minec
         if file not in codes and ".json" not in file:   # If the name of the files aren't in the language hash list
             os.remove(os.path.join(dirpath, file))      # Deletes them
         elif "json" not in file:                        # Else
-            os.rename(os.path.join(dirpath, file), os.path.join(dirpath, file) + ".json")   # Renames them in ".json"
+            langfile=rename(file)
+            os.rename(os.path.join(dirpath, langfile), os.path.join(dirpath, langfile) + ".json")   # Renames them in ".json"
 
 for dirpath, dirnames, filenames in os.walk("objects"):
     for file in filenames:
