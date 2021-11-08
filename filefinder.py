@@ -15,7 +15,8 @@ for lang in langs:                          # For all element in the index
 for dirpath, dirnames, filenames in os.walk("objects"): # Runs through the minecraft assets
     for file in filenames:                              # For each file
         if file not in codes and ".json" not in file:   # If the name of the files aren't in the language hash list
-            os.remove(os.path.join(dirpath, file))      # Deletes them
+#            os.remove(os.path.join(dirpath, file))      # Deletes them
+            pass
         elif "json" not in file:                        # Else
             langfile=rename(file)
             os.rename(os.path.join(dirpath, langfile), os.path.join(dirpath, langfile) + ".json")   # Renames them in ".json"

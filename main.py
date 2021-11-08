@@ -10,7 +10,7 @@ guild_ids = [906169345007304724]
 
 @slash.slash(name = "translate",
              description = "Translates a Minecraft string from a language to another.",
-             guild_ids = guild_ids
+             guild_ids = guild_ids,
              options = [
                  create_option(
                      name = "string",
