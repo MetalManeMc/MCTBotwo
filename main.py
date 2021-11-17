@@ -1,3 +1,4 @@
+import json
 import discord
 from discord_slash import SlashCommand
 from discord_slash.utils.manage_commands import create_option
@@ -7,6 +8,14 @@ slash = SlashCommand(client, sync_commands=True)
 
 guild_ids = [906169345007304724]
 
+def translater(string, source, target):
+    source=json.load(open("lang/"+source+".json"))
+    target=json.load(open("lang/"+target+".json"))
+    for key in source:
+        if source[key]==string:
+            return target[key]
+    return "Invalid string"
+    
 
 @slash.slash(name = "translate",
              description = "Translates a Minecraft string from a language to another.",
@@ -33,6 +42,6 @@ guild_ids = [906169345007304724]
              ]
             )
 async def translate(ctx, string, target,  sourcelang = "en_us"):
-    await ctx.send(content = f"{string}, {sourcelang}, {target}")
+    await ctx.send(translater(string, sourcelang, target))
 
 client.run(open("token.txt").read())

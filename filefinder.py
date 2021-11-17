@@ -30,7 +30,7 @@ for dirpath, dirnames, filenames in os.walk("objects"):
     for file in filenames:
         os.replace(os.path.join(dirpath, file), os.path.join("lang", file)) # Places the lang files in the "lang" folder. The "objects" one should be empty
 
-for dirpath, dirnames, filenames in os.walk("lang"):
+'''for dirpath, dirnames, filenames in os.walk("lang"):
     for file in filenames:
         if "-" not in file:                                                             # If not already done...
-            os.rename(os.path.join(dirpath, file), os.path.join(dirpath, rename(file))) # ... renames the file
+            os.rename(os.path.join(dirpath, file), os.path.join(dirpath, rename(file))) # ... renames the file'''
