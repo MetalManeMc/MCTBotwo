@@ -9,40 +9,31 @@ slash = SlashCommand(client, sync_commands=True)
 guild_ids = [906169345007304724]
 
 
-def translater(string, source, target):
-    source = json.load(open("lang/"+source+".json"))
-    target = json.load(open("lang/"+target+".json"))
-    for key in source:
-        if source[key] == string:
-            return target[key]
-    return "Invalid string"
+def fetch_translation(target, string):
+    t = json.load(open(f"lang/{target}.json")) 
+    key = f"{string}"
+    return t.get(key)
 
 
 @slash.slash(name="translate",
-             description="Translates a Minecraft string from a language to another.",
+             description="Returns the translation found in-game for a string",
              guild_ids=guild_ids,
              options=[
                  create_option(
                      name="string",
-                     description="The string or key to translate.",
+                     description="The string (key) to translate.",
                      option_type=3,
                      required=True
                  ),
                  create_option(
                      name="target",
-                     description="Code of the language, in which the string is going to be sent.",
+                     description="Code of the language in which the string is going to be sent. EX: es_es",
                      option_type=3,
                      required=True
-                 ),
-                 create_option(
-                     name="sourcelang",
-                     description="Code of the language, in which you wrote the string. (English is default)",
-                     option_type=3,
-                     required=False
                  )
              ]
              )
-async def translate(ctx, string, target,  sourcelang="en_us"):
-    await ctx.send(translater(string, sourcelang, target))
+async def translate(ctx, target, string):
+    await ctx.send(fetch_translation(target, string))
 
 client.run(open("token.txt").read())
