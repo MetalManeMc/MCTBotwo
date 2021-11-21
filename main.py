@@ -32,7 +32,7 @@ def translater(string, target, source):
     
     try: #this try except is here because i have a small expectation of error...
         if len(listreturn) > 0:
-            return "|".join(listreturn)
+            return "Unexact matches: "+"|".join(listreturn)
     except:
         return "Something went wrong with list length checking..."
     
@@ -55,13 +55,13 @@ def fetch_translation(target, string):
                  ),
                  create_option(
                      name="target",
-                     description="Language code in which the string is going to be sent. EX: es_es",
+                     description="Language code, in which the string is going to be sent. EX: es_es",
                      option_type=3,
                      required=True
                  ),
                  create_option(
                      name="sourcelang",
-                     description="Language code in which the string is going to be retrieved. EX: fr_fr",
+                     description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key",
                      option_type=3,
                      required=False
                  )
