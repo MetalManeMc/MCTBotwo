@@ -15,6 +15,23 @@ def translater(string, target, source):
     for key in source:
         if source[key] == string:
             return target[key]
+        
+    for key in source: #if it doesn't match perfectly, try to match with lowercase
+        fallb = ""
+        for i in source[key]:
+            if ord("Z") >= ord(i) >= ord("A"):
+                fallb += chr(ord(i) + 32)
+            else:
+                fallb += i
+        fallb2 = ""
+        for i in string:
+            if ord("Z") >= ord(i) >= ord("A"):
+                fallb2 += chr(ord(i) + 32)
+            else:
+                fallb2 += i
+        if fallb == fallb2:
+            return target[key] #until here is my code
+        
     return "Invalid string"
 
 def fetch_translation(target, string):
