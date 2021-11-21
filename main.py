@@ -23,7 +23,13 @@ def translater(string, target, source):
                 fallb += chr(ord(i) + 32)
             else:
                 fallb += i
-        if fallb == string:
+        fallb2 = ""
+        for i in string:
+            if ord("Z") >= ord(i) >= ord("A"):
+                fallb2 += chr(ord(i) + 32)
+            else:
+                fallb2 += i
+        if fallb == fallb2:
             return target[key] #until here is my code
         
     return "Invalid string"
