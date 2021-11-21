@@ -21,20 +21,18 @@ def translater(string, target, source):
     source = json.load(open("lang/"+source+".json"))
     target = json.load(open("lang/"+target+".json"))
     
-    for key in source: #exact match check
-        if source[key] == string:
-            return target[key]
-    for key in source: #if it doesn't match perfectly, try to match with lowercase
+    for key in source: #try to match exactly with lowercase
         if lowerIt(source[key]) == lowerIt(string):
             return target[key]
         
-    listreturn=[]
+    listreturn = []
     for key in source: #lowercase keyword match check
         if lowerIt(string) in lowerIt(source[key]):
             listreturn.append(target[key])
-    try:
-        if len(listreturn)>0:
-            return listreturn
+    
+    try: #this try except is here because i have a small expectation of error...
+        if len(listreturn) > 0:
+            return "|".join(listreturn)
     except:
         return "Something went wrong with list length checking..."
     
@@ -69,8 +67,8 @@ def fetch_translation(target, string):
                  )
              ]
              )
-async def translate(ctx, string, target,  sourcelang="en_us"):
-    if sourcelang== "key":
+async def translate(ctx, string, target,  sourcelang = "en_us"):
+    if sourcelang == "key":
         await ctx.send(fetch_translation(target, string))
     else:
         await ctx.send(translater(string, target, sourcelang))
