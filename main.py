@@ -13,7 +13,7 @@ def translater(string, target, source):
     source = json.load(open("lang/"+source+".json"))
     target = json.load(open("lang/"+target+".json"))
     for key in source:
-        if source[key] == string:
+        if string in source[key]:
             return target[key]
         
     for key in source: #if it doesn't match perfectly, try to match with lowercase
@@ -29,7 +29,7 @@ def translater(string, target, source):
                 fallb2 += chr(ord(i) + 32)
             else:
                 fallb2 += i
-        if fallb == fallb2:
+        if fallb2 in fallb:
             return target[key] #until here is my code
         
     return "Invalid string"
