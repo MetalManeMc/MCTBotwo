@@ -8,7 +8,15 @@ slash = SlashCommand(client, sync_commands=True)
 
 guild_ids = [906169345007304724]
 
-
+def lowerIt(string):
+    out=""
+    for i in source[key]:
+            if ord("Z") >= ord(i) >= ord("A"):
+                out += chr(ord(i) + 32)
+            else:
+                out += i
+    return out
+    
 def translater(string, target, source):
     source = json.load(open("lang/"+source+".json"))
     target = json.load(open("lang/"+target+".json"))
@@ -17,39 +25,15 @@ def translater(string, target, source):
         if source[key] == string:
             return target[key]
     for key in source: #if it doesn't match perfectly, try to match with lowercase
-        fallb = ""
-        for i in source[key]:
-            if ord("Z") >= ord(i) >= ord("A"):
-                fallb += chr(ord(i) + 32)
-            else:
-                fallb += i
-        fallb2 = ""
-        for i in string:
-            if ord("Z") >= ord(i) >= ord("A"):
-                fallb2 += chr(ord(i) + 32)
-            else:
-                fallb2 += i
-        if fallb == fallb2:
+        if lowerIt(source[key]) == lowerIt(string):
             return target[key]
     
     for key in source: #keyword match check
         if string in source[key]:
             return target[key]
     for key in source: #if it doesn't match perfectly, try to match with lowercase
-        fallb = ""
-        for i in source[key]:
-            if ord("Z") >= ord(i) >= ord("A"):
-                fallb += chr(ord(i) + 32)
-            else:
-                fallb += i
-        fallb2 = ""
-        for i in string:
-            if ord("Z") >= ord(i) >= ord("A"):
-                fallb2 += chr(ord(i) + 32)
-            else:
-                fallb2 += i
-        if fallb2 in fallb:
-            return target[key] #until here is my code
+        if lowerIt(string) in lowerIt(source[key]):
+            return target[key]
         
     return "Invalid string"
 
