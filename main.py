@@ -27,14 +27,17 @@ def translater(string, target, source):
     for key in source: #if it doesn't match perfectly, try to match with lowercase
         if lowerIt(source[key]) == lowerIt(string):
             return target[key]
-    
-    for key in source: #keyword match check
-        if string in source[key]:
-            return target[key]
-    for key in source: #if it doesn't match perfectly, try to match with lowercase
-        if lowerIt(string) in lowerIt(source[key]):
-            return target[key]
         
+    listreturn=[]
+    for key in source: #lowercase keyword match check
+        if lowerIt(string) in lowerIt(source[key]):
+            listreturn.append(target[key])
+    try:
+        if len(listreturn)>0:
+            return listreturn
+    except:
+        return "Something went wrong with list length checking..."
+    
     return "Invalid string"
 
 def fetch_translation(target, string):
