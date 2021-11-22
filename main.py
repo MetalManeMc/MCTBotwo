@@ -25,7 +25,6 @@ async def on_ready():
     print("Online!")
 
 
-
 def finder(search,inside=langcodes,outputlist=False,isdictionary=False): #returns list of found searches inside a list (by default, searches in langcodes)
     o=[]
     if not isdictionary:
@@ -64,21 +63,17 @@ def translater(string, target, source): #function for the non-key source languag
         if sourcefile[key].lower() == string:
             return targetfile[key]
     
-    try: #tries to search in the dictionary or whatever
-        return targetfile(finder(string,sourcefile,isdictionary=True)) #problem may be in here too...
-    except:
-        listreturn=[] #will return a list of unexact matches
-        for i in finder(string,sourcefile,True):
-            listreturn.append(targetfile[i])
+    listreturn=[] #will return a list of unexact matches
+    for i in finder(string,sourcefile,True,True):
+        listreturn.append(targetfile[i])
         
-        try: #this try except is here because i have a small expectation of error...
-            if len(listreturn) > 1: #joins list or outputs one string
-                return "Unexact matches: "+"|".join(listreturn)
-            elif len(listreturn) > 0:
-                return "Unexact match: "+listreturn[0]
-        except:
-            print(len(listreturn))
-            return "Something went wrong when joining list..."
+    try: #this try except is here because i have a small expectation of error...
+        if len(listreturn) > 1: #joins list or outputs one string
+            return "Unexact matches: "+"|".join(listreturn)
+        elif len(listreturn) > 0:
+            return "Unexact match: "+listreturn[0]
+    except:
+        return "Something went wrong when joining list..."
     
     print(string,target,source,listreturn) #the final return fallback. was: "Invalid string"
     return f"Did not find the {string} in {source} to {target}."
@@ -95,13 +90,20 @@ def fetch_translation(target, string): #finds a translation based on a key
         try:
             return f"Found: '{file[string]}' in {target}."
         except:
-            try:
-                listreturn=[]
-                for i in finder(string,file,True):
-                    listreturn.append(file[i])
-                return f"Found: '{'|'.join(listreturn)}' in {target}."
+            listreturn=[] #will return a list of unexact matches
+            for i in finder(string,file,True):
+                listreturn.append(file[i])
+
+            try: #this try except is here because i have a small expectation of error...
+                if len(listreturn) > 1: #joins list or outputs one string
+                    return "Unexact matches: "+"|".join(listreturn)
+                elif len(listreturn) > 0:
+                    return "Unexact match: "+listreturn[0]
             except:
-                return f"Did not find the string {string} in "+target
+                return "Something went wrong when joining list..."
+
+        print(string,target,listreturn) #the final return fallback. was: "Invalid string"
+        return f"Did not find the {string} key to {target}."
                     
 
     
