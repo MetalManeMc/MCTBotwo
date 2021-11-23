@@ -6,7 +6,7 @@ from discord_slash.utils.manage_commands import create_option
 
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
-path="" #full path for debug. can be a blank string.
+path="C:\\Users\\matej\\Desktop\\" #full path for debug. can be a blank string.
 debug=False #True if you are on your pc and don't want to turn the bot on
 
 for a, b, c in os.walk(path+"lang"): #Gives a list of language codes, so i can search in them
@@ -48,62 +48,56 @@ def finder(search,inside=langcodes,outputlist=False,isdictionary=False): #return
         return search
                 
     
-def translater(string, target, source): #function for the non-key source language
-    try: #tries to open source and target language files. we searched for the codes earlier in the code, so it should be ok
-        sourcefile = json.load(open(path+"lang/"+source+".json"))
+def unpacker(string, target, source, fetch=True): #finds string's key in source language and puts it to the fetcher or return it
+    try: #tries to open source language file. we searched for the codes earlier in the code, so it should be ok
+        file = json.load(open(path+"lang/"+source+".json"))
     except:
-        return f"Source language was not found. {target}, {source}."
+        return f"Source language {source} was not found."
+    
+    for key in file: #tries to match exactly with lowercase
+        if file[key].lower() == string:
+            if fetcher:
+                return fetcher(key,target)
+            else:
+                return key
+    
+    keys=[] #will return a list of unexact matches
+    for key in finder(string,file,True,True):
+        keys.append(key)
+    if fetch:
+        return fetcher(keys,target,True)
+    else:
+        return keys
+    
+
+
+def fetcher(key, target, islist=False): #finds a translation based on a key and target language
     try:
-        targetfile = json.load(open(path+"lang/"+target+".json"))
-    except:
-        return f"Target language {target} was not found."
-    
-
-    for key in sourcefile: #tries to match exactly with lowercase
-        if sourcefile[key].lower() == string:
-            return targetfile[key]
-    
-    listreturn=[] #will return a list of unexact matches
-    for i in finder(string,sourcefile,True,True):
-        listreturn.append(targetfile[i])
-        
-    try: #this try except is here because i have a small expectation of error...
-        if len(listreturn) > 1: #joins list or outputs one string
-            return "Unexact matches: "+"|".join(listreturn)
-        elif len(listreturn) > 0:
-            return "Unexact match: "+listreturn[0]
-    except:
-        return "Something went wrong when joining list..."
-    
-    print(string,target,source,listreturn) #the final return fallback. was: "Invalid string"
-    return f"Did not find the {string} in {source} to {target}."
-
-
-def fetch_translation(target, string): #finds a translation based on a key
-    try:
-        return json.load(open(path+f"lang/{target}.json"))[string] #changed .get() for [] bc we want an error raised, not None value | returns when matching exactly
+        return f"Found {json.load(open(path+f'lang/{target}.json'))[key]} in {target}." #changed .get() for [] bc we want an error raised, not None value | returns when matching exactly
     except: #my fallback fetcher
         try:
             file=json.load(open(path+f"lang/{target}.json"))
         except:
-            return f"Did not find the {target} language code."
-        try:
-            return f"Found: '{file[string]}' in {target}."
-        except:
-            listreturn=[] #will return a list of unexact matches
-            for i in finder(string,file,True):
-                listreturn.append(file[i])
+            return f"Target language {target} was not found."
 
-            try: #this try except is here because i have a small expectation of error...
-                if len(listreturn) > 1: #joins list or outputs one string
-                    return "Unexact matches: "+"|".join(listreturn)
-                elif len(listreturn) > 0:
-                    return "Unexact match: "+listreturn[0]
-            except:
-                return "Something went wrong when joining list..."
-
-        print(string,target,listreturn) #the final return fallback. was: "Invalid string"
-        return f"Did not find the {string} key to {target}."
+        if not islist: #here was return found file[key] in target, but wouldn't be activated, so i removed it
+            keys=[] #will return a list of unexact matches
+            for i in finder(key,file,True):
+                keys.append(i)
+        else: #this should activate only if we already have a list in key
+            keys=key
+        
+        strings=[]
+        for i in keys:
+            strings.append(file[i])
+        
+        if len(strings) > 1: #joins list or outputs one string
+            return "Unexact matches: '"+"', '".join(strings)+"' in "+target
+        elif len(strings) > 0:
+            return f"Unexact match: '{strings[0]}' in "+target
+        
+    print(key,target,keys) #the final return fallback. was: "Invalid string"
+    return f"Did not find the {key} key in {target}."
                     
 
     
@@ -124,20 +118,20 @@ def fetch_translation(target, string): #finds a translation based on a key
                      required=True
                  ),
                  create_option(
-                     name="sourcelang",
+                     name="source",
                      description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key",
                      option_type=3,
                      required=False
                  )
              ]
              )
-async def translate(ctx, string, target, sourcelang = "en_us"): #moved out the googler bc it made the debugging a lot easier for me and does not change a thing
-    await ctx.send(google(string,target,sourcelang))
-def google(string, target,  sourcelang = "en_us"):
-    if sourcelang == "key":
-        return fetch_translation(finder(target.lower()), string.lower())
+async def translate(ctx, string, target, source = "en_us"): #moved out the googler bc it made the debugging a lot easier for me and does not change a thing
+    await ctx.send(google(string,target,source))
+def google(string, target,  source = "en_us"):
+    if source == "key":
+        return fetcher(string.lower(), finder(target.lower()))
     else:
-        return translater(string.lower(), finder(target.lower()), finder(sourcelang.lower()))
+        return unpacker(string.lower(), finder(target.lower()), finder(source.lower()))
 
 
 
