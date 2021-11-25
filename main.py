@@ -25,7 +25,7 @@ async def on_ready():
     print("Online!")
 
 
-def finder(search,inside=langcodes,outputlist=False,isdictionary=False): #returns list of found searches inside a list (by default, searches in langcodes)
+def find(search,inside=langcodes,outputlist=False,isdictionary=False): #returns list of found searches inside a list (by default, searches in langcodes)
     o=[]
     if not isdictionary:
         for i in inside:
@@ -36,7 +36,7 @@ def finder(search,inside=langcodes,outputlist=False,isdictionary=False): #return
                     return i
     else: #I believe that a problem is here... i don't know how can i not check for values in disctionary or something...
         for i in inside:
-            if search in inside[i].lower():
+            if search.lower() in inside[i].lower():
                 if outputlist:
                     o.append(i)
                 else:
@@ -46,31 +46,24 @@ def finder(search,inside=langcodes,outputlist=False,isdictionary=False): #return
         return o
     else:
         return search
-                
-    
-def unpacker(string, target, source, fetch=True): #finds string's key in source language and puts it to the fetcher or return it
-    try: #tries to open source language file. we searched for the codes earlier in the code, so it should be ok
-        file = json.load(open(path+"lang/"+source+".json"))
-    except:
-        return f"Source language {source} was not found."
-    
+
+
+def unpack(string, file):
     for key in file: #tries to match exactly with lowercase
         if file[key].lower() == string:
-            if fetcher:
-                return fetcher(key,target)
-            else:
-                return key
+            key=[key]
+            return key
     
-    keys=[] #will return a list of unexact matches
-    for key in finder(string,file,True,True):
+    keys=[] #tries to search the string
+    for key in find(string,file,True,True):
         keys.append(key)
-    if fetch:
-        return fetcher(keys,target,True)
-    else:
+    if len(keys)>0:
         return keys
-    
+    raise Exception("Did not find string key")
 
+#def fetch(key, file):      
 
+'''
 def fetcher(key, target, islist=False): #finds a translation based on a key and target language
     try:
         return f"Found {json.load(open(path+f'lang/{target}.json'))[key]} in {target}." #changed .get() for [] bc we want an error raised, not None value | returns when matching exactly
@@ -97,7 +90,7 @@ def fetcher(key, target, islist=False): #finds a translation based on a key and 
             return f"Unexact match: '{strings[0]}' in "+target
         
     print(key,target,keys) #the final return fallback. was: "Invalid string"
-    return f"Did not find the {key} key in {target}."
+    return f"Did not find the {key} key in {target}."'''
                     
 
     
@@ -127,16 +120,42 @@ def fetcher(key, target, islist=False): #finds a translation based on a key and 
              )
 async def translate(ctx, string, target, source = "en_us"): #moved out the googler bc it made the debugging a lot easier for me and does not change a thing
     await ctx.send(google(string,target,source))
-def google(string, target,  source = "en_us"):
-    if source == "key":
-        return fetcher(string.lower(), finder(target.lower()))
+
+def google(string, target, source):
+    try:
+        en_us=json.load(open(path+"lang/en_us.json"))
+    except:
+        print("DID NOT FIND THE EN_US LANGUAGE!!! PLZ FIX")
+    if target!="key":
+        try: #find the language files
+            sourcesrch=find(source)
+        except:
+            return "This target language is not in the game."
+        try:
+            sourcefile=json.load(open(path+f"lang/{sourcesrch}.json"))
+        except:
+            return "This target language's file does not exist!"
+    if source!="key":
+        try:
+            targetsrch=find(target)
+        except:
+            return "This source language is not in the game."
+        try:
+            targetfile=json.load(open(path+f"lang/{targetsrch}.json"))
+        except:
+            return "This source language's file does not exist!"
+    if source=="key":
+        keys=[find(string,en_us)]
     else:
-        return unpacker(string.lower(), finder(target.lower()), finder(source.lower()))
+        keys=unpack()
+    
+
+    
 
 
 
 
 while debug:#this runs when you want to test this offline
-    print(translate(input("string: ").lower(), finder(input("target: ").lower()), finder(input("source: ").lower())))
+    print(google(input("string: "), input("target: "), input("source: ")))
 
 client.run(open(path+"token.txt").read())
