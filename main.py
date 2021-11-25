@@ -7,7 +7,7 @@ from discord_slash.utils.manage_commands import create_option
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 path="C:\\Users\\matej\\Desktop\\" #full path for debug. can be a blank string.
-debug=False #True if you are on your pc and don't want to turn the bot on
+debug=True #True if you are on your pc and don't want to turn the bot on
 
 for a, b, c in os.walk(path+"lang"): #Gives a list of language codes, so i can search in them
     filenames=c
@@ -15,6 +15,7 @@ for a, b, c in os.walk(path+"lang"): #Gives a list of language codes, so i can s
 langcodes=[]
 for i in filenames:
     langcodes.append(i.split(".")[0])
+#language.name is the key of language names
 
 
         
@@ -25,72 +26,53 @@ async def on_ready():
     print("Online!")
 
 
-def find(search,inside=langcodes,outputlist=False,isdictionary=False): #returns list of found searches inside a list (by default, searches in langcodes)
+def find(search,inside=langcodes,outputlist=False,isdictionary=False,errorOut=False): #returns list or first find of found searches inside a list (by default, searches in langcodes)
     o=[]
-    if not isdictionary:
+    if not isdictionary: #Searches for keys or if it is list, the values of the list
         for i in inside:
             if search.lower() in i.lower():
                 if outputlist:
                     o.append(i)
                 else:
                     return i
-    else: #I believe that a problem is here... i don't know how can i not check for values in disctionary or something...
+    else: #Searches for values instead of keys
         for i in inside:
             if search.lower() in inside[i].lower():
                 if outputlist:
                     o.append(i)
                 else:
                     return i
-
-    if outputlist:
+    if outputlist and len(o)>0:
         return o
-    else:
+    elif errorOut: #if nothing is found and we want it to, it will throw an error
+        raise Exception("Did not find the term")
+    else: #If nothing is found, return the same value inputted
         return search
 
 
-def unpack(string, file):
+def unpack(string, file): #Bool on the [1] means if it was searched for (Unexact match)
     for key in file: #tries to match exactly with lowercase
         if file[key].lower() == string:
             key=[key]
-            return key
+            return key, False
     
     keys=[] #tries to search the string
     for key in find(string,file,True,True):
         keys.append(key)
     if len(keys)>0:
-        return keys
-    raise Exception("Did not find string key")
+        return keys, True
+    raise Exception("Did not find string")
 
-#def fetch(key, file):      
-
-'''
-def fetcher(key, target, islist=False): #finds a translation based on a key and target language
-    try:
-        return f"Found {json.load(open(path+f'lang/{target}.json'))[key]} in {target}." #changed .get() for [] bc we want an error raised, not None value | returns when matching exactly
-    except: #my fallback fetcher
-        try:
-            file=json.load(open(path+f"lang/{target}.json"))
-        except:
-            return f"Target language {target} was not found."
-
-        if not islist: #here was return found file[key] in target, but wouldn't be activated, so i removed it
-            keys=[] #will return a list of unexact matches
-            for i in finder(key,file,True):
-                keys.append(i)
-        else: #this should activate only if we already have a list in key
-            keys=key
-        
+def fetch(key,file): #Bool on the [1] means if it was searched for (Unexact match)
+    try: #tries to match exactly with lowercase
+        return [file[key].lower()], False
+    except: #searches every key in the file
         strings=[]
-        for i in keys:
-            strings.append(file[i])
-        
-        if len(strings) > 1: #joins list or outputs one string
-            return "Unexact matches: '"+"', '".join(strings)+"' in "+target
-        elif len(strings) > 0:
-            return f"Unexact match: '{strings[0]}' in "+target
-        
-    print(key,target,keys) #the final return fallback. was: "Invalid string"
-    return f"Did not find the {key} key in {target}."'''
+        for i in find(key,file,True):
+            strings.append(i)
+        if len(strings)>0:
+            return strings, True
+        raise Exception("Did not find the key")
                     
 
     
@@ -118,37 +100,86 @@ def fetcher(key, target, islist=False): #finds a translation based on a key and 
                  )
              ]
              )
-async def translate(ctx, string, target, source = "en_us"): #moved out the googler bc it made the debugging a lot easier for me and does not change a thing
+async def translate(ctx, string, target, source = "en_us"):
     await ctx.send(google(string,target,source))
 
 def google(string, target, source):
-    try:
+    #File finding section-----------V
+    try: #this is a language file which we will use for keyfinding when source is key
         en_us=json.load(open(path+"lang/en_us.json"))
     except:
         print("DID NOT FIND THE EN_US LANGUAGE!!! PLZ FIX")
     if target!="key":
-        try: #find the language files
-            sourcesrch=find(source)
-        except:
-            return "This target language is not in the game."
-        try:
-            sourcefile=json.load(open(path+f"lang/{sourcesrch}.json"))
-        except:
-            return "This target language's file does not exist!"
-    if source!="key":
-        try:
-            targetsrch=find(target)
+        try: #find the target language files
+            sourcesrch=find(source) #if the code is full, this function will return the same thing, so no need to check
         except:
             return "This source language is not in the game."
         try:
-            targetfile=json.load(open(path+f"lang/{targetsrch}.json"))
+            sourcefile=json.load(open(path+f"lang/{sourcesrch}.json"))
         except:
             return "This source language's file does not exist!"
-    if source=="key":
-        keys=[find(string,en_us)]
-    else:
-        keys=unpack()
+    if source!="key":
+        try: #find the source language files
+            targetsrch=find(target)
+        except:
+            return "This target language is not in the game."
+        try:
+            targetfile=json.load(open(path+f"lang/{targetsrch}.json"))
+        except:
+            return "This target language's file does not exist!"
+    #File finding section-----------^
+
+
+    if source=="key": #searches if the key even exists
+        try:
+            if fetch(string,en_us)[1]: #using the fetch function as a validation of exact match... True in [1] means it exists but was searched for, False means it's exact... It also errors out when the key doesn't exist
+                keys=[find(string,en_us,True),True]
+            else:
+                keys=[[string],False]
+        except:
+            return "The key you searched for doesn't exist!"
+    else: #If we are not searching with key, unpack the string's key(s)
+        try:
+            keys=unpack(string,sourcefile)
+        except:
+            return "Did not find the string."
     
+
+    if target=="key":
+        if not keys[1]:#If it wasn't searched for
+            return keys[0][0]
+        else:#If it was searched for
+            if len(keys[0])>1:
+                return "Near matches: '"+"', '".join(keys[0])+"'"
+            else:
+                return "Near match: "+keys[0][0]
+    else:
+        try:
+            strings=[]
+            for i in keys[0]:
+                try:
+                    strings.append(fetch(i,targetfile)[0])
+                except:
+                    pass
+            if len(strings)==0:
+                raise Exception("")
+            elif len(strings)>1:
+                return "Near matches: '"+"', '".join(strings)+"'"
+
+        except:
+            return "An unspecified error has popped up."
+        
+        
+    
+if debug: #tries to make all possible outcomes...
+    strings=["gold","zlato","Gold Ingot","Zlatá tehlička","item.minecraft.gold_ingot","asdf"]
+    codes1=["sk","us","key","sk_sk","en_us","asdf"]
+    codes2=["sk","us","key","sk_sk","en_us","asdf"]
+    for a in strings:
+        for b in codes1:
+            for c in codes2:
+                print(a,b,c+":",google(a,b,c))
+
 
     
 
