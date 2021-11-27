@@ -166,7 +166,7 @@ def nearMatch(of):
         return "Near matches found: '"+"', '".join(of)+"'"
     
 
-for a, b, c in os.walk(path+langpath): #Gives a list of language codes, so i can search in them
+for a, b, c in os.walk(langpath): #Gives a list of language codes, so i can search in them
     filenames=c
     break
 langcodes=[]
