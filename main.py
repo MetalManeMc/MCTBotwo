@@ -67,35 +67,6 @@ def fetch(key,file): #Bool on the [1] means if it was searched for (Unexact matc
             return strings, True
         raise Exception("Did not find the key")
                     
-
-    
-@slash.slash(name="translate",
-             description="Returns the translation found in-game for a string",
-             guild_ids=guild_ids,
-             options=[
-                 create_option(
-                     name="string",
-                     description="The string or key to translate.",
-                     option_type=3,
-                     required=True
-                 ),
-                 create_option(
-                     name="target",
-                     description="Language code, in which the string is going to be sent. EX: es_es",
-                     option_type=3,
-                     required=True
-                 ),
-                 create_option(
-                     name="source",
-                     description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key",
-                     option_type=3,
-                     required=False
-                 )
-             ]
-             )
-async def translate(ctx, string, target, source = "en_us"):
-    await ctx.send(google(string,target,source))
-
 def google(input, target, source): #renamed string to input to avoid confusion
     #File finding section-----------V
     try: #this is a language file which we will use for keyfinding when source is key
@@ -195,7 +166,7 @@ def nearMatch(of):
         return "Near matches found: '"+"', '".join(of)+"'"
     
 
-for a, b, c in os.walk(path+langpath): #Gives a list of language codes, so i can search in them
+for a, b, c in os.walk(langpath): #Gives a list of language codes, so i can search in them
     filenames=c
     break
 langcodes=[]
@@ -204,6 +175,33 @@ for i in filenames:
 for i in filenames:
     langcodes.append(fetch("language.name",json.load(open(langpath+i)))[0])
 #language names get found and we can fill them in with find() but it isn't the file name so it outputs "file not found" for now... pls fix
+    
+@slash.slash(name="translate",
+             description="Returns the translation found in-game for a string",
+             guild_ids=guild_ids,
+             options=[
+                 create_option(
+                     name="string",
+                     description="The string or key to translate.",
+                     option_type=3,
+                     required=True
+                 ),
+                 create_option(
+                     name="target",
+                     description="Language code, in which the string is going to be sent. EX: es_es",
+                     option_type=3,
+                     required=True
+                 ),
+                 create_option(
+                     name="source",
+                     description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key",
+                     option_type=3,
+                     required=False
+                 )
+             ]
+             )
+async def translate(ctx, string, target, source = "en_us"):
+    await ctx.send(google(string,target,source))
 
 if debug: #tries to make all possible outcomes...
     input("Press Enter")
