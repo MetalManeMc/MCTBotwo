@@ -7,7 +7,7 @@ from discord_slash.utils.manage_commands import create_option
 
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
-path="" #full path for debug. Blank string when in the same directory.
+path=os.path.dirname(os.path.realpath(__file__))+"\\" #full path for debug. Blank string when in the same directory.
 langpath=path+"lang\\"
 debug=False #True if you are on your pc and don't want to turn the bot on
 
