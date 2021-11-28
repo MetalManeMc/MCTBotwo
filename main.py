@@ -9,6 +9,7 @@ client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 path=os.path.dirname(os.path.realpath(__file__))+"\\" #full path for debug. Blank string when in the same directory.
 langpath=path+"lang\\"
+print("Specified langpath: "+langpath)
 debug=False #True if you are on your pc and don't want to turn the bot on
 
 
