@@ -3,7 +3,7 @@ import json
 import os
 import discord
 from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option
+from discord_slash.utils.manage_commands import create_option, create_choice
 
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
@@ -219,6 +219,17 @@ async def translate(ctx, string, target, source = "en_us"):
         except:
             print("Error fallback did not work!")
             await ctx.send("Error has occured and fallback did not work!")
+
+@slash.subcommand(base="settings", name="default-language",
+                    description="Sets the default target language of a server", guild_ids=guild_ids,
+                    options=[create_option(
+                        name="target-language",
+                        description="language code",
+                        option_type=3,
+                        required=True
+                    )])
+async def settings_default_language(ctx, language):
+    await ctx.send("wip " + language)
 
 if debug: #tries to make all possible outcomes...
     input("Press Enter")
