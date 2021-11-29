@@ -9,7 +9,7 @@ client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 path=os.path.dirname(os.path.realpath(__file__))+"\\" #full path for debug. Blank string when in the same directory.
 langpath=path+"lang\\"
-print("Specified langpath: "+langpath)
+print("Langpath print out: "+langpath)
 debug=False #True if you are on your pc and don't want to turn the bot on
 
 
@@ -119,6 +119,8 @@ def google(input, target, source): #renamed string to input to avoid confusion
                 return "An unexpected error has occured at sts."
 
 def ktk(key, file): #key to key
+    if debug:
+        print("ktk")
     keys=[]
     try:
         for i in find(key,file,True):
@@ -128,6 +130,8 @@ def ktk(key, file): #key to key
     return nearMatch(keys)
 
 def kts(key, targetfile): #key to string
+    if debug:
+        print("kts")
     try:
         strings=fetch(key,targetfile)
     except:
@@ -138,6 +142,8 @@ def kts(key, targetfile): #key to string
         return strings[0]
 
 def stk(string, sourcefile): #string to key
+    if debug:
+        print("stk")
     try:
         keys=unpack(string,sourcefile)
     except:
@@ -148,6 +154,8 @@ def stk(string, sourcefile): #string to key
         return keys[0]
 
 def sts(string, sourcefile, targetfile): #string to string
+    if debug:
+        print("sts")
     try:
         keys=unpack(string,sourcefile)
     except:
@@ -158,7 +166,7 @@ def sts(string, sourcefile, targetfile): #string to string
             strings.append(targetfile[i])
         return nearMatch(strings)
     else:
-        return fetch(keys[0],targetfile)
+        return fetch(keys[0],targetfile)[0]
 
 def nearMatch(of):
     if len(of)==1:
@@ -202,7 +210,15 @@ for i in filenames:
              ]
              )
 async def translate(ctx, string, target, source = "en_us"):
-    await ctx.send(google(string,target,source))
+    try:
+        await ctx.send(google(string,target,source))
+    except:
+        print("Error has occured, trying to fallback",string,target,source)
+        try:
+            await ctx.send("Error has occured, but fallback works: "+" ".join(google(string,target,source)))
+        except:
+            print("Error fallback did not work!")
+            await ctx.send("Error has occured and fallback did not work!")
 
 if debug: #tries to make all possible outcomes...
     input("Press Enter")
