@@ -213,17 +213,6 @@ async def translate(ctx, string, target, source = "en_us"):
             print("Error fallback did not work!")
             await ctx.send("Error has occured and fallback did not work!")
 
-@slash.subcommand(base="settings", name="default-language",
-                    description="Sets the default target language of a server", guild_ids=guild_ids,
-                    options=[create_option(
-                        name="target-language",
-                        description="language code",
-                        option_type=3,
-                        required=True
-                    )])
-async def settings_default_language(ctx, language):
-    await ctx.send("wip " + language)
-
 @client.event
 async def on_ready():
     print("Online!")
