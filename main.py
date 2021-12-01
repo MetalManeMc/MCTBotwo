@@ -3,14 +3,28 @@ import json
 import os
 import discord
 from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option, create_choice
+from discord_slash.utils.manage_commands import create_option
 
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
-path = os.path.dirname(os.path.realpath(__file__)) + "\\" # Full path for debug. Blank string when in the same directory.
-langpath=path+"lang\\"
-print("Langpath print out: "+langpath)
-debug=False # Mark as True if you are on your pc and don't want to turn the bot on
+
+path = os.path.dirname(os.path.realpath(__file__)) # Full path for debug. Blank string when in the same directory.
+pathyes = True
+for i in path:
+    if i == "/":
+        pathyes=False
+        break
+    elif i == "\\":
+        break
+if pathyes:
+    path += "\\"
+    langpath = path + "lang\\"
+else:
+    path += "/"
+    langpath = path + "lang/"
+
+print("Langpath print out: " + langpath)
+debug = True # Mark as True if you are on your pc and don't want to turn the bot on
 guild_ids = [906169345007304724]
 
 
@@ -56,7 +70,7 @@ def find(search, inside, outputlist = False, isdictionary = False, errorOut = Tr
 
 def unpack(string, file): # Bool on the [1] means if it was searched for (Unexact match)
     for key in file: # Tries to match exactly with lowercase
-        if file[key].lower() == string:
+        if file[key].lower() == string.lower():
             return key, False
     
     keys=[] # Tries to search the string
@@ -250,19 +264,23 @@ for i in filenames:
              ]
              )
 async def translate(ctx, string, target, source = "en_us"):
+    result = google(string, target, source)
+    print(result)
     try:
-        await ctx.send(google(string, target, source)[0])
+        await ctx.send(result[0])
     except:
         print("Error has occured, trying to fallback", string,target ,source)
         try:
-            await ctx.send("Error has occured, but fallback works: " + " ".join(google(string,target,source)))
+            await ctx.send("Error has occured, but fallback works: " + " ".join(result))
         except:
-            print("Error fallback did not work!")
+            print("Error fallback did not work!", result)
             await ctx.send("Error has occured and fallback did not work!")
+
 
 @client.event
 async def on_ready():
     print("Online!")
+
 
 if debug: # Tries to make all possible outcomes...
     input("Press Enter")
@@ -272,7 +290,7 @@ if debug: # Tries to make all possible outcomes...
     for a in debugstr:
         for b in dabuglangcode1:
             for c in dabuglangcode2:
-                print(a, b,c + ":", google(a, b, c))
+                print(a, b, c + ":", google(a, b, c))
 
 while debug:# This runs when you want to test this offline
     print(google(input("string: "), input("target: "), input("source: ")))
