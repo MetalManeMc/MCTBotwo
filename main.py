@@ -7,133 +7,126 @@ from discord_slash.utils.manage_commands import create_option, create_choice
 
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
-path=os.path.dirname(os.path.realpath(__file__))+"\\" #full path for debug. Blank string when in the same directory.
+path = os.path.dirname(os.path.realpath(__file__)) + "\\" # Full path for debug. Blank string when in the same directory.
 langpath=path+"lang\\"
 print("Langpath print out: "+langpath)
-debug=False #True if you are on your pc and don't want to turn the bot on
-
-
-        
-
+debug=False # Mark as True if you are on your pc and don't want to turn the bot on
 guild_ids = [906169345007304724]
-@client.event
-async def on_ready():
-    print("Online!")
 
 
-def find(search,inside,outputlist=False,isdictionary=False,errorOut=True): #returns list or first find of found searches inside a list or dictionary
-    o=[]
-    if not isdictionary: #Searches for keys or if it is list, the values of the list
+def find(search, inside, outputlist = False, isdictionary = False, errorOut = True): # Function that returns a list or first find of found searches inside a list or dictionary
+    o = []
+    if not isdictionary: # Searches for keys or if it is list, the values of the list
         for i in inside:
             if search.lower() in i.lower():
                 if outputlist:
                     o.append(i)
                 else:
                     return i
-    else: #Searches for values instead of keys
+    else: # Searches for values instead of keys
         for i in inside:
             if search.lower() in inside[i].lower():
                 if outputlist:
                     o.append(i)
                 else:
                     return i
-    if outputlist and len(o)>0:
+    if outputlist and len(o) > 0:
         return o
-    elif errorOut: #if nothing is found and we want it to, it will throw an error
+    elif errorOut: # If nothing is found and we want it to, it will throw an error
         raise Exception("Did not find the term")
-    else: #If nothing is found, return the same value inputted
+    else: # If nothing is found, return the same value inputted
         return search
 
 
-def unpack(string, file): #Bool on the [1] means if it was searched for (Unexact match)
-    for key in file: #tries to match exactly with lowercase
+def unpack(string, file): # Bool on the [1] means if it was searched for (Unexact match)
+    for key in file: # Tries to match exactly with lowercase
         if file[key].lower() == string:
             return key, False
     
-    keys=[] #tries to search the string
+    keys=[] # Tries to search the string
     for key in find(string,file,True,True):
         keys.append(key)
-    if len(keys)>0:
+    if len(keys) > 0:
         return keys, True
     raise Exception("Did not find string")
 
-def fetch(key,file): #Bool on the [1] means if it was searched for (Unexact match)
-    try: #tries to match exactly with lowercase
+def fetch(key,file): # Bool on the [1] means if it was searched for (Unexact match)
+    try: # Tries to match exactly with lowercase
         return file[key].lower(), False
-    except: #searches every key in the file
+    except: # Searches every key in the file
         strings=[]
-        for i in find(key,file,True):
+        for i in find(key, file, True):
             strings.append(i)
-        if len(strings)>0:
+        if len(strings) > 0:
             return strings, True
         raise Exception("Did not find the key")
                     
-def google(input, target, source): #renamed string to input to avoid confusion
-    #File finding section-----------V
-    try: #this is a language file which we will use for keyfinding when source is key
-        en_us=json.load(open(langpath+"en_us.json"))
+def google(input, target, source): # Renamed string to input to avoid confusion
+    # File finding section-----------V
+    try: # This is a language file which we will use for keyfinding when source is key
+        en_us = json.load(open(langpath + "en_us.json"))
     except:
         print("DID NOT FIND THE EN_US LANGUAGE!!! PLZ FIX")
         
     if source!="key":
-        try: #find the target language files
-            sourcesrch=find(source,langcodes) #if the code is full, this function will return the same thing, so no need to check
+        try: # Find the target language files
+            sourcesrch = find(source, langcodes) # If the code is full, this function will return the same thing, so no need to check
         except:
             return "This source language is not in the game."
         try:
-            sourcefile=json.load(open(langpath+sourcesrch+".json"))
+            sourcefile = json.load(open(langpath + sourcesrch+".json"))
         except:
             return "This source language's file does not exist!"
     if target!="key":
-        try: #find the source language files
-            targetsrch=find(target,langcodes)
+        try: # Find the source language files
+            targetsrch = find(target, langcodes)
         except:
             return "This target language is not in the game."
         try:
-            targetfile=json.load(open(langpath+targetsrch+".json"))
+            targetfile = json.load(open(langpath + targetsrch + ".json"))
         except:
             return "This target language's file does not exist!"
-    #File finding section-----------^
+    # File finding section-----------^
 
-    if source=="key":
-        if target=="key":
+    if source == "key":
+        if target == "key":
             try:
-                return ktk(input,en_us)
+                return ktk(input, en_us)
             except:
                 return "An unexpected error has occured at ktk."
         else:
             try:
-                return kts(input,targetfile)
+                return kts(input, targetfile)
             except:
                 return "An unexpected error has occured at kts."
     else:
         if target=="key":
             try:
-                return stk(input,sourcefile)
+                return stk(input, sourcefile)
             except:
                 return "An unexpected error has occured at stk."
         else:
             try:
-                return sts(input,sourcefile,targetfile)
+                return sts(input, sourcefile, targetfile)
             except:
                 return "An unexpected error has occured at sts."
 
-def ktk(key, file): #key to key
+def ktk(key, file): # Key to key
     if debug:
         print("ktk")
-    keys=[]
+    keys = []
     try:
-        for i in find(key,file,True):
+        for i in find(key, file, True):
             keys.append(i)
     except:
         return "No keys found. I guess you are stuck outside now ¯\\_(ツ)_/¯"
     return nearMatch(keys)
 
-def kts(key, targetfile): #key to string
+def kts(key, targetfile): # Key to string
     if debug:
         print("kts")
     try:
-        strings=fetch(key,targetfile)
+        strings = fetch(key, targetfile)
     except:
         return "Did not find the key."
     if strings[1]:
@@ -141,11 +134,11 @@ def kts(key, targetfile): #key to string
     else:
         return strings[0]
 
-def stk(string, sourcefile): #string to key
+def stk(string, sourcefile): # String to key
     if debug:
         print("stk")
     try:
-        keys=unpack(string,sourcefile)
+        keys=unpack(string, sourcefile)
     except:
         return "Did not find the string."
     if keys[1]:
@@ -153,11 +146,11 @@ def stk(string, sourcefile): #string to key
     else:
         return keys[0]
 
-def sts(string, sourcefile, targetfile): #string to string
+def sts(string, sourcefile, targetfile): # String to string
     if debug:
         print("sts")
     try:
-        keys=unpack(string,sourcefile)
+        keys=unpack(string, sourcefile)
     except:
         return "Did not find the string."
     if keys[1]:
@@ -169,21 +162,21 @@ def sts(string, sourcefile, targetfile): #string to string
         return fetch(keys[0],targetfile)[0]
 
 def nearMatch(of):
-    if len(of)==1:
-        return "Near match: "+of[0]
+    if len(of) == 1:
+        return "Near match: " + of[0]
     else:
         return "Near matches found: '"+"', '".join(of)+"'"
     
 
-for a, b, c in os.walk(langpath): #Gives a list of language codes, so i can search in them
-    filenames=c
+for a, b, c in os.walk(langpath): # Gives a list of language codes, so i can search in them
+    filenames = c
     break
-langcodes=[]
+langcodes = []
 for i in filenames:
     langcodes.append(i.split(".")[0])
 for i in filenames:
-    langcodes.append(fetch("language.name",json.load(open(langpath+i)))[0])
-#language names get found and we can fill them in with find() but it isn't the file name so it outputs "file not found" for now... pls fix
+    langcodes.append(fetch("language.name", json.load(open(langpath+i)))[0])
+# Language names get found and we can fill them in with find() but it isn't the file name so it outputs "file not found" for now... pls fix
     
 @slash.slash(name="translate",
              description="Returns the translation found in-game for a string",
@@ -211,11 +204,11 @@ for i in filenames:
              )
 async def translate(ctx, string, target, source = "en_us"):
     try:
-        await ctx.send(google(string,target,source))
+        await ctx.send(google(string, target, source))
     except:
-        print("Error has occured, trying to fallback",string,target,source)
+        print("Error has occured, trying to fallback", string,target ,source)
         try:
-            await ctx.send("Error has occured, but fallback works: "+" ".join(google(string,target,source)))
+            await ctx.send("Error has occured, but fallback works: " + " ".join(google(string,target,source)))
         except:
             print("Error fallback did not work!")
             await ctx.send("Error has occured and fallback did not work!")
@@ -231,7 +224,11 @@ async def translate(ctx, string, target, source = "en_us"):
 async def settings_default_language(ctx, language):
     await ctx.send("wip " + language)
 
-if debug: #tries to make all possible outcomes...
+@client.event
+async def on_ready():
+    print("Online!")
+
+if debug: # Tries to make all possible outcomes...
     input("Press Enter")
     debugstr=["gold","zlato","Gold Ingot","Zlatá tehlička","item.minecraft.gold_ingot","asdf"]
     dabuglangcode1=["sk","us","key","sk_sk","en_us","Slove","Slovenčina","asdf"]
@@ -239,9 +236,9 @@ if debug: #tries to make all possible outcomes...
     for a in debugstr:
         for b in dabuglangcode1:
             for c in dabuglangcode2:
-                print(a,b,c+":",google(a,b,c))
+                print(a, b,c + ":", google(a, b, c))
 
-while debug:#this runs when you want to test this offline
+while debug:# This runs when you want to test this offline
     print(google(input("string: "), input("target: "), input("source: ")))
 
-client.run(open(path+"token.txt").read())
+client.run(open(path + "token.txt").read())
