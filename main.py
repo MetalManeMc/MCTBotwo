@@ -287,10 +287,19 @@ async def translate(ctx, string, target, source = "en_us"):
 async def settings_default_language(ctx, language):
     f=json.load(open("serverdefaults.json"))
     try:
-        lang=f[ctx.guild.id]["targetlang"]
-        await ctx.send("Your default language will be " + lang)
+        currentlang=f[str(ctx.guild.id)]["targetlang"]
+        if google("gold", language, "en_us")!=('This target language is not in the game.', 0, 0.3):
+            f[str(ctx.guild.id)]["targetlang"]=language
+            await ctx.send(f"Default target language changed to `{language}`.")
+        else:
+            await ctx.send(f"`{language}` isn't a valid language. Default target language reset to `{currentlang}`.")
     except KeyError:
-        await ctx.send("Your default language would be " + language + "\nThe example's language is " + f["example"]["targetlang"])
+        if google("gold",language, "en_us")!=('This target language is not in the game.', 0, 0.3):
+            f[ctx.guild.id]={"targetlang": language}
+            await ctx.send(f"Default target language set to `{language}`.")
+        else:
+            await ctx.send(f"`{language}` isn't a valid language.")
+    json.dump(f, open("serverdefaults.json", "w"))
 
 @client.event
 async def on_ready():
