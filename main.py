@@ -24,7 +24,7 @@ else:
     langpath = path + "lang/"
 
 print("Langpath print out: " + langpath)
-debug = True # Mark as True if you are on your pc and don't want to turn the bot on
+debug = False # Mark as True if you are on your pc and don't want to turn the bot on
 guild_ids = [906169345007304724]
 
 
@@ -276,6 +276,21 @@ async def translate(ctx, string, target, source = "en_us"):
             print("Error fallback did not work!", result)
             await ctx.send("Error has occured and fallback did not work!")
 
+@slash.subcommand(base="settings", name="default-language",
+                    description="Sets the default target language of a server", guild_ids=guild_ids,
+                    options=[create_option(
+                        name="target-language",
+                        description="language code",
+                        option_type=3,
+                        required=True
+                    )])
+async def settings_default_language(ctx, language):
+    f=json.load(open("serverdefaults.json"))
+    try:
+        lang=f[ctx.guild.id]["targetlang"]
+        await ctx.send("Your default language will be " + lang)
+    except KeyError:
+        await ctx.send("Your default language would be " + language + "\nThe example's language is " + f["example"]["targetlang"])
 
 @client.event
 async def on_ready():
