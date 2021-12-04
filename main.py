@@ -252,7 +252,7 @@ for i in filenames:
                  ),
                  create_option(
                      name="target",
-                     description="Language code in which the string is going to be sent. EX: es_es.",
+                     description="Language code, in which the string is going to be sent. EX: es_es.",
                      option_type=3,
                      required=False
                  ),
