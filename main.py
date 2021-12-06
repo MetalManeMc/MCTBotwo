@@ -24,9 +24,12 @@ else:
     langpath = path + "lang/"
 
 print("Langpath print out: " + langpath)
-debug = True # Mark as True if you are on your pc and don't want to turn the bot on
+debug = False # Mark as True if you are on your pc and don't want to turn the bot on
 guild_ids = [906169345007304724]
 
+def fetch_default(code, data):
+     f = json.load(open("serverdefaults.json"))
+     return f[code][data]
 
 def find(search, inside, outputlist = False, isdictionary = False, errorOut = True, outputindex = False): # Function that returns a list or first find of found searches inside a list or dictionary
     o = []
@@ -66,7 +69,6 @@ def find(search, inside, outputlist = False, isdictionary = False, errorOut = Tr
         raise Exception("Did not find the term")
     else: # If nothing is found, return the same value inputted
         return search
-
 
 def unpack(string, file): # Bool on the [1] means if it was searched for (Unexact match)
     for key in file: # Tries to match exactly with lowercase
@@ -174,7 +176,6 @@ def google(input, target, source): # Renamed string to input to avoid confusion
             except:
                 return "An unexpected error has occured at sts.", 0, 4
 
-
 def ktk(key, file): # Key to key
     keys = []
     try:
@@ -251,19 +252,26 @@ for i in filenames:
                  ),
                  create_option(
                      name="target",
-                     description="Language code, in which the string is going to be sent. EX: es_es",
+                     description="Language code, in which the string is going to be sent. EX: es_es.",
                      option_type=3,
-                     required=True
+                     required=False
                  ),
                  create_option(
                      name="source",
-                     description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key",
+                     description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key.",
                      option_type=3,
                      required=False
                  )
              ]
              )
-async def translate(ctx, string, target, source = "en_us"):
+async def translate(ctx, string, target = None, source = "en_us"):
+    if target == None:
+        try:
+            target = fetch_default(str(ctx.guild.id), "targetlang")
+        except:
+            target="en_us"
+    else:
+        pass
     result = google(string, target, source)
     print(result)
     try:
@@ -276,6 +284,30 @@ async def translate(ctx, string, target, source = "en_us"):
             print("Error fallback did not work!", result)
             await ctx.send("Error has occured and fallback did not work!")
 
+@slash.subcommand(base="settings", name="default-language",
+                    description="Sets the default target language of a server", guild_ids=guild_ids,
+                    options=[create_option(
+                        name="target-language",
+                        description="language code",
+                        option_type=3,
+                        required=True
+                    )])
+async def settings_default_language(ctx, language):
+    f=json.load(open("serverdefaults.json"))
+    try:
+        currentlang=f[str(ctx.guild.id)]["targetlang"]
+        if google("gold", language, "en_us")!=('This target language is not in the game.', 0, 0.3):
+            f[str(ctx.guild.id)]["targetlang"]=language
+            await ctx.send(f"Default target language changed to `{language}`.")
+        else:
+            await ctx.send(f"`{language}` isn't a valid language. Default target language reset to `{currentlang}`.")
+    except KeyError:
+        if google("gold",language, "en_us")!=('This target language is not in the game.', 0, 0.3):
+            f[ctx.guild.id]={"targetlang": language}
+            await ctx.send(f"Default target language set to `{language}`.")
+        else:
+            await ctx.send(f"`{language}` isn't a valid language.")
+    json.dump(f, open("serverdefaults.json", "w"))
 
 @client.event
 async def on_ready():
