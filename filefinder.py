@@ -14,8 +14,8 @@ def rename(initname):
     return newname
 
 
-for lang in langs:                          # For all element in the index
-    codes.append(langs[lang]["hash"])       # Notes the "hash", which is the code of used for the game to know which assets are which
+for lang in langs:                           # For all element in the index
+    codes.append(langs[lang]["hash"])        # Notes the "hash", which is the code of used for the game to know which assets are which
 
 for dirpath, dirnames, filenames in os.walk("objects"): # Runs through the minecraft assets
     for file in filenames:                              # For each file
