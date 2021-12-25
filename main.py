@@ -75,13 +75,14 @@ def search_str(js, string):
     """
 
     result = []
-
-    for k in js.keys():
-        if string in k:
-            result.append(js[k])
+    result = [js[k] for k in js.keys() if string in k.lower()] # KTS
+    # result = [k for k in js.keys() if string in k.lower()] # KTK, commented for later use
 
     if len(result) == 0:
-        result = [k for v in js.values() if string in v]
+        result = [n for n in js.values() if string in n.lower()] # STS
+        #for clave in js: # STK, commanted for later use
+        #   if isinstance(js[clave], str) and string in js[clave]:
+        #       result.append(clave)
     return result
 
 
@@ -140,9 +141,11 @@ def find_translation(jsonfile:str, string:str):
 async def translate(ctx, language, target):
     list_message = find_translation(language, target)
     message = ', '.join(list_message)
-    if message == '':
+
+    if message != '':
+        message = ', '.join(list_message)
+        await ctx.send(message)
+    else:
         await ctx.send('Empty')
-        return
-    await ctx.send(message)
 
 client.run(TOKEN)
