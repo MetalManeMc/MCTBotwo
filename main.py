@@ -87,7 +87,7 @@ def search_str(js, string):
 
 
 
-def find_translation(jsonfile:str, string:str):
+def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
 
     """
     This function takes in 2 parameters: jsonfile and string. Both of these are
@@ -101,10 +101,40 @@ def find_translation(jsonfile:str, string:str):
     for the bot to interpret and embed into a message.
     """
 
-    js = open_json(jsonfile.lower())
-    result = search_str(js, string.lower())
+    # we can put something like find(languages) for user to be able to insert uncomplete languages
+
+    if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
+        jstarget = open_json(targetlang.lower())
+    if sourcelang!="key":
+        jssource = open_json(sourcelang.lower())
+    jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
+
+
+    if targetlang=="key": # figures out, which mode to use
+        if sourcelang=="key":
+            result = ktk(string, jsdef)
+        else:
+            result = kts(string, jstarget, jsdef)
+    else:
+        if sourcelang=="key":
+            result = stk(string, jssource, jsdef)
+        else:
+            result = sts(string, jstarget, jssource)
+
+    #result = search_str(js, string.lower())
 
     return result
+
+
+def ktk(search, jsd): # okay thats enough... i don't want to mess up your thingie with my fetch and unpack functions...
+    pass
+def kts(search, jst, jsd):
+    pass
+def stk(search, jss, jsd):
+    pass
+def sts(search, jst, jss):
+    pass
+
 
 
 #########################
@@ -125,21 +155,27 @@ def find_translation(jsonfile:str, string:str):
              guild_ids=GUILD_IDS,
              options=[
                  create_option(
-                     name="language",
+                     name="search",
                      description="PLACEHOLDER",
                      option_type=3,
                      required=True
                  ),
                  create_option(
-                     name="target",
+                     name="to",
+                     description="PLACEHOLDER",
+                     option_type=3,
+                     required=True
+                 ),
+                 create_option(
+                     name="from",
                      description="PLACEHOLDER",
                      option_type=3,
                      required=True
                  )
              ]
              )
-async def translate(ctx, language, target):
-    list_message = find_translation(language, target)
+async def translate(ctx, search, to, source="en_us"):
+    list_message = find_translation(search, to, source)
     message = ', '.join(list_message)
 
     if message != '':
