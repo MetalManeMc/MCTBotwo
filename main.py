@@ -51,7 +51,7 @@ def open_json(jsonfile):
 
     return dictionary_json
 
-  
+''' isn't and most likely will not be used in the future
 def search_str(js, string):
 
     """
@@ -84,7 +84,16 @@ def search_str(js, string):
         #   if isinstance(js[clave], str) and string in js[clave]:
         #       result.append(clave)
     return result
+'''
 
+def complete(search:str, list:list):
+    result = []
+    for i in list:
+        if search.lower() in i.lower():
+            result.append(i)
+    if result!=[]:
+        return result
+    raise Exception("Could not complete")
 
 
 def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
@@ -101,6 +110,7 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
     for the bot to interpret and embed into a message.
     """
 
+    string = string.lower()
     # we can put something like find(languages) for user to be able to insert uncomplete languages
 
     if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
@@ -112,28 +122,18 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
 
     if targetlang=="key": # figures out, which mode to use
         if sourcelang=="key":
-            result = ktk(string, jsdef)
+            result = [k for k in jsdef.keys() if string in k.lower()] #ktk(string, jsdef)
         else:
-            result = kts(string, jstarget, jsdef)
+            result = [jstarget[k] for k in jsdef.keys() if string in k.lower()] #kts(string, jstarget, jsdef)
     else:
         if sourcelang=="key":
-            result = stk(string, jssource, jsdef)
+            result = [i for i in jstarget if string in jsdef[i].lower()] #stk(string, jssource, jsdef)
         else:
-            result = sts(string, jstarget, jssource)
+            result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
 
-    #result = search_str(js, string.lower())
+    # old way: result = search_str(js, string.lower())
 
     return result
-
-
-def ktk(search, jsd): # okay thats enough... i don't want to mess up your thingie with my fetch and unpack functions...
-    pass
-def kts(search, jst, jsd):
-    pass
-def stk(search, jss, jsd):
-    pass
-def sts(search, jst, jss):
-    pass
 
 
 
@@ -178,10 +178,14 @@ async def translate(ctx, search, to, source="en_us"):
     list_message = find_translation(search, to, source)
     message = ', '.join(list_message)
 
-    if message != '':
-        message = ', '.join(list_message)
-        await ctx.send(message)
-    else:
-        await ctx.send('Empty')
+    try:
+        if message != '':
+            message = ', '.join(list_message)
+            await ctx.send(message)
+        else:
+            await ctx.send('Empty')
+    except:
+        await ctx.send("You have just experienced an error",hidden=True)
+
 
 client.run(TOKEN)
