@@ -8,17 +8,16 @@ from discord_slash.utils.manage_commands import create_option
 client = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 
-DATA_DIR = Path(os.getcwd(), 'lang')
-TOKEN_PATH = Path(os.getcwd(), 'token.txt')
+DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
 GUILD_IDS = [906169345007304724]
-with open(TOKEN_PATH) as f:
-    TOKEN = f.read()
+
 
 """
 We craft a path towards the /lang/ folder using the host's information. 
 This path is absolute and independent of the OS in which it may be running.
-DATA_DIR should *not* be altered at any point. 
+DATA_DIR should *not* be altered at any point.
 """
+
 
 @client.event
 async def on_ready():
@@ -47,93 +46,75 @@ def open_json(jsonfile):
     json_path = Path(DATA_DIR, jsonfile).with_suffix(".json")
 
     with open(json_path) as js:
-        dictionary_json = json.load(js)
+        return json.load(js)
 
-    return dictionary_json
 
-''' isn't and most likely will not be used in the future
-def search_str(js, string):
+def complete(search:str, inside:list):
 
-    """
-    This is the soul of the bot. It takes in js and string
-    as arguments. js is the file that will be searched (the langcode specified
-    by the user) and string is the text that will be searched by the bot.
+    '''
+    This function is essentially an autocompletion.
+    It takes a string and a list, in which it's going to find complete strings.
 
-    Firstly, it defines an emtpy list called result, afterwards it 
-    runs a loop through the keys in the dictionary and searches for
-    any matches that contain string. If a key that contains string is found
-    the program will append the value associated with that key to the empty
-    list, and will repeat the loop.
+    Walks through the list and asks whether the search is in the value. If it is,
+    it appends the value to result. If none are found, it returns an empty list.
+    '''
 
-    Once the loop is done, another check is ran. If the length of result is 0
-    the bot will assume that no matches were found. If this is the case, the
-    same operation from before is ran again, but in inverse order. It searches
-    for any value in the dictionary that contains string and appends its key
-    to result.
-
-    At the end of the function, result is returned.
-    """
-
-    result = []
-    result = [js[k] for k in js.keys() if string in k.lower()] # KTS
-    # result = [k for k in js.keys() if string in k.lower()] # KTK, commented for later use
-
-    if len(result) == 0:
-        result = [n for n in js.values() if string in n.lower()] # STS
-        #for clave in js: # STK, commanted for later use
-        #   if isinstance(js[clave], str) and string in js[clave]:
-        #       result.append(clave)
-    return result
-'''
-
-def complete(search:str, list:list):
-    result = []
-    for i in list:
-        if search.lower() in i.lower():
-            result.append(i)
-    if result!=[]:
-        return result
-    raise Exception("Could not complete")
+    return [i for i in inside if search.lower() in i.lower()]
 
 
 def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
 
     """
-    This function takes in 2 parameters: jsonfile and string. Both of these are
-    specified to be strings. 
-    It first converts the parameters into variables that can be used by the program.
-    In this case, jsonfile is turned into jsonfile.lower() and then fed into
-    open_json. The result of that is turned into the variable js.
-
-    Similarly, the string is turned into string.lower and fed into search_str
-    alongside js so it can return a list called result. This result is then returned 
-    for the bot to interpret and embed into a message.
+    This function does not make a documentation by itself. It needs to be made up by someone else.
     """
 
     string = string.lower()
     # we can put something like find(languages) for user to be able to insert uncomplete languages
 
     if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
-        jstarget = open_json(targetlang.lower())
+        jstarget = open_json(lang(targetlang))
     if sourcelang!="key":
-        jssource = open_json(sourcelang.lower())
+        jssource = open_json(lang(sourcelang))
     jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
 
 
     if targetlang=="key": # figures out, which mode to use
         if sourcelang=="key":
-            result = [k for k in jsdef.keys() if string in k.lower()] #ktk(string, jsdef)
+            result = complete(string, jsdef) #ktk
         else:
-            result = [jstarget[k] for k in jsdef.keys() if string in k.lower()] #kts(string, jstarget, jsdef)
+            result = [i for i in jstarget if string in jsdef[i].lower()] #stk
     else:
         if sourcelang=="key":
-            result = [i for i in jstarget if string in jsdef[i].lower()] #stk(string, jssource, jsdef)
+            result = [jstarget[i] for i in complete(string, jsdef)] #kts
         else:
             result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
 
-    # old way: result = search_str(js, string.lower())
-
     return result
+
+def lang(search:str):
+
+    '''
+    Returns a complete internal language code to be used for file opening.
+
+    Input can be the expected output too.
+    Input can be approved language code, name, region or internal code (searching in this order)
+    '''
+
+    search = search.lower()
+
+    for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
+        if search in langcodesapp[i].lower():
+            return langcodes[i]
+
+    for i in range(len(langnames)):
+        if search in langnames[i].lower():
+            return langcodes[i]
+
+    for i in range(len(langregions)):
+        if search in langregions[i].lower():
+            return langcodes[i]
+
+    return complete(search, langcodes)[0]
 
 
 
@@ -150,42 +131,50 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
 # TODO Re-implement the default language per channel/server thing (Sorry -Nan)
 # TODO The command simply vomits the contents of the list result into chat with no order or format, should be formatted
 
-@slash.slash(name="translate",
-             description="Returns the translation found in-game for a string",
-             guild_ids=GUILD_IDS,
-             options=[
-                 create_option(
-                     name="search",
-                     description="PLACEHOLDER",
-                     option_type=3,
-                     required=True
-                 ),
-                 create_option(
-                     name="to",
-                     description="PLACEHOLDER",
-                     option_type=3,
-                     required=True
-                 ),
-                 create_option(
-                     name="from",
-                     description="PLACEHOLDER",
-                     option_type=3,
-                     required=True
-                 )
-             ]
-             )
-async def translate(ctx, search, to, source="en_us"):
-    list_message = find_translation(search, to, source)
+@slash.slash(name = "translate",
+             description = "Returns the translation found in-game for a string",
+             guild_ids = GUILD_IDS,
+             options = [
+                create_option(
+                    name = "search",
+                    description = "String or key to translate.",
+                    option_type = 3,
+                    required = True
+                ),
+                create_option(
+                    name = "target",
+                    description = "Language code, name or region or 'key' to translate to.",
+                    option_type = 3,
+                    required = True
+                ),
+                create_option(
+                    name = "source",
+                    description = "Language code, name, or region or 'key' to translate from.",
+                    option_type = 3,
+                    required = False
+                )
+            ])
+async def translate(ctx, search, target, source="en_us"):
+    list_message = find_translation(search, target, source)
     message = ', '.join(list_message)
-
-    try:
-        if message != '':
-            message = ', '.join(list_message)
-            await ctx.send(message)
-        else:
-            await ctx.send('Empty')
-    except:
-        await ctx.send("You have just experienced an error",hidden=True)
+    
+    if message != '':
+        await ctx.send(message)
+    else:
+        await ctx.send('Empty')
 
 
-client.run(TOKEN)
+langcodes, langcodesapp, langnames, langregions = [], [], [], []
+
+for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
+    for i in c:
+        langcodes.append(i.split(".")[0].lower())
+        langnames.append(open_json(i)["language.name"].lower())
+        langcodesapp.append(open_json(i)["language.code"].lower())
+        langregions.append(open_json(i)["language.region"].lower())
+    break
+
+
+# opens token
+with open(Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')) as f:
+    client.run(f.read())
