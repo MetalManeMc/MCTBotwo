@@ -1,16 +1,11 @@
 import json
 import os
 from pathlib import Path
-import discord
-from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option
-
-client = discord.Client(intents=discord.Intents.all())
-slash = SlashCommand(client, sync_commands=True)
+import interactions
 
 DATA_DIR = Path(os.getcwd(), 'lang')
 TOKEN_PATH = Path(os.getcwd(), 'token.txt')
-GUILD_IDS = [906169345007304724]
+SCOPES = [906169345007304724]
 with open(TOKEN_PATH) as f:
     TOKEN = f.read()
 
@@ -20,7 +15,10 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point. 
 """
 
-@client.event
+#client = discord.Client(intents=discord.Intents.all())
+bot = interactions.Client(token=TOKEN)
+
+@bot.event
 async def on_ready():
     print("Online!")
     print(f"Path towards //lang// is {DATA_DIR}")
@@ -85,8 +83,6 @@ def search_str(js, string):
         #       result.append(clave)
     return result
 
-
-
 def find_translation(jsonfile:str, string:str):
 
     """
@@ -106,7 +102,6 @@ def find_translation(jsonfile:str, string:str):
 
     return result
 
-
 #########################
 ## HUGE WARNING HERE!  ##
 ## ERROR HANDLING HAS  ##
@@ -120,20 +115,20 @@ def find_translation(jsonfile:str, string:str):
 # TODO Re-implement the default language per channel/server thing (Sorry -Nan)
 # TODO The command simply vomits the contents of the list result into chat with no order or format, should be formatted
 
-@slash.slash(name="translate",
+@bot.command(name="translate",
              description="Returns the translation found in-game for a string",
-             guild_ids=GUILD_IDS,
+             scope=SCOPES,
              options=[
-                 create_option(
+                 interactions.Option(
                      name="language",
                      description="PLACEHOLDER",
-                     option_type=3,
+                     type=interactions.OptionType.STRING,
                      required=True
                  ),
-                 create_option(
+                 interactions.Option(
                      name="target",
                      description="PLACEHOLDER",
-                     option_type=3,
+                     type=interactions.OptionType.STRING,
                      required=True
                  )
              ]
@@ -148,4 +143,4 @@ async def translate(ctx, language, target):
     else:
         await ctx.send('Empty')
 
-client.run(TOKEN)
+bot.start()
