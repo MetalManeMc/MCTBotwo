@@ -1,16 +1,13 @@
 import json
 import os
 from pathlib import Path
-import discord
-from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option
-
-client = discord.Client(intents=discord.Intents.all())
-slash = SlashCommand(client, sync_commands=True)
+import interactions
 
 DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
-GUILD_IDS = [906169345007304724]
-
+TOKEN_PATH = Path(os.getcwd(), 'token.txt')
+SCOPES = [906169345007304724]
+with open(TOKEN_PATH) as f:
+    TOKEN = f.read()
 
 """
 We craft a path towards the /lang/ folder using the host's information. 
@@ -18,8 +15,10 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
 
+#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now
+bot = interactions.Client(token=TOKEN)
 
-@client.event
+@bot.event
 async def on_ready():
     print("Online!")
     print(f"Path towards //lang// is {DATA_DIR}")
@@ -117,7 +116,6 @@ def lang(search:str):
     return complete(search, langcodes)[0]
 
 
-
 #########################
 ## HUGE WARNING HERE!  ##
 ## ERROR HANDLING HAS  ##
@@ -131,26 +129,26 @@ def lang(search:str):
 # TODO Re-implement the default language per channel/server thing (Sorry -Nan)
 # TODO The command simply vomits the contents of the list result into chat with no order or format, should be formatted
 
-@slash.slash(name = "translate",
+@bot.command(name = "translate",
              description = "Returns the translation found in-game for a string",
-             guild_ids = GUILD_IDS,
+             scope=SCOPES,
              options = [
-                create_option(
+                interactions.Option(
                     name = "search",
                     description = "String or key to translate.",
-                    option_type = 3,
+                    option_type = interactions.OptionType.STRING,
                     required = True
                 ),
-                create_option(
+                interactions.Option(
                     name = "target",
                     description = "Language code, name or region or 'key' to translate to.",
-                    option_type = 3,
+                    option_type = interactions.OptionType.STRING,
                     required = True
                 ),
-                create_option(
+                interactions.Option(
                     name = "source",
                     description = "Language code, name, or region or 'key' to translate from.",
-                    option_type = 3,
+                    option_type = interactions.OptionType.STRING,
                     required = False
                 )
             ])
@@ -163,7 +161,6 @@ async def translate(ctx, search, target, source="en_us"):
     else:
         await ctx.send('Empty')
 
-
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
 
 for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
@@ -175,6 +172,5 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
     break
 
 
-# opens token
-with open(Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')) as f:
-    client.run(f.read())
+
+bot.start()
