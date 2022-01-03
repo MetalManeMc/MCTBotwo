@@ -4,7 +4,7 @@ from pathlib import Path
 import interactions
 
 DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
-TOKEN_PATH = Path(os.getcwd(), 'token.txt')
+TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
 SCOPES = [906169345007304724]
 with open(TOKEN_PATH) as f:
     TOKEN = f.read()
@@ -81,7 +81,7 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
         if sourcelang=="key":
             result = complete(string, jsdef) #ktk
         else:
-            result = [i for i in jstarget if string in jsdef[i].lower()] #stk
+            result = [i for i in jsdef if string in jssource[i].lower()] #stk
     else:
         if sourcelang=="key":
             result = [jstarget[i] for i in complete(string, jsdef)] #kts
