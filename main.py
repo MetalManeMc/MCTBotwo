@@ -136,19 +136,19 @@ def lang(search:str):
                 interactions.Option(
                     name = "search",
                     description = "String or key to translate.",
-                    option_type = interactions.OptionType.STRING,
+                    type = interactions.OptionType.STRING,
                     required = True
                 ),
                 interactions.Option(
                     name = "target",
                     description = "Language code, name or region or 'key' to translate to.",
-                    option_type = interactions.OptionType.STRING,
+                    type = interactions.OptionType.STRING,
                     required = True
                 ),
                 interactions.Option(
                     name = "source",
                     description = "Language code, name, or region or 'key' to translate from.",
-                    option_type = interactions.OptionType.STRING,
+                    type = interactions.OptionType.STRING,
                     required = False
                 )
             ])
