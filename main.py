@@ -5,7 +5,11 @@ import interactions
 
 DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
 TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
-SCOPES = [906169345007304724]
+if "\\" in str(DATA_DIR):
+    SCOPES = [906169345007304724]
+else:
+    SCOPES=None
+    print("No scopes")
 with open(TOKEN_PATH) as f:
     TOKEN = f.read()
 
@@ -16,7 +20,7 @@ DATA_DIR should *not* be altered at any point.
 """
 
 #client = discord.Client(intents=discord.Intents.all())  # Unused as of right now
-bot = interactions.Client(token=TOKEN)
+bot = interactions.Client(token=TOKEN, log_level=31)
 
 @bot.event
 async def on_ready():
