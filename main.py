@@ -64,6 +64,12 @@ def complete(search:str, inside:list):
 
     return [i for i in inside if search.lower() in i.lower()]
 
+def fetch_default(code, category, data):
+    '''
+    This function fetches defaults in serverdefaults.json
+    '''
+    f = json.load(open("serverdefaults.json"))
+    return f[code][category][data]
 
 def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
 
@@ -147,7 +153,7 @@ def lang(search:str):
                     name = "target",
                     description = "Language code, name or region or 'key' to translate to.",
                     type = interactions.OptionType.STRING,
-                    required = True
+                    required = False
                 ),
                 interactions.Option(
                     name = "source",
@@ -156,10 +162,15 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx, search, target, source="en_us"):
+async def translate(ctx:interactions.CommandContext, search, target=None, source="en_us"):
+    if target == None:
+        try:
+            target = fetch_default(str(ctx.guild_id), "server", "targetlang")
+        except:
+            target="en_us"
+    else:pass
     list_message = find_translation(search, target, source)
     message = ', '.join(list_message)
-    
     if message != '':
         await ctx.send(message)
     else:
@@ -177,15 +188,31 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
         interactions.Option(
-            name="server-target-language",
+            name="default-target-language",
             description="Set the default server target language",
             type=interactions.OptionType.SUB_COMMAND,
             options=[
                 interactions.Option(
-                    name="target-language",
+                    name="targetlang",
                     description="The target language",
                     type = interactions.OptionType.STRING,
                     required=True)])])
-async def settings(ctx, sub_command, targetlang):
-    await ctx.send(f"> The target language of the server will someday be set to : {targetlang}")
+async def settings(ctx:interactions.CommandContext, sub_command, targetlang):
+    if sub_command=="default-target-language":
+        f=json.load(open("serverdefaults.json"))
+        try:
+            currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
+            if targetlang in langcodes or targetlang in langnames:
+                f[str(ctx.guild_id)]["server"]["targetlang"]=targetlang
+                await ctx.send(f"Default target language changed to `{targetlang}`.")
+            else:
+                await ctx.send(f"`{targetlang}` isn't a valid language. Default target language reset to `{currentlang}`.")
+        except KeyError:
+            if targetlang in langcodes or targetlang in langnames:
+                f[str(ctx.guild_id)]={"server":{"targetlang": targetlang}}
+                await ctx.send(f"Default target language set to `{targetlang}`.")
+            else:
+                await ctx.send(f"`{targetlang}` isn't a valid language.")
+        json.dump(f, open("serverdefaults.json", "w"))
+
 bot.start()
