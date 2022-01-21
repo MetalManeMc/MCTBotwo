@@ -165,20 +165,6 @@ async def translate(ctx, search, target, source="en_us"):
     else:
         await ctx.send('Empty')
 
-@bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
-        interactions.Option(
-            name="default-target-language",
-            description="Set the default server target language",
-            type=interactions.OptionType.SUB_COMMAND,
-            options=[
-                interactions.Option(
-                    name="target-language",
-                    description="The target language",
-                    type = interactions.OptionType.STRING,
-                    required=True)])])
-async def settings(ctx, sub_command, lang):
-    ctx.send(lang)
-
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
 
 for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
@@ -189,4 +175,17 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
         langregions.append(open_json(i)["language.region"].lower())
     break
 
+@bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
+        interactions.Option(
+            name="server-target-language",
+            description="Set the default server target language",
+            type=interactions.OptionType.SUB_COMMAND,
+            options=[
+                interactions.Option(
+                    name="target-language",
+                    description="The target language",
+                    type = interactions.OptionType.STRING,
+                    required=True)])])
+async def settings(ctx, sub_command, targetlang):
+    await ctx.send(f"> The target language of the server will someday be set to : {targetlang}")
 bot.start()
