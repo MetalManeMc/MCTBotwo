@@ -4,12 +4,18 @@ from pathlib import Path
 import interactions
 
 DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
-TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
-if "\\" in str(DATA_DIR):
+
+if "\\" in str(DATA_DIR): beta=True
+else: beta=False
+
+if beta==True:
+    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
     SCOPES = [906169345007304724]
 else:
+    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token-main.txt')
     SCOPES=None
-    print("No scopes")
+    print("Running hosted version")
+
 with open(TOKEN_PATH) as f:
     TOKEN = f.read()
 
@@ -19,7 +25,7 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
 
-#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now
+#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now, and hopefully shouldn't be
 bot = interactions.Client(token=TOKEN, log_level=31)
 
 @bot.event
