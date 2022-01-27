@@ -155,7 +155,7 @@ def lang(search:str):
                     name = "target",
                     description = "Language code, name or region or 'key' to translate to.",
                     type = interactions.OptionType.STRING,
-                    required = False
+                    required = True
                 ),
                 interactions.Option(
                     name = "source",
@@ -164,6 +164,22 @@ def lang(search:str):
                     required = False
                 )
             ])
+async def translate(ctx:interactions.CommandContext, search, target, source="en_us"):
+    list_message = find_translation(search, target, source)
+    message = '\n'.join(list_message)
+    try:
+        embed = interactions.Embed(title="Embed title", fields=[interactions.EmbedField(name=search,value=message)],author="I'm the author :)",thumbnail="https://i.imgur.com/Jun694X.png")
+        '''embed.author = "Bot's Help Command"
+        embed.thumbnail = "https://i.imgur.com/Jun694X.png"
+        embed.fields(name=search, value=message, inline=False)'''
+        #await ctx.send('An embed should continue after this message...')
+        await ctx.send(embeds=embed)
+    except Exception as ee:
+        print(ee)
+        if message != '':
+            await ctx.send(message)
+        else:
+            await ctx.send('Empty')
 
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
 
@@ -174,6 +190,34 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
         langcodesapp.append(open_json(i)["language.code"].lower())
         langregions.append(open_json(i)["language.region"].lower())
     break
+
+@bot.command(name = "search",
+             description = "Returns a link of searching in Crowdin.",
+             scope=SCOPES,
+             options = [
+                interactions.Option(
+                    name = "search",
+                    description = "String or key to search for.",
+                    type = interactions.OptionType.STRING,
+                    required = True
+                )
+            ])
+async def search(ctx:interactions.CommandContext, search):
+    await ctx.send(f"https://crowdin.com/translate/minecraft/all?filter=basic&value=0#q={search}")
+
+@bot.command(name = "profile",
+             description = "Returns a link of searching in Crowdin.",
+             scope=SCOPES,
+             options = [
+                interactions.Option(
+                    name = "nick",
+                    description = "String or key to search for.",
+                    type = interactions.OptionType.STRING,
+                    required = True
+                )
+            ])
+async def profile(ctx:interactions.CommandContext, nick):
+    await ctx.send(f"https://crowdin.com/profile/{nick}")
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
         interactions.Option(
