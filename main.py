@@ -4,12 +4,18 @@ from pathlib import Path
 import interactions
 
 DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
-TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
-if "\\" in str(DATA_DIR):
+
+if "\\" in str(DATA_DIR): beta=True
+else: beta=False
+
+if beta==True:
+    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
     SCOPES = [906169345007304724]
 else:
+    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token-main.txt')
     SCOPES=None
-    print("No scopes")
+    print("Running hosted version")
+
 with open(TOKEN_PATH) as f:
     TOKEN = f.read()
 
@@ -19,7 +25,7 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
 
-#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now
+#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now, and hopefully shouldn't be
 bot = interactions.Client(token=TOKEN, log_level=31)
 
 @bot.event
@@ -39,11 +45,9 @@ def open_json(jsonfile):
     Path (a .join for paths, part of the Pathlib) DATA_DIR (the base path towards /lang/)
     and jsonfile, jsonfile is established by the command and automatically 
     transforms an input such as "es_es" into "es_es.json". 
-
     After this, it json.loads the file into memory by turning it into a 
     dictionary called dictionary_json. The file is then closed and 
     from now on ONLY the dictionary that was returned will be used.
-
     """
 
     json_path = Path(DATA_DIR, jsonfile).with_suffix(".json")
@@ -57,13 +61,18 @@ def complete(search:str, inside:list):
     '''
     This function is essentially an autocompletion.
     It takes a string and a list, in which it's going to find complete strings.
-
     Walks through the list and asks whether the search is in the value. If it is,
     it appends the value to result. If none are found, it returns an empty list.
     '''
 
     return [i for i in inside if search.lower() in i.lower()]
 
+def fetch_default(code, category, data):
+    '''
+    This function fetches defaults in serverdefaults.json
+    '''
+    f = json.load(open("serverdefaults.json"))
+    return f[code][category][data]
 
 def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
 
@@ -98,7 +107,6 @@ def lang(search:str):
 
     '''
     Returns a complete internal language code to be used for file opening.
-
     Input can be the expected output too.
     Input can be approved language code, name, region or internal code (searching in this order)
     '''
@@ -156,7 +164,7 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx, search, target, source="en_us"):
+async def translate(ctx:interactions.CommandContext, search, target, source="en_us"):
     list_message = find_translation(search, target, source)
     message = '\n'.join(list_message)
 
@@ -174,6 +182,45 @@ async def translate(ctx, search, target, source="en_us"):
         else:
             await ctx.send('Empty')
 
+langcodes, langcodesapp, langnames, langregions = [], [], [], []
+
+for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
+    for i in c:
+        langcodes.append(i.split(".")[0].lower())
+        langnames.append(open_json(i)["language.name"].lower())
+        langcodesapp.append(open_json(i)["language.code"].lower())
+        langregions.append(open_json(i)["language.region"].lower())
+    break
+
+@bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
+        interactions.Option(
+            name="default-target-language",
+            description="Set the default server target language",
+            type=interactions.OptionType.SUB_COMMAND,
+            options=[
+                interactions.Option(
+                    name="targetlang",
+                    description="The target language",
+                    type = interactions.OptionType.STRING,
+                    required=True)])])
+async def settings(ctx:interactions.CommandContext, sub_command, targetlang):
+    if sub_command=="default-target-language":
+        f=json.load(open("serverdefaults.json"))
+        try:
+            currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
+            if targetlang in langcodes or targetlang in langnames:
+                f[str(ctx.guild_id)]["server"]["targetlang"]=targetlang
+                await ctx.send(f"Default target language changed to `{targetlang}`.")
+            else:
+                await ctx.send(f"`{targetlang}` isn't a valid language. Default target language reset to `{currentlang}`.")
+        except KeyError:
+            if targetlang in langcodes or targetlang in langnames:
+                f[str(ctx.guild_id)]={"server":{"targetlang": targetlang}}
+                await ctx.send(f"Default target language set to `{targetlang}`.")
+            else:
+                await ctx.send(f"`{targetlang}` isn't a valid language.")
+        json.dump(f, open("serverdefaults.json", "w"))
+
 @bot.command(name = "search",
              description = "Returns a link of searching in Crowdin.",
              scope=SCOPES,
@@ -185,7 +232,7 @@ async def translate(ctx, search, target, source="en_us"):
                     required = True
                 )
             ])
-async def search(ctx, search):
+async def search(ctx:interactions.CommandContext, search):
     await ctx.send(f"https://crowdin.com/translate/minecraft/all?filter=basic&value=0#q={search}")
 
 @bot.command(name = "profile",
@@ -201,17 +248,5 @@ async def search(ctx, search):
             ])
 async def profile(ctx, nick):
     await ctx.send(f"https://crowdin.com/profile/{nick}")
-
-langcodes, langcodesapp, langnames, langregions = [], [], [], []
-
-for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
-    for i in c:
-        langcodes.append(i.split(".")[0].lower())
-        langnames.append(open_json(i)["language.name"].lower())
-        langcodesapp.append(open_json(i)["language.code"].lower())
-        langregions.append(open_json(i)["language.region"].lower())
-    break
-
-
 
 bot.start()
