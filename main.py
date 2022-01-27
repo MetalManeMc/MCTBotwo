@@ -45,11 +45,9 @@ def open_json(jsonfile):
     Path (a .join for paths, part of the Pathlib) DATA_DIR (the base path towards /lang/)
     and jsonfile, jsonfile is established by the command and automatically 
     transforms an input such as "es_es" into "es_es.json". 
-
     After this, it json.loads the file into memory by turning it into a 
     dictionary called dictionary_json. The file is then closed and 
     from now on ONLY the dictionary that was returned will be used.
-
     """
 
     json_path = Path(DATA_DIR, jsonfile).with_suffix(".json")
@@ -63,7 +61,6 @@ def complete(search:str, inside:list):
     '''
     This function is essentially an autocompletion.
     It takes a string and a list, in which it's going to find complete strings.
-
     Walks through the list and asks whether the search is in the value. If it is,
     it appends the value to result. If none are found, it returns an empty list.
     '''
@@ -110,7 +107,6 @@ def lang(search:str):
 
     '''
     Returns a complete internal language code to be used for file opening.
-
     Input can be the expected output too.
     Input can be approved language code, name, region or internal code (searching in this order)
     '''
@@ -168,19 +164,6 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx:interactions.CommandContext, search, target=None, source="en_us"):
-    if target == None:
-        try:
-            target = fetch_default(str(ctx.guild_id), "server", "targetlang")
-        except:
-            target="en_us"
-    else:pass
-    list_message = find_translation(search, target, source)
-    message = ', '.join(list_message)
-    if message != '':
-        await ctx.send(message)
-    else:
-        await ctx.send('Empty')
 
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
 
@@ -220,5 +203,6 @@ async def settings(ctx:interactions.CommandContext, sub_command, targetlang):
             else:
                 await ctx.send(f"`{targetlang}` isn't a valid language.")
         json.dump(f, open("serverdefaults.json", "w"))
+
 
 bot.start()
