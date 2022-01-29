@@ -1,9 +1,11 @@
 import json
 import os
 from pathlib import Path
-import interactions
+import interactions as di
+import requests
 
 DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
+PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 
 if "\\" in str(DATA_DIR): beta=True
 else: beta=False
@@ -26,7 +28,7 @@ DATA_DIR should *not* be altered at any point.
 """
 
 #client = discord.Client(intents=discord.Intents.all())  # Unused as of right now, and hopefully shouldn't be
-bot = interactions.Client(token=TOKEN, log_level=31)
+bot = di.Client(token=TOKEN, log_level=31)
 
 @bot.event
 async def on_ready():
@@ -141,104 +143,110 @@ def lang(search:str):
 # TODO Re-implement the default language per channel/server thing (Sorry -Nan)
 # TODO The command simply vomits the contents of the list result into chat with no order or format, should be formatted
 
+
 @bot.command(name = "translate",
              description = "Returns the translation found in-game for a string",
              scope=SCOPES,
              options = [
-                interactions.Option(
+                di.Option(
                     name = "search",
                     description = "String or key to translate.",
-                    type = interactions.OptionType.STRING,
+                    type = di.OptionType.STRING,
                     required = True
                 ),
-                interactions.Option(
+                di.Option(
                     name = "target",
                     description = "Language code, name or region or 'key' to translate to.",
-                    type = interactions.OptionType.STRING,
+                    type = di.OptionType.STRING,
                     required = False
                 ),
-                interactions.Option(
+                di.Option(
                     name = "source",
                     description = "Language code, name, or region or 'key' to translate from.",
-                    type = interactions.OptionType.STRING,
+                    type = di.OptionType.STRING,
                     required = False
                 )
             ])
-async def translate(ctx:interactions.CommandContext, search, target=None, source="en_us"):
+async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
+
     if target == None:
         try:
             target = fetch_default(str(ctx.guild_id), "server", "targetlang")
         except:
             target="en_us"
-        else:pass
+    
     list_message = find_translation(search, target, source)
     message = '\n'.join(list_message)
-    try:
-        embed = interactions.Embed(title="Embed title", fields=[interactions.EmbedField(name=search,value=message)],author="I'm the author :)",thumbnail="https://i.imgur.com/Jun694X.png")
-        '''embed.author = "Bot's Help Command"
-        embed.thumbnail = "https://i.imgur.com/Jun694X.png"
-        embed.fields(name=search, value=message, inline=False)'''
-        #await ctx.send('An embed should continue after this message...')
-        await ctx.send(embeds=embed)
-    except Exception as ee:
-        print(ee)
-        if message != '':
-            await ctx.send(message)
-        else:
-            await ctx.send('Empty')
+    if len(list_message)>0:
+        embed = di.Embed(
+            title="Found translation",
+            fields=[di.EmbedField(name=search,value=message)],
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
+            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
+            footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
+        )
+        hide=False
+    else:
+        embed = di.Embed(
+            title="Didn't find the translation!",
+            description="Click the title to search in Crowdin.",
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}"
+            )
+        hide=True
+    await ctx.send(embeds=embed,ephemeral=hide)
 
-langcodes, langcodesapp, langnames, langregions = [], [], [], []
-
-for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
-    for i in c:
-        langcodes.append(i.split(".")[0].lower())
-        langnames.append(open_json(i)["language.name"].lower())
-        langcodesapp.append(open_json(i)["language.code"].lower())
-        langregions.append(open_json(i)["language.region"].lower())
-    break
 
 @bot.command(name = "search",
              description = "Returns a link of searching in Crowdin.",
              scope=SCOPES,
              options = [
-                interactions.Option(
+                di.Option(
                     name = "search",
                     description = "String or key to search for.",
-                    type = interactions.OptionType.STRING,
+                    type = di.OptionType.STRING,
                     required = True
                 )
             ])
-async def search(ctx:interactions.CommandContext, search):
+async def search(ctx:di.CommandContext, search):
     await ctx.send(f"https://crowdin.com/translate/minecraft/all?filter=basic&value=0#q={search}")
+
 
 @bot.command(name = "profile",
              description = "Returns a link of searching in Crowdin.",
              scope=SCOPES,
              options = [
-                interactions.Option(
+                di.Option(
                     name = "nick",
                     description = "String or key to search for.",
-                    type = interactions.OptionType.STRING,
+                    type = di.OptionType.STRING,
                     required = True
                 )
             ])
-async def profile(ctx:interactions.CommandContext, nick):
-    await ctx.send(f"https://crowdin.com/profile/{nick}")
+async def profile(ctx:di.CommandContext, nick):
+    re=requests.get(f"https://crowdin.com/profile/{nick}")
+    if re.status_code==200:
+        await ctx.send(f"https://crowdin.com/profile/{nick}")
+    elif re.status_code==404:
+        await ctx.send("This user doesn't exist",ephemeral=True)
+    else:
+        await ctx.send(f"A {re.status_code} error occured.",ephemeral=True)
+
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
-        interactions.Option(
+        di.Option(
             name="default-target-language",
             description="Set the default server target language",
-            type=interactions.OptionType.SUB_COMMAND,
+            type=di.OptionType.SUB_COMMAND,
             options=[
-                interactions.Option(
+                di.Option(
                     name="targetlang",
                     description="The target language",
-                    type = interactions.OptionType.STRING,
+                    type = di.OptionType.STRING,
                     required=True)])])
-async def settings(ctx:interactions.CommandContext, sub_command, targetlang):
+async def settings(ctx:di.CommandContext, sub_command, targetlang):
     if sub_command=="default-target-language":
-        f=json.load(open("serverdefaults.json"))
+        f=json.load(open(Path(PATH,"serverdefaults.json")))
         try:
             currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
             if targetlang in langcodes or targetlang in langnames:
@@ -254,5 +262,15 @@ async def settings(ctx:interactions.CommandContext, sub_command, targetlang):
                 await ctx.send(f"`{targetlang}` isn't a valid language.")
         json.dump(f, open("serverdefaults.json", "w"))
 
+
+langcodes, langcodesapp, langnames, langregions = [], [], [], []
+
+for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
+    for i in c:
+        langcodes.append(i.split(".")[0].lower())
+        langnames.append(open_json(i)["language.name"].lower())
+        langcodesapp.append(open_json(i)["language.code"].lower())
+        langregions.append(open_json(i)["language.region"].lower())
+    break
 
 bot.start()
