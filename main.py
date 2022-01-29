@@ -175,33 +175,26 @@ async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
         except:
             target="en_us"
     
-#"https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp"
     list_message = find_translation(search, target, source)
     message = '\n'.join(list_message)
-    embed = di.Embed(
-        title="Found translation",
-        fields=[di.EmbedField(name=search,value=message)],
-        #description="Here you go:",
-        url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-        thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
-        #image=di.EmbedImageStruct(url="https://i.imgur.com/Jun694X.png")._json,
-        #video=di.EmbedImageStruct(url="https://www.youtube.com/embed/dQw4w9WgXcQ")._json,
-        #provider=di.EmbedProvider(name="Not a String")._json,
-        author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
-        footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
-    )
-    await ctx.send(embeds=embed)
-
-
-langcodes, langcodesapp, langnames, langregions = [], [], [], []
-
-for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
-    for i in c:
-        langcodes.append(i.split(".")[0].lower())
-        langnames.append(open_json(i)["language.name"].lower())
-        langcodesapp.append(open_json(i)["language.code"].lower())
-        langregions.append(open_json(i)["language.region"].lower())
-    break
+    if len(list_message)>0:
+        embed = di.Embed(
+            title="Found translation",
+            fields=[di.EmbedField(name=search,value=message)],
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
+            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
+            footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
+        )
+        hide=False
+    else:
+        embed = di.Embed(
+            title="Didn't find the translation!",
+            description="Click the title to search in Crowdin.",
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}"
+            )
+        hide=True
+    await ctx.send(embeds=embed,ephemeral=hide)
 
 
 @bot.command(name = "search",
@@ -237,7 +230,7 @@ async def profile(ctx:di.CommandContext, nick):
     elif re.status_code==404:
         await ctx.send("This user doesn't exist",ephemeral=True)
     else:
-        await ctx.send(f"A {re.status_code} error occured.")
+        await ctx.send(f"A {re.status_code} error occured.",ephemeral=True)
 
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
@@ -269,5 +262,15 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang):
                 await ctx.send(f"`{targetlang}` isn't a valid language.")
         json.dump(f, open("serverdefaults.json", "w"))
 
+
+langcodes, langcodesapp, langnames, langregions = [], [], [], []
+
+for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
+    for i in c:
+        langcodes.append(i.split(".")[0].lower())
+        langnames.append(open_json(i)["language.name"].lower())
+        langcodesapp.append(open_json(i)["language.code"].lower())
+        langregions.append(open_json(i)["language.region"].lower())
+    break
 
 bot.start()
