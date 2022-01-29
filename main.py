@@ -1,276 +1,330 @@
+from inspect import stack
 import json
 import os
-from pathlib import Path
-import interactions as di
-import requests
+import discord
+from discord_slash import SlashCommand
+from discord_slash.utils.manage_commands import create_option
 
-DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
-PATH = Path(os.path.dirname(os.path.realpath(__file__)))
+client = discord.Client(intents=discord.Intents.all())
+slash = SlashCommand(client, sync_commands=True)
 
-if "\\" in str(DATA_DIR): beta=True
-else: beta=False
-
-if beta==True:
-    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
-    SCOPES = [906169345007304724]
+path = os.path.dirname(os.path.realpath(__file__)) # Full path for debug. Blank string when in the same directory.
+pathyes = True
+for i in path:
+    if i == "/":
+        pathyes=False
+        break
+    elif i == "\\":
+        break
+if pathyes:
+    path += "\\"
+    langpath = path + "lang\\"
 else:
-    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token-main.txt')
-    SCOPES=None
-    print("Running hosted version")
+    path += "/"
+    langpath = path + "lang/"
 
-with open(TOKEN_PATH) as f:
-    TOKEN = f.read()
+print("Langpath print out: " + langpath)
+debug = False # Mark as True if you are on your pc and don't want to turn the bot on
+guild_ids = [906169345007304724]
 
-"""
-We craft a path towards the /lang/ folder using the host's information. 
-This path is absolute and independent of the OS in which it may be running.
-DATA_DIR should *not* be altered at any point.
-"""
+def fetch_default(code, data):
+     f = json.load(open("serverdefaults.json"))
+     return f[code][data]
 
-#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now, and hopefully shouldn't be
-bot = di.Client(token=TOKEN, log_level=31)
-
-@bot.event
-async def on_ready():
-    print("Online!")
-    print(f"Path towards //lang// is {DATA_DIR}")
-
-############################################################################
-#                             Code starts here                             #
-############################################################################
-
-def open_json(jsonfile): 
-
-    """
-    This function open a file that's specified through the command.
-    The first line establishes that json_path is 
-    Path (a .join for paths, part of the Pathlib) DATA_DIR (the base path towards /lang/)
-    and jsonfile, jsonfile is established by the command and automatically 
-    transforms an input such as "es_es" into "es_es.json". 
-    After this, it json.loads the file into memory by turning it into a 
-    dictionary called dictionary_json. The file is then closed and 
-    from now on ONLY the dictionary that was returned will be used.
-    """
-
-    json_path = Path(DATA_DIR, jsonfile).with_suffix(".json")
-
-    with open(json_path) as js:
-        return json.load(js)
-
-
-def complete(search:str, inside:list):
-
-    '''
-    This function is essentially an autocompletion.
-    It takes a string and a list, in which it's going to find complete strings.
-    Walks through the list and asks whether the search is in the value. If it is,
-    it appends the value to result. If none are found, it returns an empty list.
-    '''
-
-    return [i for i in inside if search.lower() in i.lower()]
-
-def fetch_default(code, category, data):
-    '''
-    This function fetches defaults in serverdefaults.json
-    '''
-    f = json.load(open("serverdefaults.json"))
-    return f[code][category][data]
-
-def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
-
-    """
-    This function does not make a documentation by itself. It needs to be made up by someone else.
-    """
-
-    string = string.lower()
-    # we can put something like find(languages) for user to be able to insert uncomplete languages
-
-    if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
-        jstarget = open_json(lang(targetlang))
-    if sourcelang!="key":
-        jssource = open_json(lang(sourcelang))
-    jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
-
-
-    if targetlang=="key": # figures out, which mode to use
-        if sourcelang=="key":
-            result = complete(string, jsdef) #ktk
+def find(search, inside, outputlist = False, isdictionary = False, errorOut = True, outputindex = False): # Function that returns a list or first find of found searches inside a list or dictionary
+    o = []
+    if not isdictionary: # Searches for keys or if it is list, the values of the list
+        if outputindex:
+            for i in range(len(inside)-1):
+                if search.lower() in inside[i].lower():
+                    if outputlist:
+                        o.append(i)
+                    else:
+                        return i
         else:
-            result = [i for i in jsdef if string in jssource[i].lower()] #stk
+            for i in inside:
+                if search.lower() in i.lower():
+                    if outputlist:
+                        o.append(i)
+                    else:
+                        return i
+    else: # Searches for values instead of keys
+        if outputindex:
+            for i in range(len(inside)-1):
+                if search.lower() in inside[inside[i]].lower():
+                    if outputlist:
+                        o.append(i)
+                    else:
+                        return i
+        else:
+            for i in inside:
+                if search.lower() in inside[i].lower():
+                    if outputlist:
+                        o.append(i)
+                    else:
+                        return i
+    if outputlist and len(o) > 0:
+        return o
+    elif errorOut: # If nothing is found and we want it to, it will throw an error
+        raise Exception("Did not find the term")
+    else: # If nothing is found, return the same value inputted
+        return search
+
+def unpack(string, file): # Bool on the [1] means if it was searched for (Unexact match)
+    for key in file: # Tries to match exactly with lowercase
+        if file[key].lower() == string.lower():
+            return key, False
+    
+    keys=[] # Tries to search the string
+    for key in find(string,file,True,True):
+        keys.append(key)
+    if len(keys) > 0:
+        return keys, True
+    raise Exception("Did not find string")
+
+def fetch(key,file): # Bool on the [1] means if it was searched for (Unexact match)
+    try: # Tries to match exactly with lowercase
+        return file[key.lower()], False
+    except: # Searches every key in the file
+        strings=[]
+        for i in find(key, file, True):
+            strings.append(i)
+        if len(strings) > 0:
+            return strings, True
+        raise Exception("Did not find the key")
+                    
+def google(input, target, source): # Renamed string to input to avoid confusion
+
+    '''Returns a tuple: Complete message string, (a number, which determines what type of info is being returned), info (string, list or smth)
+    type numbers:
+    - 0 = an error message
+    - 1 = String: an exact match
+    - 2 = List: unexact match
+    error numbers:
+    - 0.1 = source not in game
+    - 0.2 = source file not found
+    - 0.3 = target not in game
+    - 0.4 = target file not found
+    - 1 = unexpected at ktk
+    - 2 = unexpected at kts
+    - 3 = unexpected at stk
+    - 4 = unexpected at sts
+    - 1.1 = ktk not found
+    - 2.1 = kts not found
+    - 3.1 = stk not found
+    - 4.1 = sts not found
+    '''
+
+    # File finding section-----------V
+    try: # This is a language file which we will use for keyfinding when source is key
+        en_us = json.load(open(langpath + "en_us.json"))
+    except:
+        print("DID NOT FIND THE EN_US LANGUAGE!!! PLZ FIX")
+        
+    if source!="key":
+        try: # Find the target language files
+            try:
+                sourcesrch = langcodes[find(source,langcodesapp,outputindex=True)] # Finds the approved langcode
+            except:
+                try:
+                    sourcesrch = find(source, langcodes) # Finds the internal langcode
+                except:
+                    sourcesrch = langcodes[find(source,langnames,outputindex=True)] # Finds the approved langname
+        except:
+            return "This source language is not in the game.", 0, 0.1
+        try:
+            sourcefile = json.load(open(langpath + sourcesrch+".json"))
+        except:
+            return "This source language's file does not exist!", 0, 0.2
+    if target!="key":
+        try: # Find the source language files
+            try:
+                targetsrch = langcodes[find(target,langcodesapp,outputindex=True)] # Finds the approved langcode
+            except:
+                try:
+                    targetsrch = find(target, langcodes) # Finds the internal langcode
+                except:
+                    targetsrch = langcodes[find(target,langnames,outputindex=True)] # Finds the approved langname
+        except:
+            return "This target language is not in the game.", 0, 0.3
+        try:
+            targetfile = json.load(open(langpath + targetsrch + ".json"))
+        except:
+            return "This target language's file does not exist!", 0, 0.4
+    # File finding section-----------^
+
+    if source == "key":
+        if target == "key":
+            try:
+                return ktk(input, en_us)
+            except:
+                return "An unexpected error has occured at ktk.", 0, 1
+        else:
+            try:
+                return kts(input, targetfile)
+            except:
+                return "An unexpected error has occured at kts.", 0, 2
     else:
-        if sourcelang=="key":
-            result = [jstarget[i] for i in complete(string, jsdef)] #kts
+        if target=="key":
+            try:
+                return stk(input, sourcefile)
+            except:
+                return "An unexpected error has occured at stk.", 0, 3
         else:
-            result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
+            try:
+                return sts(input, sourcefile, targetfile)
+            except:
+                return "An unexpected error has occured at sts.", 0, 4
 
-    return result
+def ktk(key, file): # Key to key
+    keys = []
+    try:
+        for i in find(key, file, True):
+            keys.append(i)
+    except:
+        return "No keys found. I guess you are stuck outside now ¯\\_(ツ)_/¯", 0, 1.1
+    return nearMatch(keys), 2, keys
 
-def lang(search:str):
+def kts(key, targetfile): # Key to string
+    try:
+        strings = fetch(key, targetfile)
+    except:
+        return "Did not find the key.", 0, 2.1
+    if strings[1]:
+        return nearMatch(strings[0]), 2, strings[0]
+    else:
+        return strings[0], 1, strings[0]
 
-    '''
-    Returns a complete internal language code to be used for file opening.
-    Input can be the expected output too.
-    Input can be approved language code, name, region or internal code (searching in this order)
-    '''
+def stk(string, sourcefile): # String to key
+    try:
+        keys=unpack(string, sourcefile)
+    except:
+        return "Did not find the string.", 0, 3.1
+    if keys[1]:
+        return nearMatch(keys[0]), 2, keys[0]
+    else:
+        return keys[0], 1, keys[0]
 
-    search = search.lower()
+def sts(string, sourcefile, targetfile): # String to string
+    try:
+        keys=unpack(string, sourcefile)
+    except:
+        return "Did not find the string.", 0, 4.1
+    if keys[1]:
+        strings=[]
+        for i in keys[0]:
+            strings.append(targetfile[i]) # Intentionally not using fetch, it could return a list in some cases and we don't want that... also, we know that those keys are exact
+        return nearMatch(strings), 2, strings
+    else:
+        return targetfile[keys[0]], 1, targetfile[keys[0]]
 
-    for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
-        if search in langcodesapp[i].lower():
-            return langcodes[i]
+def nearMatch(of):
+    if len(of) == 1:
+        return "Near match: " + of[0]
+    else:
+        return "Near matches found: '"+"', '".join(of)+"'"
+    
 
-    for i in range(len(langnames)):
-        if search in langnames[i].lower():
-            return langcodes[i]
+for a, b, c in os.walk(langpath): # Gives a list of language codes, so i can search in them
+    filenames = c
+    break
+langcodes = []
+langcodesapp = []
+langnames = []
+for i in filenames:
+    langcodes.append(i.split(".")[0])
+for i in filenames:
+    langnames.append(fetch("language.name", json.load(open(langpath+i)))[0])
+for i in filenames:
+    langcodesapp.append(fetch("language.code", json.load(open(langpath+i)))[0])
 
-    for i in range(len(langregions)):
-        if search in langregions[i].lower():
-            return langcodes[i]
-
-    return complete(search, langcodes)[0]
-
-
-#########################
-## HUGE WARNING HERE!  ##
-## ERROR HANDLING HAS  ##
-## NOT BEEN YET ADDED  ##
-#########################
-
-# TODO Implement proper error handling (No try/except stacks, those are hard to read)
-# TODO Implement a result limit for the embed, we don't want to flood everything
-# TODO Make it user friendly through descriptions, a help command and whatnot
-# TODO Make cool looking embeds, these are just a placeholder
-# TODO Re-implement the default language per channel/server thing (Sorry -Nan)
-# TODO The command simply vomits the contents of the list result into chat with no order or format, should be formatted
-
-
-@bot.command(name = "translate",
-             description = "Returns the translation found in-game for a string",
-             scope=SCOPES,
-             options = [
-                di.Option(
-                    name = "search",
-                    description = "String or key to translate.",
-                    type = di.OptionType.STRING,
-                    required = True
-                ),
-                di.Option(
-                    name = "target",
-                    description = "Language code, name or region or 'key' to translate to.",
-                    type = di.OptionType.STRING,
-                    required = False
-                ),
-                di.Option(
-                    name = "source",
-                    description = "Language code, name, or region or 'key' to translate from.",
-                    type = di.OptionType.STRING,
-                    required = False
-                )
-            ])
-async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
-
+# Language names get found and we can fill them in with find() but it isn't the file name so it outputs "file not found" for now... pls fix
+    
+@slash.slash(name="translate",
+             description="Returns the translation found in-game for a string",
+             guild_ids=guild_ids,
+             options=[
+                 create_option(
+                     name="string",
+                     description="The string or key to translate.",
+                     option_type=3,
+                     required=True
+                 ),
+                 create_option(
+                     name="target",
+                     description="Language code, in which the string is going to be sent. EX: es_es.",
+                     option_type=3,
+                     required=False
+                 ),
+                 create_option(
+                     name="source",
+                     description="'key' or language code, in which the string is going to be retrieved. EX: fr_fr, key.",
+                     option_type=3,
+                     required=False
+                 )
+             ]
+             )
+async def translate(ctx, string, target = None, source = "en_us"):
     if target == None:
         try:
-            target = fetch_default(str(ctx.guild_id), "server", "targetlang")
+            target = fetch_default(str(ctx.guild.id), "targetlang")
         except:
             target="en_us"
-    
-    list_message = find_translation(search, target, source)
-    message = '\n'.join(list_message)
-    if len(list_message)>0:
-        embed = di.Embed(
-            title="Found translation",
-            fields=[di.EmbedField(name=search,value=message)],
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
-            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
-            footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
-        )
-        hide=False
     else:
-        embed = di.Embed(
-            title="Didn't find the translation!",
-            description="Click the title to search in Crowdin.",
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}"
-            )
-        hide=True
-    await ctx.send(embeds=embed,ephemeral=hide)
-
-
-@bot.command(name = "search",
-             description = "Returns a link of searching in Crowdin.",
-             scope=SCOPES,
-             options = [
-                di.Option(
-                    name = "search",
-                    description = "String or key to search for.",
-                    type = di.OptionType.STRING,
-                    required = True
-                )
-            ])
-async def search(ctx:di.CommandContext, search):
-    await ctx.send(f"https://crowdin.com/translate/minecraft/all?filter=basic&value=0#q={search}")
-
-
-@bot.command(name = "profile",
-             description = "Returns a link of searching in Crowdin.",
-             scope=SCOPES,
-             options = [
-                di.Option(
-                    name = "nick",
-                    description = "String or key to search for.",
-                    type = di.OptionType.STRING,
-                    required = True
-                )
-            ])
-async def profile(ctx:di.CommandContext, nick):
-    re=requests.get(f"https://crowdin.com/profile/{nick}")
-    if re.status_code==200:
-        await ctx.send(f"https://crowdin.com/profile/{nick}")
-    elif re.status_code==404:
-        await ctx.send("This user doesn't exist",ephemeral=True)
-    else:
-        await ctx.send(f"A {re.status_code} error occured.",ephemeral=True)
-
-
-@bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
-        di.Option(
-            name="default-target-language",
-            description="Set the default server target language",
-            type=di.OptionType.SUB_COMMAND,
-            options=[
-                di.Option(
-                    name="targetlang",
-                    description="The target language",
-                    type = di.OptionType.STRING,
-                    required=True)])])
-async def settings(ctx:di.CommandContext, sub_command, targetlang):
-    if sub_command=="default-target-language":
-        f=json.load(open(Path(PATH,"serverdefaults.json")))
+        pass
+    result = google(string, target, source)
+    print(result)
+    try:
+        await ctx.send(result[0])
+    except:
+        print("Error has occured, trying to fallback", string,target ,source)
         try:
-            currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
-            if targetlang in langcodes or targetlang in langnames:
-                f[str(ctx.guild_id)]["server"]["targetlang"]=targetlang
-                await ctx.send(f"Default target language changed to `{targetlang}`.")
-            else:
-                await ctx.send(f"`{targetlang}` isn't a valid language. Default target language reset to `{currentlang}`.")
-        except KeyError:
-            if targetlang in langcodes or targetlang in langnames:
-                f[str(ctx.guild_id)]={"server":{"targetlang": targetlang}}
-                await ctx.send(f"Default target language set to `{targetlang}`.")
-            else:
-                await ctx.send(f"`{targetlang}` isn't a valid language.")
-        json.dump(f, open("serverdefaults.json", "w"))
+            await ctx.send("Error has occured, but fallback works: " + " ".join(result))
+        except:
+            print("Error fallback did not work!", result)
+            await ctx.send("Error has occured and fallback did not work!")
+
+@slash.subcommand(base="settings", name="default-language",
+                    description="Sets the default target language of a server", guild_ids=guild_ids,
+                    options=[create_option(
+                        name="target-language",
+                        description="language code",
+                        option_type=3,
+                        required=True
+                    )])
+async def settings_default_language(ctx, language):
+    f=json.load(open("serverdefaults.json"))
+    try:
+        currentlang=f[str(ctx.guild.id)]["targetlang"]
+        if google("gold", language, "en_us")!=('This target language is not in the game.', 0, 0.3):
+            f[str(ctx.guild.id)]["targetlang"]=language
+            await ctx.send(f"Default target language changed to `{language}`.")
+        else:
+            await ctx.send(f"`{language}` isn't a valid language. Default target language reset to `{currentlang}`.")
+    except KeyError:
+        if google("gold",language, "en_us")!=('This target language is not in the game.', 0, 0.3):
+            f[ctx.guild.id]={"targetlang": language}
+            await ctx.send(f"Default target language set to `{language}`.")
+        else:
+            await ctx.send(f"`{language}` isn't a valid language.")
+    json.dump(f, open("serverdefaults.json", "w"))
+
+@client.event
+async def on_ready():
+    print("Online!")
 
 
-langcodes, langcodesapp, langnames, langregions = [], [], [], []
+if debug: # Tries to make all possible outcomes...
+    input("Press Enter")
+    debugstr=["gold","zlato","Gold Ingot","Zlatá tehlička","item.minecraft.gold_ingot","asdf"]
+    dabuglangcode1=["sk","us","key","sk_sk","en_us","Slove","Slovenčina","asdf"]
+    dabuglangcode2=["sk","us","key","sk_sk","en_us","Slove","Slovenčina","asdf"]
+    for a in debugstr:
+        for b in dabuglangcode1:
+            for c in dabuglangcode2:
+                print(a, b, c + ":", google(a, b, c))
 
-for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
-    for i in c:
-        langcodes.append(i.split(".")[0].lower())
-        langnames.append(open_json(i)["language.name"].lower())
-        langcodesapp.append(open_json(i)["language.code"].lower())
-        langregions.append(open_json(i)["language.region"].lower())
-    break
+while debug:# This runs when you want to test this offline
+    print(google(input("string: "), input("target: "), input("source: ")))
 
-bot.start()
+client.run(open(path + "token.txt").read())
