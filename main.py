@@ -164,16 +164,16 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx:interactions.CommandContext, search, target, source="en_us"):
+async def translate(ctx:interactions.CommandContext, search, target=None, source="en_us"):
+    if target == None:
+        try:
+            target = fetch_default(str(ctx.guild_id), "server", "targetlang")
+        except:
+            target="en_us"
+        else:pass
     list_message = find_translation(search, target, source)
     message = '\n'.join(list_message)
     try:
-        if target == None:
-            try:
-                target = fetch_default(str(ctx.guild_id), "server", "targetlang")
-            except:
-                target="en_us"
-        else:pass
         embed = interactions.Embed(title="Embed title", fields=[interactions.EmbedField(name=search,value=message)],author="I'm the author :)",thumbnail="https://i.imgur.com/Jun694X.png")
         '''embed.author = "Bot's Help Command"
         embed.thumbnail = "https://i.imgur.com/Jun694X.png"
