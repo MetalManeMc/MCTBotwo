@@ -167,7 +167,7 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
+async def translate(ctx: di.CommandContext, search, target=None, source="en_us"):
 
     if target == None:
         try:
@@ -178,13 +178,16 @@ async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
     list_message = find_translation(search, target, source)
     message = '\n'.join(list_message)
     if len(list_message)>0:
+        r = await bot._http.get_guild(ctx.guild_id)
+        ic = ctx.author.user.username
+        ids = ctx.author.user.id
+        av = ctx.author.user.avatar
         embed = di.Embed(
             title="Found translation",
             fields=[di.EmbedField(name=search,value=message)],
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
-            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
-            footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
+            thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
+            author=di.EmbedAuthor(name=f"{ic}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}"),
         )
         hide=False
     else:
