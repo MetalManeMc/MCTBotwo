@@ -1,8 +1,6 @@
-from cgitb import text
 import json
 import os
 from pathlib import Path
-from unicodedata import name
 import interactions as di
 import requests
 
@@ -278,5 +276,25 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
         langcodesapp.append(open_json(i)["language.code"].lower())
         langregions.append(open_json(i)["language.region"].lower())
     break
+
+
+@bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
+async def help(ctx: di.CommandContext):
+        ic = ctx.author.user.username
+        ids = ctx.author.user.id
+        av = ctx.author.user.avatar
+        ds = ctx.author.user.discriminator
+        await ctx.send(embeds = di.Embed(
+            title="Minecraft Translator Bot's help",
+            fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
+                    di.EmbedField(name='- /settings default', value="Sets the default language for `/translate` to use when none is specified."),
+                    di.EmbedField(name='/profile', value="Generates a Crowdin link for someone's profile.", inline=True)._json,
+                    di.EmbedField(name='/search', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
+                    di.EmbedField(name='/translate **<query>**', value="Searches through the currently approved Minecraft:Java Edition translations that are present in the game files and returns a list of matches."),
+                    di.EmbedField(name='- /translate **<target>**', value="The target parameter specifies which language the string in `<search>` will be searched in. Takes in a language code."),
+                    di.EmbedField(name='- /translate **<source>**', value="Specifies the language of your input so you can search for strings that match yours from other language. Takes in a language code.")],
+            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
+            author=di.EmbedAuthor(name=f"Invoked by {ic}#{ds}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
+        ))
 
 bot.start()
