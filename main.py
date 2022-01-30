@@ -1,6 +1,8 @@
+from cgitb import text
 import json
 import os
 from pathlib import Path
+from unicodedata import name
 import interactions as di
 import requests
 
@@ -178,16 +180,17 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
     list_message = find_translation(search, target, source)
     message = '\n'.join(list_message)
     if len(list_message)>0:
-        r = await bot._http.get_guild(ctx.guild_id)
+        r = await bot.http.get_guild(ctx.guild_id)
         ic = ctx.author.user.username
         ids = ctx.author.user.id
         av = ctx.author.user.avatar
         embed = di.Embed(
             title="Found translation",
-            fields=[di.EmbedField(name=search,value=message)],
+            fields=[di.EmbedField(name=search,value=message)._json],
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
             thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
-            author=di.EmbedAuthor(name=f"{ic}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}"),
+            author=di.EmbedAuthor(name=f"{ic}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
+            footer=di.EmbedFooter(text="Not a machine translation. Run /help for more info")._json
         )
         hide=False
     else:
