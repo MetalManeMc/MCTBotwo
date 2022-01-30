@@ -183,9 +183,7 @@ async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
             fields=[di.EmbedField(name=search,value=message)],
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
             thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
-            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
-            footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
-        )
+            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"))
         hide=False
     else:
         embed = di.Embed(
