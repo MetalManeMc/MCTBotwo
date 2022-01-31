@@ -85,6 +85,7 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
     """
 
     string = string.lower()
+    exact=None
     # we can put something like find(languages) for user to be able to insert uncomplete languages
 
     if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
@@ -97,15 +98,21 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
     if targetlang=="key": # figures out, which mode to use
         if sourcelang=="key":
             result = complete(string, jsdef) #ktk
+            for i in result:
+                if i==string:
+                    exact=result.index(i)
         else:
             result = [i for i in jsdef if string in jssource[i].lower()] #stk
+            for i in result:
+                if jssource[result[result.index(i)]].lower()==string:
+                    exact=result.index(i)
     else:
         if sourcelang=="key":
             result = [jstarget[i] for i in complete(string, jsdef)] #kts
         else:
             result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
 
-    return result
+    return result+[str(exact)]
 
 def lang(search:str):
 
@@ -178,7 +185,18 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
             target="en_us"
     
     list_message = find_translation(search, target, source)
-    message = '\n'.join(list_message)
+    print(list_message)
+    exactkey=list_message[-1]
+    list_message.remove(list_message[-1])
+    if exactkey=="None":
+        message = '\n'.join(list_message)
+        embedfields=[di.EmbedField(name="Close matches:",value=message)._json]    
+    else:
+        exactkey=int(exactkey)
+        exact=list_message[exactkey]
+        list_message.remove(list_message[exactkey])    
+        message = '\n'.join(list_message)
+        embedfields=[di.EmbedField(name="Exact match:", value=exact)._json,di.EmbedField(name="Close matches:",value=message)._json]
     if len(list_message)>0:
         r = await bot.http.get_guild(ctx.guild_id)
         ic = ctx.author.user.username
@@ -186,18 +204,20 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         av = ctx.author.user.avatar
         embed = di.Embed(
             title="Found translation",
-            fields=[di.EmbedField(name=search,value=message)._json],
+            fields=embedfields,
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
-            author=di.EmbedAuthor(name=f"{ic}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
-            footer=di.EmbedFooter(text="Not a machine translation. Run /help for more info")._json
+            #thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
+            author=di.EmbedAuthor(name=search)._json,
+            footer=di.EmbedFooter(text="Not a machine translation. Run /help for more info", icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0
         )
         hide=False
     else:
         embed = di.Embed(
             title="Didn't find the translation!",
             description="Click the title to search in Crowdin.",
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}"
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+            color=0xF63737
             )
         hide=True
     await ctx.send(embeds=embed,ephemeral=hide)
