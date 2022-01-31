@@ -149,7 +149,7 @@ def lang(search:str):
              scope=SCOPES,
              options = [
                 di.Option(
-                    name = "search",
+                    name = "query",
                     description = "String or key to translate.",
                     type = di.OptionType.STRING,
                     required = True
@@ -167,7 +167,7 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx: di.CommandContext, search, target=None, source="en_us"):
+async def translate(ctx: di.CommandContext, query, target=None, source="en_us"):
 
     if target == None:
         try:
@@ -175,7 +175,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         except:
             target="en_us"
     
-    list_message = find_translation(search, target, source)
+    list_message = find_translation(query, target, source)
     message = '\n'.join(list_message)
     if len(list_message)>0:
         r = await bot.http.get_guild(ctx.guild_id)
@@ -184,8 +184,8 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         av = ctx.author.user.avatar
         embed = di.Embed(
             title="Found translation",
-            fields=[di.EmbedField(name=search,value=message)._json],
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+            fields=[di.EmbedField(name=query,value=message)._json],
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={query}",
             thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
             author=di.EmbedAuthor(name=f"{ic}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
             footer=di.EmbedFooter(text="Not a machine translation. Run /help for more info")._json
@@ -195,7 +195,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         embed = di.Embed(
             title="Didn't find the translation!",
             description="Click the title to search in Crowdin.",
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}"
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={query}"
             )
         hide=True
     await ctx.send(embeds=embed,ephemeral=hide)
@@ -267,6 +267,28 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang):
         json.dump(f, open("serverdefaults.json", "w"))
 
 
+@bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
+async def help(ctx: di.CommandContext):
+        ic = ctx.author.user.username
+        ids = ctx.author.user.id
+        av = ctx.author.user.avatar
+        ds = ctx.author.user.discriminator
+        await ctx.send(embeds = di.Embed(
+            title="Minecraft Translator Bot's help",
+            fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
+                    di.EmbedField(name='᲼- /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when none is specified.")._json,
+                    di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile if it exists.", inline=True)._json,
+                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
+                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, which are present in the game's files and returns a list of matches.")._json,
+                    di.EmbedField(name='᲼- **<query>**', value="Specifies which string/key will be searched for. For keys (context) type 'key' as a language.")._json,
+                    di.EmbedField(name='᲼- **[target]**', value="Specifies the language `<query>` will be translated to. Takes in a language code, name or region of said language.")._json,
+                    di.EmbedField(name='᲼- **[source]**', value="Specifies the language `<query>` will be translated from. Takes in a language code, name or region of said language.")._json],
+            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
+            author=di.EmbedAuthor(name=f"Invoked by {ic}#{ds}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
+            color=0x3180F0
+        ))
+
+
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
 
 for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
@@ -278,25 +300,6 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
     break
 
 
-@bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
-async def help(ctx: di.CommandContext):
-        ic = ctx.author.user.username
-        ids = ctx.author.user.id
-        av = ctx.author.user.avatar
-        ds = ctx.author.user.discriminator
-        await ctx.send(embeds = di.Embed(
-            title="Minecraft Translator Bot's help",
-            fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
-                    di.EmbedField(name='᲼- /settings default-target-language **<language>**', value="Sets the default language for `/translate` to use when none is specified.")._json,
-                    di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile.", inline=True)._json,
-                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
-                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations that are present in the game files and returns a list of matches.")._json,
-                    di.EmbedField(name='᲼- **<query>**', value="Specifies which string will be searched for.")._json,
-                    di.EmbedField(name='᲼- **[target]**', value="The target parameter specifies which language the string in `<search>` will be searched in. Takes in a language code, or name in said language.")._json,
-                    di.EmbedField(name='᲼- **[source]**', value="Specifies the language of your input so you can search for strings that match yours from other language. Takes in a language code.")._json],
-            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
-            author=di.EmbedAuthor(name=f"Invoked by {ic}#{ds}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
-            color=0x3180F0
-        ))
+
 
 bot.start()
