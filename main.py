@@ -276,13 +276,13 @@ async def help(ctx: di.CommandContext):
         await ctx.send(embeds = di.Embed(
             title="Minecraft Translator Bot's help",
             fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
-                    di.EmbedField(name='᲼- /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when none is specified.")._json,
+                    di.EmbedField(name='\↪   /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when none is specified.")._json,
                     di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile if it exists.", inline=True)._json,
                     di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
                     di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, which are present in the game's files and returns a list of matches.")._json,
-                    di.EmbedField(name='᲼- **<query>**', value="Specifies which string/key will be searched for. For keys (context) type 'key' as a language.")._json,
-                    di.EmbedField(name='᲼- **[target]**', value="Specifies the language `<query>` will be translated to. Takes in a language code, name or region of said language.")._json,
-                    di.EmbedField(name='᲼- **[source]**', value="Specifies the language `<query>` will be translated from. Takes in a language code, name or region of said language.")._json],
+                    di.EmbedField(name='\↪   **<query>**', value="Specifies which string/key will be searched for. For keys (context) type 'key' as a language.")._json,
+                    di.EmbedField(name='\↪   **[target]**', value="Specifies the language `<query>` will be translated to. Takes in a language code, name or region of said language.")._json,
+                    di.EmbedField(name='\↪   **[source]**', value="Specifies the language `<query>` will be translated from. Takes in a language code, name or region of said language.")._json],
             thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
             author=di.EmbedAuthor(name=f"Invoked by {ic}#{ds}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
             color=0x3180F0
