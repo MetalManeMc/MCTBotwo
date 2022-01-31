@@ -287,14 +287,16 @@ async def help(ctx: di.CommandContext):
         await ctx.send(embeds = di.Embed(
             title="Minecraft Translator Bot's help",
             fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
-                    di.EmbedField(name='- /settings default', value="Sets the default language for `/translate` to use when none is specified."),
-                    di.EmbedField(name='/profile', value="Generates a Crowdin link for someone's profile.", inline=True)._json,
-                    di.EmbedField(name='/search', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
-                    di.EmbedField(name='/translate **<query>**', value="Searches through the currently approved Minecraft:Java Edition translations that are present in the game files and returns a list of matches."),
-                    di.EmbedField(name='- /translate **<target>**', value="The target parameter specifies which language the string in `<search>` will be searched in. Takes in a language code."),
-                    di.EmbedField(name='- /translate **<source>**', value="Specifies the language of your input so you can search for strings that match yours from other language. Takes in a language code.")],
+                    di.EmbedField(name='᲼- /settings default-target-language **<language>**', value="Sets the default language for `/translate` to use when none is specified.")._json,
+                    di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile.", inline=True)._json,
+                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
+                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations that are present in the game files and returns a list of matches.")._json,
+                    di.EmbedField(name='᲼- **<query>**', value="Specifies which string will be searched for.")._json,
+                    di.EmbedField(name='᲼- **[target]**', value="The target parameter specifies which language the string in `<search>` will be searched in. Takes in a language code, or name in said language.")._json,
+                    di.EmbedField(name='᲼- **[source]**', value="Specifies the language of your input so you can search for strings that match yours from other language. Takes in a language code.")._json],
             thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
             author=di.EmbedAuthor(name=f"Invoked by {ic}#{ds}",icon_url=f"https://cdn.discordapp.com/avatars/{ids}/{av}")._json,
+            color=0x3180F0
         ))
 
 bot.start()
