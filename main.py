@@ -109,8 +109,15 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
     else:
         if sourcelang=="key":
             result = [jstarget[i] for i in complete(string, jsdef)] #kts
+            for i in result:
+                if jstarget[search]==result[result.index(i)]:
+                    exact=result.index(i)
         else:
             result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
+            for key in jssource:
+                print(jssource[key].lower(), string)
+                if jssource[key].lower()==string:
+                    print(jstarget[key])
 
     return result+[str(exact)]
 
@@ -190,7 +197,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
     list_message.remove(list_message[-1])
     if exactkey=="None":
         message = '\n'.join(list_message)
-        embedfields=[di.EmbedField(name="Close matches:",value=message)._json]    
+        embedfields=[di.EmbedField(name="Close matches:",value=message)._json] 
     else:
         exactkey=int(exactkey)
         exact=list_message[exactkey]
@@ -198,11 +205,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         message = '\n'.join(list_message)
         embedfields=[di.EmbedField(name="Exact match:", value=exact)._json,di.EmbedField(name="Close matches:",value=message)._json]
     if len(list_message)>0:
-        r = await bot.http.get_guild(ctx.guild_id)
-        ic = ctx.author.user.username
-        ids = ctx.author.user.id
-        av = ctx.author.user.avatar
-        embed = di.Embed(
+        await ctx.send(embeds=di.Embed(
             title="Found translation",
             fields=embedfields,
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
@@ -210,17 +213,15 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
             author=di.EmbedAuthor(name=search)._json,
             footer=di.EmbedFooter(text="Not a machine translation. Run /help for more info", icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
             color=0x3180F0
-        )
-        hide=False
+        ))
     else:
-        embed = di.Embed(
+        await ctx.send(embeds=di.Embed(
             title="Didn't find the translation!",
             description="Click the title to search in Crowdin.",
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
             color=0xF63737
-            )
-        hide=True
-    await ctx.send(embeds=embed,ephemeral=hide)
+            ), ephemeral=True)
+    #await ctx.send(embeds=embed,ephemeral=hide)
 
 
 @bot.command(name = "search",
