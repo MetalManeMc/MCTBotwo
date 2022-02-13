@@ -115,7 +115,9 @@ def find_translation(string:str, targetlang:str, sourcelang:str):
                 if jssource[i].lower()==string:
                     exact=jstarget[i]
                     break
-
+    if len(result)>10:
+        del result[10:]
+        result.append("…and more!")
     return result,exact
 
 def lang(search:str):
@@ -179,6 +181,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
             target="en_us"
     
     found=find_translation(search, target, source)
+    print(found)
     list_message = found[0]
     exact = found[1]
 
@@ -318,4 +321,8 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
         langregions.append(open_json(i)["language.region"].lower())
     break
 
-bot.start()
+while True:
+    try:
+        bot.start()
+    except:
+        pass
