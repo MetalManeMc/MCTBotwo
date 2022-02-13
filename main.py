@@ -3,18 +3,21 @@ import os
 from pathlib import Path
 import interactions as di
 import requests
+from random import choice
 
-DATA_DIR = Path(os.path.dirname(os.path.realpath(__file__)), 'lang')
 PATH = Path(os.path.dirname(os.path.realpath(__file__)))
+DATA_DIR = Path(PATH, 'lang')
+
+Footers="See /help for more info.","The blue text is the perfect match, if there is one.", "This is NOT a machine translation."
 
 if "\\" in str(DATA_DIR): beta=True
 else: beta=False
 
 if beta==True:
-    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
+    TOKEN_PATH = Path(PATH, 'token.txt')
     SCOPES = [906169345007304724]
 else:
-    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token-main.txt')
+    TOKEN_PATH = Path(PATH, 'token-main.txt')
     SCOPES=None
     print("Running hosted version")
 
@@ -27,8 +30,8 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
 
-#client = discord.Client(intents=discord.Intents.all())  # Unused as of right now, and hopefully shouldn't be
 bot = di.Client(token=TOKEN, log_level=31)
+hook = '<:bighook:937813704316158072>'
 
 @bot.event
 async def on_ready():
@@ -61,7 +64,7 @@ def open_json(jsonfile):
 def complete(search:str, inside:list):
 
     '''
-    This function is essentially an autocompletion.
+    This function is essentially an autocompletion.\n
     It takes a string and a list, in which it's going to find complete strings.
     Walks through the list and asks whether the search is in the value. If it is,
     it appends the value to result. If none are found, it returns an empty list.
@@ -76,10 +79,10 @@ def fetch_default(code, category, data):
     f = json.load(open("serverdefaults.json"))
     return f[code][category][data]
 
-def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a list of found items
+def find_translation(string:str, targetlang:str, sourcelang:str):
 
     """
-    This function does not make a documentation by itself. It needs to be made up by someone else.
+    This function finds translations and returns the list of matches.
     """
 
     string = string.lower()
@@ -91,19 +94,29 @@ def find_translation(string:str, targetlang:str, sourcelang:str): # outputs a li
         jssource = open_json(lang(sourcelang))
     jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
 
-
+    exact=None
     if targetlang=="key": # figures out, which mode to use
         if sourcelang=="key":
             result = complete(string, jsdef) #ktk
         else:
             result = [i for i in jsdef if string in jssource[i].lower()] #stk
+            for i in result:
+                if jssource[i].lower()==string:
+                    exact=i
+                    break
     else:
         if sourcelang=="key":
             result = [jstarget[i] for i in complete(string, jsdef)] #kts
+            try: exact=jstarget[string]
+            except: pass
         else:
             result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
+            for i in jssource:
+                if jssource[i].lower()==string:
+                    exact=jstarget[i]
+                    break
 
-    return result
+    return result,exact
 
 def lang(search:str):
 
@@ -130,19 +143,9 @@ def lang(search:str):
     return complete(search, langcodes)[0]
 
 
-#########################
-## HUGE WARNING HERE!  ##
-## ERROR HANDLING HAS  ##
-## NOT BEEN YET ADDED  ##
-#########################
-
-# TODO Implement proper error handling (No try/except stacks, those are hard to read)
-# TODO Implement a result limit for the embed, we don't want to flood everything
-# TODO Make it user friendly through descriptions, a help command and whatnot
-# TODO Make cool looking embeds, these are just a placeholder
-# TODO Re-implement the default language per channel/server thing (Sorry -Nan)
-# TODO The command simply vomits the contents of the list result into chat with no order or format, should be formatted
-
+###########
+#Translate#
+###########
 
 @bot.command(name = "translate",
              description = "Returns the translation found in-game for a string",
@@ -167,7 +170,7 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
+async def translate(ctx: di.CommandContext, search, target=None, source="en_us"):
 
     if target == None:
         try:
@@ -175,26 +178,47 @@ async def translate(ctx:di.CommandContext, search, target=None, source="en_us"):
         except:
             target="en_us"
     
-    list_message = find_translation(search, target, source)
-    message = '\n'.join(list_message)
+    found=find_translation(search, target, source)
+    list_message = found[0]
+    exact = found[1]
+
     if len(list_message)>0:
-        embed = di.Embed(
-            title="Found translation",
-            fields=[di.EmbedField(name=search,value=message)],
+        if exact == None:
+            message = '\n'.join(list_message)
+            title = "No perfect matches"
+            embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+        else:
+            list_message.remove(exact)
+            message = '\n'.join(list_message)
+            title = exact
+            if len(list_message) == 0:
+                embedfields = []
+            else:
+                embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+        
+        message = '\n'.join(list_message)
+    
+        embed=di.Embed(
+            title=title,
+            fields=embedfields,
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/738006881062354975/f854fd2b6d1d8455b5f0ec8249f958b9.webp")._json,
-            author=di.EmbedAuthor(name="SmajloSlovakian",icon_url="https://cdn.discordapp.com/avatars/275248043828314112/52ba1fe6c0e6309ba921e7f4a4f6d121.webp?size=128"),
-            footer=di.EmbedFooter(text="Translations from Minecraft: 𝐽𝑎𝑣𝑎 𝐸𝑑𝑖𝑡𝑖𝑜𝑛",icon_url="https://cdn.discordapp.com/attachments/823557655804379146/936924348529410058/translator_cape_demo.png")
-        )
+            #thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
+            #author=di.EmbedAuthor(name=search)._json,
+            footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0)
         hide=False
     else:
-        embed = di.Embed(
+        embed=di.Embed(
             title="Didn't find the translation!",
             description="Click the title to search in Crowdin.",
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}"
-            )
+            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+            color=0xF63737)
         hide=True
-    await ctx.send(embeds=embed,ephemeral=hide)
+
+    try:
+        await ctx.send(embeds=embed,ephemeral=hide)
+    except:
+        await ctx.send(embeds=[di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg"))])
 
 
 @bot.command(name = "search",
@@ -263,8 +287,29 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang):
         json.dump(f, open("serverdefaults.json", "w"))
 
 
-langcodes, langcodesapp, langnames, langregions = [], [], [], []
+@bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
+async def help(ctx: di.CommandContext):
+        ic = ctx.author.user.username
+        ids = ctx.author.user.id
+        av = ctx.author.user.avatar
+        ds = ctx.author.user.discriminator
+        await ctx.send(embeds = di.Embed(
+            title="Minecraft Translator Bot's help",
+            fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
+                    di.EmbedField(name=f'{hook}   /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when none is specified.")._json,
+                    di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile if it exists.", inline=True)._json,
+                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
+                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, which are present in the game's files and returns a list of matches.")._json,
+                    di.EmbedField(name=f'{hook}   **<query>**', value="Specifies which string/key will be searched for. For keys (context) type 'key' as a language.")._json,
+                    di.EmbedField(name=f'{hook}   **[target]**', value="Specifies the language `<query>` will be translated to. Takes in a language code, name or region of said language.")._json,
+                    di.EmbedField(name=f'{hook}   **[source]**', value="Specifies the language `<query>` will be translated from. Takes in a language code, name or region of said language.")._json],
+            thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
+            color=0x3180F0
+        ))
 
+
+
+langcodes, langcodesapp, langnames, langregions = [], [], [], []
 for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
     for i in c:
         langcodes.append(i.split(".")[0].lower())
