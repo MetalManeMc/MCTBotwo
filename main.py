@@ -181,7 +181,6 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
             target="en_us"
     
     found=find_translation(search, target, source)
-    print(found)
     list_message = found[0]
     exact = found[1]
 
