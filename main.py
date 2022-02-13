@@ -117,7 +117,7 @@ def find_translation(string:str, targetlang:str, sourcelang:str):
                     break
     if len(result)>10:
         del result[10:]
-        result.append("…and more!")
+        result.append("**…and more!**")
     return result,exact
 
 def lang(search:str):
