@@ -325,4 +325,4 @@ while True:
     try:
         bot.start()
     except:
-        pass
+        bot.start()
