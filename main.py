@@ -7,6 +7,8 @@ from random import choice
 
 PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, 'lang')
+JAVA_DIR=Path(DATA_DIR, 'java')
+BEDROCK_DIR=Path(DATA_DIR, 'java')
 
 Footers="See /help for more info.","The blue text is the perfect match, if there is one.", "This is NOT a machine translation."
 
@@ -42,7 +44,7 @@ async def on_ready():
 #                             Code starts here                             #
 ############################################################################
 
-def open_json(jsonfile): 
+def open_json(jsonfile, edition="java"): 
 
     """
     This function open a file that's specified through the command.
@@ -54,8 +56,10 @@ def open_json(jsonfile):
     dictionary called dictionary_json. The file is then closed and 
     from now on ONLY the dictionary that was returned will be used.
     """
-
-    json_path = Path(DATA_DIR, jsonfile).with_suffix(".json")
+    if edition=="java":
+        json_path = Path(JAVA_DIR, jsonfile).with_suffix(".json")
+    elif edition=="bedrock":
+        json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
 
     with open(json_path) as js:
         return json.load(js)
