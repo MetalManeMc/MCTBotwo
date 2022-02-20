@@ -47,8 +47,8 @@ for dirpath, dirnames, filenames in os.walk("lang/bedrock"):
                     for z in y:
                         oldz=z
                         z=z.replace("\t", "")
-                        z=z.replace('"', "'")
                         z=z.replace('\\', "\\"+"\\")
+                        z=z.replace('"', r'\"')
                         y[y.index(oldz)]='"'+z+'"'
                     f[f.index(old)]=":".join(y)
                     x=":".join(y)
@@ -62,8 +62,9 @@ for dirpath, dirnames, filenames in os.walk("lang/bedrock"):
                 i=delete.index(k)
                 f.remove(f[delete[-(i+1)]])
             f = list(filter(("").__ne__, f))
+            f = list(filter((" ").__ne__, f))
             f="{"+",\n".join(f)+"}"
-            open(os.path.join(dirpath, "bin.json"), "r+", encoding='utf-8').write(f)
+            open(os.path.join(dirpath, file), "r+", encoding='utf-8').write(f)
             #print(f)
         except UnicodeDecodeError:pass
 print("Done.")
