@@ -293,17 +293,29 @@ async def profile(ctx:di.CommandContext, nick):
 @bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
         di.Option(
             name="default-target-language",
-            description="Set the default server target language",
+            description="Sets the default server target language",
             type=di.OptionType.SUB_COMMAND,
             options=[
                 di.Option(
                     name="targetlang",
                     description="The target language",
                     type = di.OptionType.STRING,
-                    required=True)])])
-async def settings(ctx:di.CommandContext, sub_command, targetlang):
+                    required=True),
+                    ]),
+        di.Option(
+            name="default-edition",
+            description="Sets the default edition to translate to",
+            type=di.OptionType.SUB_COMMAND,
+            options=[
+                di.Option(
+                    name="edition",
+                    description="Java or Bedrock edition?",
+                    type = di.OptionType.STRING,
+                    required=True),
+                    ])])
+async def settings(ctx:di.CommandContext, sub_command, targetlang, edition):
+    f=json.load(open(Path(PATH,"serverdefaults.json")))
     if sub_command=="default-target-language":
-        f=json.load(open(Path(PATH,"serverdefaults.json")))
         try:
             currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
             if targetlang in langcodes or targetlang in langnames:
@@ -317,7 +329,21 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang):
                 await ctx.send(f"Default target language set to `{targetlang}`.")
             else:
                 await ctx.send(f"`{targetlang}` isn't a valid language.")
-        json.dump(f, open("serverdefaults.json", "w"))
+    elif sub_command=="default-edition":
+        try:
+            currentedition=f[str(ctx.guild_id)]["server"]["edition"]
+            if edition=="java" or edition=="bedrock":
+                f[str(ctx.guild_id)]["server"]["edition"]=edition
+                await ctx.send(f"Default edition changed to `{edition}`.")
+            else:
+                await ctx.send(f"`{edition}` isn't a valid edition. Default edition reset to `{currentedition}`.")
+        except KeyError:
+            if edition=="java" or edition=="bedrock":
+                f[str(ctx.guild_id)]={"server":{"edition": edition}}
+                await ctx.send(f"Default edition set to `{edition}`.")
+            else:
+                await ctx.send(f"`{edition}` isn't a valid edition.")
+    json.dump(f, open("serverdefaults.json", "w"))
 
 
 @bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
@@ -363,7 +389,5 @@ for i in names:
         belangregions.append(codeandname[1].replace(")", ""))
     except IndexError:
         belangregions.append(None)
-
-print(belangcodes, belangcodesandnames, belangnames, belangregions)
 
 bot.start()
