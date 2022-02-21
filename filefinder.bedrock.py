@@ -10,6 +10,8 @@ def rename(initname):
 
 for dirpath, dirnames, filenames in os.walk("texts"):
     for file in filenames:
+        if file=="language_names.json":
+            os.replace(os.path.join(dirpath, file), file)
         if ".lang" in file:
             os.replace(os.path.join(dirpath, file), os.path.join("lang/bedrock", file)) # Places the lang files in the "lang/bedrock" folder. The "texts" one should be empty
             print(file, "moved")

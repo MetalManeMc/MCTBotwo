@@ -8,7 +8,7 @@ from random import choice
 PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
-BEDROCK_DIR=Path(DATA_DIR, 'java')
+BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
 
 Footers="See /help for more info.","The blue text is the perfect match, if there is one.", "This is NOT a machine translation."
 
@@ -61,7 +61,8 @@ def open_json(jsonfile, edition="java"):
     elif edition=="bedrock":
         json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
 
-    with open(json_path) as js:
+    print(jsonfile, json_path)
+    with open(json_path, encoding='utf-8') as js:
         return json.load(js)
 
 
@@ -83,7 +84,7 @@ def fetch_default(code, category, data):
     f = json.load(open("serverdefaults.json"))
     return f[code][category][data]
 
-def find_translation(string:str, targetlang:str, sourcelang:str):
+def find_translation(string:str, targetlang:str, sourcelang:str, edition):
 
     """
     This function finds translations and returns the list of matches.
@@ -93,9 +94,9 @@ def find_translation(string:str, targetlang:str, sourcelang:str):
     # we can put something like find(languages) for user to be able to insert uncomplete languages
 
     if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
-        jstarget = open_json(lang(targetlang))
+        jstarget = open_json(lang(targetlang, edition), edition)
     if sourcelang!="key":
-        jssource = open_json(lang(sourcelang))
+        jssource = open_json(lang(sourcelang, edition), edition)
     jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
 
     exact=None
@@ -124,7 +125,7 @@ def find_translation(string:str, targetlang:str, sourcelang:str):
         result.append("**…and more!**")
     return result,exact
 
-def lang(search:str):
+def lang(search:str, edition):
 
     '''
     Returns a complete internal language code to be used for file opening.
@@ -133,18 +134,26 @@ def lang(search:str):
     '''
 
     search = search.lower()
-
-    for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
-        if search in langcodesapp[i].lower():
-            return langcodes[i]
-
-    for i in range(len(langnames)):
-        if search in langnames[i].lower():
-            return langcodes[i]
-
-    for i in range(len(langregions)):
-        if search in langregions[i].lower():
-            return langcodes[i]
+    if edition=="java":
+        for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
+            if search in langcodesapp[i].lower():
+                return langcodes[i]
+        for i in range(len(langnames)):
+            if search in langnames[i].lower():
+                return langcodes[i]
+        for i in range(len(langregions)):
+            if search in langregions[i].lower():
+                return langcodes[i]
+    elif edition=="bedrock":
+        for i in range(len(belangcodes)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
+            if search in belangcodes[i].lower():
+                return belangcodes[i]
+        for i in range(len(belangnames)):
+            if search in belangnames[i].lower():
+                return belangcodes[i]
+        for i in range(len(belangregions)):
+            if search in belangregions[i].lower():
+                return belangcodes[i]
 
     return complete(search, langcodes)[0]
 
@@ -152,6 +161,19 @@ def lang(search:str):
 ###########
 #Translate#
 ###########
+
+
+""",
+                    choices=[
+                        di.Choice(
+                            name = "Java Edition",
+                            value="java"
+                        ),
+                        di.Choice(
+                            name = "Bedrock Edition",
+                            value="bedrock"
+                        )
+                    ]"""
 
 @bot.command(name = "translate",
              description = "Returns the translation found in-game for a string",
@@ -174,17 +196,22 @@ def lang(search:str):
                     description = "Language code, name, or region or 'key' to translate from.",
                     type = di.OptionType.STRING,
                     required = False
+                ),
+                di.Option(
+                    name = "edition",
+                    description = "Java or Bedrock Edition translation?",
+                    type = di.OptionType.STRING,
+                    required = False
                 )
             ])
-async def translate(ctx: di.CommandContext, search, target=None, source="en_us"):
-
+async def translate(ctx: di.CommandContext, search, target=None, source="en_us", edition="java"):
     if target == None:
         try:
             target = fetch_default(str(ctx.guild_id), "server", "targetlang")
         except:
             target="en_us"
     
-    found=find_translation(search, target, source)
+    found=find_translation(search, target, source, edition)
     list_message = found[0]
     exact = found[1]
 
@@ -316,7 +343,7 @@ async def help(ctx: di.CommandContext):
 
 
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
-for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
+for a, b, c in os.walk(JAVA_DIR): # Gives a list of language codes, so i can search in them
     for i in c:
         langcodes.append(i.split(".")[0].lower())
         langnames.append(open_json(i)["language.name"].lower())
@@ -324,8 +351,19 @@ for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can sea
         langregions.append(open_json(i)["language.region"].lower())
     break
 
-while True:
+belangcodes, belangcodesandnames, belangnames, belangregions = [], [], [], []
+
+names=json.load(open("language_names.json", encoding="utf-8"))
+for i in names:
+    belangcodes.append(i[0])
+    belangcodesandnames.append(i[1])
+    codeandname=i[1].split(" (")
+    belangnames.append(codeandname[0])
     try:
-        bot.start()
-    except:
-        bot.start()
+        belangregions.append(codeandname[1].replace(")", ""))
+    except IndexError:
+        belangregions.append(None)
+
+print(belangcodes, belangcodesandnames, belangnames, belangregions)
+
+bot.start()
