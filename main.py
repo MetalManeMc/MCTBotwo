@@ -9,8 +9,7 @@ PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
 BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
-
-Footers="See /help for more info.","The blue text is the perfect match, if there is one.", "This is NOT a machine translation."
+Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation."
 
 if "\\" in str(DATA_DIR): beta=True
 else: beta=False
@@ -293,20 +292,16 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang):
 
 @bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
 async def help(ctx: di.CommandContext):
-        ic = ctx.author.user.username
-        ids = ctx.author.user.id
-        av = ctx.author.user.avatar
-        ds = ctx.author.user.discriminator
         await ctx.send(embeds = di.Embed(
             title="Minecraft Translator Bot's help",
             fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
-                    di.EmbedField(name=f'{hook}   /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when none is specified.")._json,
+                    di.EmbedField(name=f'{hook}   /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when `None` is specified.")._json,
                     di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile if it exists.", inline=True)._json,
-                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
-                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, which are present in the game's files and returns a list of matches.")._json,
-                    di.EmbedField(name=f'{hook}   **<query>**', value="Specifies which string/key will be searched for. For keys (context) type 'key' as a language.")._json,
-                    di.EmbedField(name=f'{hook}   **[target]**', value="Specifies the language `<query>` will be translated to. Takes in a language code, name or region of said language.")._json,
-                    di.EmbedField(name=f'{hook}   **[source]**', value="Specifies the language `<query>` will be translated from. Takes in a language code, name or region of said language.")._json],
+                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search for a string in the Minecraft project.", inline=True)._json,
+                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, currently present in the game's files, and returns a list of matches.")._json,
+                    di.EmbedField(name=f'{hook}   **<query>**', value="Specifies what to search for. To search for a context (ex. 'block.minecraft.dirt') enter `key` as the target language.")._json,
+                    di.EmbedField(name=f'{hook}   **[target]**', value="Specifies the language that your `<query>` will be translated **to**. Takes in a language code, name or region of said language.")._json,
+                    di.EmbedField(name=f'{hook}   **[source]**', value="Specifies the language that your `<query>` will be translated **from**. Takes in a language code, name or region of said language.")._json],
             thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
             color=0x3180F0
         ))
