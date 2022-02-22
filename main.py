@@ -324,8 +324,4 @@ for a, b, c in os.walk(JAVA_DIR): # Gives a list of language codes, so i can sea
         langregions.append(open_json(i)["language.region"].lower())
     break
 
-while True:
-    try:
-        bot.start()
-    except:
-        bot.start()
+bot.start()
