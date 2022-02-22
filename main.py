@@ -8,7 +8,7 @@ from random import choice
 PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
-BEDROCK_DIR=Path(DATA_DIR, 'java')
+BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
 
 Footers="See /help for more info.","The blue text is the perfect match, if there is one.", "This is NOT a machine translation."
 
@@ -266,7 +266,7 @@ async def profile(ctx:di.CommandContext, nick):
 @bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
         di.Option(
             name="default-target-language",
-            description="Set the default server target language",
+            description="Sets the default server target language",
             type=di.OptionType.SUB_COMMAND,
             options=[
                 di.Option(
@@ -316,7 +316,7 @@ async def help(ctx: di.CommandContext):
 
 
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
-for a, b, c in os.walk(DATA_DIR): # Gives a list of language codes, so i can search in them
+for a, b, c in os.walk(JAVA_DIR): # Gives a list of language codes, so i can search in them
     for i in c:
         langcodes.append(i.split(".")[0].lower())
         langnames.append(open_json(i)["language.name"].lower())
