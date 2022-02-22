@@ -60,8 +60,6 @@ def open_json(jsonfile, edition="java"):
         json_path = Path(JAVA_DIR, jsonfile).with_suffix(".json")
     elif edition=="bedrock":
         json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
-
-    print(jsonfile, json_path)
     with open(json_path, encoding='utf-8') as js:
         return json.load(js)
 
@@ -204,24 +202,35 @@ def lang(search:str, edition):
                     required = False
                 )
             ])
-async def translate(ctx: di.CommandContext, search, target=None, source="en_us", edition="java"):
+async def translate(ctx: di.CommandContext, search, target=None, source="en_us", edition=None):
+    edition=edition.lower()
     if target == None:
         try:
             target = fetch_default(str(ctx.guild_id), "server", "targetlang")
         except:
             target="en_us"
+
+    if target == None:
+        try:
+            target = fetch_default(str(ctx.guild_id), "server", "edition")
+        except:
+            target="java"
     
     found=find_translation(search, target, source, edition)
     list_message = found[0]
     exact = found[1]
 
     if len(list_message)>0:
+        print(exact, list_message)
         if exact == None:
             message = '\n'.join(list_message)
             title = "No perfect matches"
             embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
         else:
-            list_message.remove(exact)
+            if "**…and more!**" in list_message:
+                try:list_message.remove(exact)
+                except ValueError:pass
+            else:list_message.remove(exact)
             message = '\n'.join(list_message)
             title = exact
             if len(list_message) == 0:
@@ -230,6 +239,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us",
                 embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
         
         message = '\n'.join(list_message)
+        print(message)
     
         embed=di.Embed(
             title=title,
@@ -247,7 +257,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us",
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
             color=0xF63737)
         hide=True
-
+    print(embed)
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except:
@@ -313,7 +323,7 @@ async def profile(ctx:di.CommandContext, nick):
                     type = di.OptionType.STRING,
                     required=True),
                     ])])
-async def settings(ctx:di.CommandContext, sub_command, targetlang, edition):
+async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=None):
     f=json.load(open(Path(PATH,"serverdefaults.json")))
     if sub_command=="default-target-language":
         try:
@@ -325,7 +335,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang, edition):
                 await ctx.send(f"`{targetlang}` isn't a valid language. Default target language reset to `{currentlang}`.")
         except KeyError:
             if targetlang in langcodes or targetlang in langnames:
-                f[str(ctx.guild_id)]={"server":{"targetlang": targetlang}}
+                f[str(ctx.guild_id)]["server"].update({"targetlang": targetlang})
                 await ctx.send(f"Default target language set to `{targetlang}`.")
             else:
                 await ctx.send(f"`{targetlang}` isn't a valid language.")
@@ -339,7 +349,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang, edition):
                 await ctx.send(f"`{edition}` isn't a valid edition. Default edition reset to `{currentedition}`.")
         except KeyError:
             if edition=="java" or edition=="bedrock":
-                f[str(ctx.guild_id)]={"server":{"edition": edition}}
+                f[str(ctx.guild_id)]["server"].update({"edition": edition})
                 await ctx.send(f"Default edition set to `{edition}`.")
             else:
                 await ctx.send(f"`{edition}` isn't a valid edition.")
