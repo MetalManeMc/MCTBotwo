@@ -208,8 +208,6 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
             title=title,
             fields=embedfields,
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            #thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
-            #author=di.EmbedAuthor(name=search)._json,
             footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
             color=0x3180F0)
         hide=False
