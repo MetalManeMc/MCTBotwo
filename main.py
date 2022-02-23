@@ -90,12 +90,14 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
 
     string = string.lower()
     # we can put something like find(languages) for user to be able to insert uncomplete languages
-
-    if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
-        jstarget = open_json(lang(targetlang, edition), edition)
-    if sourcelang!="key":
-        jssource = open_json(lang(sourcelang, edition), edition)
-    jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
+    try:
+        if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
+            jstarget = open_json(lang(targetlang, edition), edition)
+        if sourcelang!="key":
+            jssource = open_json(lang(sourcelang, edition), edition)
+        jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
+    except IndexError:
+        return
 
     exact=None
     if targetlang=="key": # figures out, which mode to use
@@ -203,25 +205,28 @@ def lang(search:str, edition):
                 )
             ])
 async def translate(ctx: di.CommandContext, search, target=None, source="en_us", edition=None):
-    edition=edition.lower()
     if target == None:
         try:
             target = fetch_default(str(ctx.guild_id), "server", "targetlang")
         except:
             target="en_us"
 
-    if target == None:
+    if edition == None:
         try:
-            target = fetch_default(str(ctx.guild_id), "server", "edition")
+            edition = fetch_default(str(ctx.guild_id), "server", "edition")
         except:
-            target="java"
-    
+            edition="java"
+    edition=edition.lower()
     found=find_translation(search, target, source, edition)
+    if found == None:
+        return await ctx.send(embeds=di.Embed(
+            title="Couldn't find the target/source language!",
+            description="Run /help for more info on the language parameters!.",
+            color=0xff0000),ephemeral=True)
     list_message = found[0]
     exact = found[1]
 
     if len(list_message)>0:
-        print(exact, list_message)
         if exact == None:
             message = '\n'.join(list_message)
             title = "No perfect matches"
@@ -233,14 +238,8 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us",
             else:list_message.remove(exact)
             message = '\n'.join(list_message)
             title = exact
-            if len(list_message) == 0:
-                embedfields = []
-            else:
-                embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+        embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
         
-        message = '\n'.join(list_message)
-        print(message)
-    
         embed=di.Embed(
             title=title,
             fields=embedfields,
@@ -252,12 +251,11 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us",
         hide=False
     else:
         embed=di.Embed(
-            title="Didn't find the translation!",
+            title="Couldn't find the translation!",
             description="Click the title to search in Crowdin.",
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            color=0xF63737)
+            color=0xff0000)
         hide=True
-    print(embed)
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except:
@@ -265,7 +263,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us",
 
 
 @bot.command(name = "search",
-             description = "Returns a link of searching in Crowdin.",
+             description = "Returns a link to a search in the Minecraft: Java Edition Crowdin project.",
              scope=SCOPES,
              options = [
                 di.Option(
@@ -280,7 +278,7 @@ async def search(ctx:di.CommandContext, search):
 
 
 @bot.command(name = "profile",
-             description = "Returns a link of searching in Crowdin.",
+             description = "Returns a link for a Crowdin profile if it exists.",
              scope=SCOPES,
              options = [
                 di.Option(
