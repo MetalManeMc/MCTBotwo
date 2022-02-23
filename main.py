@@ -67,7 +67,7 @@ def open_json(jsonfile, edition="java"):
 def complete(search:str, inside:list):
 
     '''
-    This function is essentially an autocompletion.\n
+    This function is essentially an autocompletion.
     It takes a string and a list, in which it's going to find complete strings.
     Walks through the list and asks whether the search is in the value. If it is,
     it appends the value to result. If none are found, it returns an empty list.
@@ -90,13 +90,14 @@ def find_translation(string:str, targetlang:str, sourcelang:str):
 
     string = string.lower()
     # we can put something like find(languages) for user to be able to insert uncomplete languages
-
-    if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
-        jstarget = open_json(lang(targetlang))
-    if sourcelang!="key":
-        jssource = open_json(lang(sourcelang))
-    jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
-
+    try: 
+        if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
+            jstarget = open_json(lang(targetlang))
+        if sourcelang!="key":
+            jssource = open_json(lang(sourcelang))
+        jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
+    except IndexError:
+        return
     exact=None
     if targetlang=="key": # figures out, which mode to use
         if sourcelang=="key":
@@ -184,6 +185,11 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
             target="en_us"
     
     found=find_translation(search, target, source)
+    if found == None:
+        return await ctx.send(embeds=di.Embed(
+            title="Couldn't find the target/source language!",
+            description="Run /help for more info on the language parameters!.",
+            color=0xff0000),ephemeral=True)
     list_message = found[0]
     exact = found[1]
 
@@ -212,10 +218,10 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         hide=False
     else:
         embed=di.Embed(
-            title="Didn't find the translation!",
+            title="Couldn't find the translation!",
             description="Click the title to search in Crowdin.",
             url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            color=0xF63737)
+            color=0xff0000)
         hide=True
 
     try:
@@ -225,7 +231,7 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
 
 
 @bot.command(name = "search",
-             description = "Returns a link of searching in Crowdin.",
+             description = "Returns a link to a search in the Minecraft Crowdin project.",
              scope=SCOPES,
              options = [
                 di.Option(
@@ -240,7 +246,7 @@ async def search(ctx:di.CommandContext, search):
 
 
 @bot.command(name = "profile",
-             description = "Returns a link of searching in Crowdin.",
+             description = "Returns a link for a Crowdin profile if it exists.",
              scope=SCOPES,
              options = [
                 di.Option(
