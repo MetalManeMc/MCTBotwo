@@ -43,6 +43,21 @@ async def on_ready():
 #                             Code starts here                             #
 ############################################################################
 
+class embederr(Exception):
+    def __init__(c, title=None, url=None, hidden=True, color=0xff0000, description=None, hasfield=False, field=["name","value"], hasimage=True, image="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg") -> None:
+        c.title=title
+        c.url=url
+        c.hidden=hidden
+        c.color=color
+        c.desc=description
+        if hasimage:
+            c.image=di.EmbedImageStruct(url=image)._json
+        else:c.image=None
+        if hasfield:
+            c.field=[di.EmbedField(name=field[0],value=field[1])._json]
+        else:c.field=None
+
+
 def open_json(jsonfile, edition="java"): 
 
     """
@@ -60,8 +75,11 @@ def open_json(jsonfile, edition="java"):
     elif edition=="bedrock":
         json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
 
-    with open(json_path) as js:
-        return json.load(js)
+    try:
+        with open(json_path) as js:
+            return json.load(js)
+    except:
+        raise embederr("Files not found")
 
 
 def complete(search:str, inside:list):
@@ -149,7 +167,7 @@ def lang(search:str):
     if len(ret)>0:
         return ret[0]
     else:
-        raise Exception("Language not found")
+        raise embederr("Language not found")
 
 
 ###########
@@ -214,20 +232,28 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
                 color=0x3180F0)
             hide=False
         else:
-            embed=di.Embed(
-                title="Couldn't find the translation!",
-                description="Click the title to search in Crowdin.",
-                url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-                color=0xff0000)
-            hide=True
-    except Exception as e: # This is where it returns when there was an error in the code or user made a mistake
-        embed=di.Embed(title=str(e),thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
-        hide=True
+            raise embederr(
+                "Couldn't find the translation",
+                f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+                color=0xff7f00,
+                description="Click the title to search in Crowdin.")
+    except embederr as e: # This is where it returns when there was an error in the code or user made a mistake
+        embed=di.Embed(
+            title=e.title,
+            thumbnail=e.image,
+            url=e.url,
+            fields=e.field,
+            color=e.color,
+            description=e.desc
+            )
+        hide=e.hidden
+    except Exception:
+        embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
 
     try:
         await ctx.send(embeds=[embed],ephemeral=hide)
     except:
-        await ctx.send(embeds=[di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)])
+        await ctx.send(embeds=[di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)])
 
 
 @bot.command(name = "search",
