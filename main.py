@@ -197,7 +197,7 @@ def lang(search:str):
                     required = False
                 )
             ])
-async def translate(ctx: di.CommandContext, search, target=None, source="en_us"):
+async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us"):
     try:
         if target == None:
             try:
@@ -222,19 +222,17 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
                 else:
                     embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
             
-            message = '\n'.join(list_message)
-        
             embed=di.Embed(
                 title=title,
                 fields=embedfields,
-                url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+                url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
                 footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
                 color=0x3180F0)
             hide=False
         else:
             raise embederr(
                 "Couldn't find the translation",
-                f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
+                f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e: # This is where it returns when there was an error in the code or user made a mistake
@@ -249,11 +247,10 @@ async def translate(ctx: di.CommandContext, search, target=None, source="en_us")
         hide=e.hidden
     except Exception:
         embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
-
     try:
-        await ctx.send(embeds=[embed],ephemeral=hide)
+        await ctx.send(embeds=embed,ephemeral=hide)
     except:
-        await ctx.send(embeds=[di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)])
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json))
 
 
 @bot.command(name = "search",
