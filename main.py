@@ -11,11 +11,11 @@ if "\\" in str(DATA_DIR): beta=True
 else: beta=False
 
 if beta==True:
-    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token.txt')
+    TOKEN_PATH = Path(PATH, 'token.txt')
     SCOPES = [906169345007304724]
 else:
-    TOKEN_PATH = Path(os.path.dirname(os.path.realpath(__file__)), 'token-main.txt')
-    SCOPES=None
+    TOKEN_PATH = Path(PATH, 'token-main.txt')
+    SCOPES=[]
     print("Running hosted version")
 
 with open(TOKEN_PATH) as f:
