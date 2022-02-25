@@ -20,7 +20,7 @@ if beta==True:
     SCOPES = [906169345007304724]
 else:
     TOKEN_PATH = Path(PATH, 'token-main.txt')
-    SCOPES=None
+    SCOPES=[]
     print("Running hosted version")
 
 with open(TOKEN_PATH) as f:
@@ -75,11 +75,8 @@ def open_json(jsonfile, edition="java"):
         json_path = Path(JAVA_DIR, jsonfile).with_suffix(".json")
     elif edition=="bedrock":
         json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
-
-    try:
-        with open(json_path) as js:
-            return json.load(js)
-    except:
+    with open(json_path, encoding='utf-8') as js:
+        return json.load(js)
 
 
 def complete(search:str, inside:list):
@@ -184,19 +181,6 @@ def lang(search:str, edition):
 #Translate#
 ###########
 
-
-""",
-                    choices=[
-                        di.Choice(
-                            name = "Java Edition",
-                            value="java"
-                        ),
-                        di.Choice(
-                            name = "Bedrock Edition",
-                            value="bedrock"
-                        )
-                    ]"""
-
 @bot.command(name = "translate",
              description = "Returns the translation found in-game for a string",
              scope=SCOPES,
@@ -226,7 +210,7 @@ def lang(search:str, edition):
                     required = False
                 )
             ])
-async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us"):
+async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us", edition=None):
     try:
         if target == None:
             try:
