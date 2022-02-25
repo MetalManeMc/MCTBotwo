@@ -10,7 +10,7 @@ DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
 BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
 
-Footers="See /help for more info.","The blue text is the perfect match, if there is one.", "This is NOT a machine translation."
+Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation."
 
 if "\\" in str(DATA_DIR): beta=True
 else: beta=False
@@ -44,6 +44,21 @@ async def on_ready():
 #                             Code starts here                             #
 ############################################################################
 
+class embederr(Exception):
+    def __init__(c, title=None, url=None, hidden=True, color=0xff0000, description=None, hasfield=False, field=["name","value"], hasimage=True, image="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg") -> None:
+        c.title=title
+        c.url=url
+        c.hidden=hidden
+        c.color=color
+        c.desc=description
+        if hasimage:
+            c.image=di.EmbedImageStruct(url=image)._json
+        else:c.image=None
+        if hasfield:
+            c.field=[di.EmbedField(name=field[0],value=field[1])._json]
+        else:c.field=None
+
+
 def open_json(jsonfile, edition="java"): 
 
     """
@@ -60,14 +75,17 @@ def open_json(jsonfile, edition="java"):
         json_path = Path(JAVA_DIR, jsonfile).with_suffix(".json")
     elif edition=="bedrock":
         json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
-    with open(json_path, encoding='utf-8') as js:
-        return json.load(js)
+
+    try:
+        with open(json_path) as js:
+            return json.load(js)
+    except:
 
 
 def complete(search:str, inside:list):
 
     '''
-    This function is essentially an autocompletion.\n
+    This function is essentially an autocompletion.
     It takes a string and a list, in which it's going to find complete strings.
     Walks through the list and asks whether the search is in the value. If it is,
     it appends the value to result. If none are found, it returns an empty list.
@@ -155,7 +173,11 @@ def lang(search:str, edition):
             if search in belangregions[i].lower():
                 return belangcodes[i]
 
-    return complete(search, langcodes)[0]
+    ret=complete(search, langcodes)
+    if len(ret)>0:
+        return ret[0]
+    else:
+        raise embederr("Language not found")
 
 
 ###########
@@ -204,62 +226,66 @@ def lang(search:str, edition):
                     required = False
                 )
             ])
-async def translate(ctx: di.CommandContext, search, target=None, source="en_us", edition=None):
-    if target == None:
-        try:
-            target = fetch_default(str(ctx.guild_id), "server", "targetlang")
-        except:
-            target="en_us"
+async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us"):
+    try:
+        if target == None:
+            try:
+                target = fetch_default(str(ctx.guild_id), "server", "targetlang")
+            except:
+                target="en_us"
+        if edition == None:
+             try:
+                 edition = fetch_default(str(ctx.guild_id), "server", "edition")
+             except:
+                 edition="java"
+        edition=edition.lower()
+        found=find_translation(search, target, source, edition)
+        list_message = found[0]
+        exact = found[1]
 
-    if edition == None:
-        try:
-            edition = fetch_default(str(ctx.guild_id), "server", "edition")
-        except:
-            edition="java"
-    edition=edition.lower()
-    found=find_translation(search, target, source, edition)
-    if found == None:
-        return await ctx.send(embeds=di.Embed(
-            title="Couldn't find the target/source language!",
-            description="Run /help for more info on the language parameters!.",
-            color=0xff0000),ephemeral=True)
-    list_message = found[0]
-    exact = found[1]
-
-    if len(list_message)>0:
-        if exact == None:
-            message = '\n'.join(list_message)
-            title = "No perfect matches"
-            embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+        if len(list_message)>0:
+            if exact == None:
+                message = '\n'.join(list_message)
+                title = "No perfect matches"
+                embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+            else:
+                list_message.remove(exact)
+                message = '\n'.join(list_message)
+                title = exact
+                if len(list_message) == 0:
+                    embedfields = []
+                else:
+                    embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+            
+            embed=di.Embed(
+                title=title,
+                fields=embedfields,
+                url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
+                footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+                color=0x3180F0)
+            hide=False
         else:
-            if "**…and more!**" in list_message:
-                try:list_message.remove(exact)
-                except ValueError:pass
-            else:list_message.remove(exact)
-            message = '\n'.join(list_message)
-            title = exact
-        embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
-        
+            raise embederr(
+                "Couldn't find the translation",
+                f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
+                color=0xff7f00,
+                description="Click the title to search in Crowdin.")
+    except embederr as e: # This is where it returns when there was an error in the code or user made a mistake
         embed=di.Embed(
-            title=title,
-            fields=embedfields,
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            #thumbnail=di.EmbedImageStruct(url=f"https://cdn.discordapp.com/icons/{ctx.guild_id}/{r['icon']}")._json,
-            #author=di.EmbedAuthor(name=search)._json,
-            footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-            color=0x3180F0)
-        hide=False
-    else:
-        embed=di.Embed(
-            title="Couldn't find the translation!",
-            description="Click the title to search in Crowdin.",
-            url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search}",
-            color=0xff0000)
-        hide=True
+            title=e.title,
+            thumbnail=e.image,
+            url=e.url,
+            fields=e.field,
+            color=e.color,
+            description=e.desc
+            )
+        hide=e.hidden
+    except Exception:
+        embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except:
-        await ctx.send(embeds=[di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg"))])
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json))
 
 
 @bot.command(name = "search",
@@ -356,20 +382,16 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
 
 @bot.command(name='help', description='Shows a help command with some information about the bot and its usage.', scope=SCOPES)
 async def help(ctx: di.CommandContext):
-        ic = ctx.author.user.username
-        ids = ctx.author.user.id
-        av = ctx.author.user.avatar
-        ds = ctx.author.user.discriminator
         await ctx.send(embeds = di.Embed(
             title="Minecraft Translator Bot's help",
             fields=[di.EmbedField(name='/settings',value="Allows you to change some of the bot's settings for the current server.", inline=True)._json,
-                    di.EmbedField(name=f'{hook}   /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when none is specified.")._json,
+                    di.EmbedField(name=f'{hook}   /settings default-target-language **<language>**', value="Sets the default target language for `/translate` to use when `None` is specified.")._json,
                     di.EmbedField(name='/profile **<username>**', value="Generates a Crowdin link for someone's profile if it exists.", inline=True)._json,
-                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search a word in the Minecraft project.", inline=True)._json,
-                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, which are present in the game's files and returns a list of matches.")._json,
-                    di.EmbedField(name=f'{hook}   **<query>**', value="Specifies which string/key will be searched for. For keys (context) type 'key' as a language.")._json,
-                    di.EmbedField(name=f'{hook}   **[target]**', value="Specifies the language `<query>` will be translated to. Takes in a language code, name or region of said language.")._json,
-                    di.EmbedField(name=f'{hook}   **[source]**', value="Specifies the language `<query>` will be translated from. Takes in a language code, name or region of said language.")._json],
+                    di.EmbedField(name='/search **<string>**', value="Generates a Crowdin link to search for a string in the Minecraft project.", inline=True)._json,
+                    di.EmbedField(name='/translate **<query>** **[target]** **[source]**', value="Searches through the currently approved Minecraft:Java Edition translations, currently present in the game's files, and returns a list of matches.")._json,
+                    di.EmbedField(name=f'{hook}   **<query>**', value="Specifies what to search for. To search for context (ex. 'block.minecraft.dirt') enter `key` as the language.")._json,
+                    di.EmbedField(name=f'{hook}   **[target]**', value="Specifies the language that your `<query>` will be translated **to**. Takes in a language code, name or region of said language.")._json,
+                    di.EmbedField(name=f'{hook}   **[source]**', value="Specifies the language that your `<query>` will be translated **from**. Takes in a language code, name or region of said language.")._json],
             thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
             color=0x3180F0
         ))
@@ -377,13 +399,15 @@ async def help(ctx: di.CommandContext):
 
 
 langcodes, langcodesapp, langnames, langregions = [], [], [], []
-for a, b, c in os.walk(JAVA_DIR): # Gives a list of language codes, so i can search in them
+
+for a, b, c in os.walk(JAVA_DIR): # Gives a list of java language codes, names and regions, so i can search in them
     for i in c:
         langcodes.append(i.split(".")[0].lower())
         langnames.append(open_json(i)["language.name"].lower())
         langcodesapp.append(open_json(i)["language.code"].lower())
         langregions.append(open_json(i)["language.region"].lower())
     break
+
 
 belangcodes, belangcodesandnames, belangnames, belangregions = [], [], [], []
 
