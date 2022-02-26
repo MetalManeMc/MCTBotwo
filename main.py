@@ -10,7 +10,7 @@ DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
 BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
 
-Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation."
+Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
 
 if "\\" in str(DATA_DIR): beta=True
 else: beta=False
