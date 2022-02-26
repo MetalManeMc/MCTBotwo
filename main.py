@@ -264,8 +264,8 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
                     required = True
                 )
             ])
-async def search(ctx:di.CommandContext, search):
-    await ctx.send(f"https://crowdin.com/translate/minecraft/all?filter=basic&value=0#q={search}")
+async def search(ctx:di.CommandContext, search: str):
+    await ctx.send(f"https://crowdin.com/translate/minecraft/all?filter=basic&value=0#q={search.replace(' ', '%20')}")
 
 
 @bot.command(name = "profile",
