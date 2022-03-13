@@ -14,9 +14,10 @@ class DownChecker(interactions.Extension):
 
     async def check_status(self):
         print(f"Checking bot status... at {time.strftime('%m-%d-%Y %H:%M:%S')}")
-        if "The client was unable to send a heartbeat, closing the connection." in open("bot.log").read():
-            print("Bot needs to be restarted")
-            open("bot.log", "w").write("")
+        with open("bot.log") as f:
+            if "The client was unable to send a heartbeat, closing the connection." in f.read():
+                print("Bot needs to be restarted")
+                open("bot.log", "w").write("")
 
 def setup(bot):
     DownChecker(bot)
