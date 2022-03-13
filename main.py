@@ -45,7 +45,8 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
 
-bot = di.Client(token=TOKEN, log_level=0)
+bot = di.Client(token=TOKEN, log_level=-1)
+
 hook = '<:bighook:937813704316158072>'
 
 @bot.event
