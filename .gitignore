@@ -1,5 +1,7 @@
 **/venv
+**/__pycache__
 tests.py
 token.txt
 token-main.txt
 serverdefaults.json
+bot.log
