@@ -10,10 +10,10 @@ class DownChecker(interactions.Extension):
     async def run(self):
             while True:
                 await self.check_status()
-                await asyncio.sleep(5*60)
+                await asyncio.sleep(2*60)
 
     async def check_status(self):
-        print(f"Checking bot status... at {time.strftime('%m-%d-%Y %H:%M:%S')}")
+        #print(f"Checking bot status... at {time.strftime('%m-%d-%Y %H:%M:%S')}")
         with open("bot.log") as f:
             if "The client was unable to send a heartbeat, closing the connection." in f.read():
                 print("Bot needs to be restarted")
