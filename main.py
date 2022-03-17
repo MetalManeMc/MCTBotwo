@@ -21,6 +21,11 @@ PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
 BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
+COGS = [
+    module[:-3]
+    for module in os.listdir( f"{Path(PATH, 'cogs')}" )
+    if module not in ("__init__.py", "template.py") and module[-3:] == ".py"
+]
 
 Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
 
@@ -37,7 +42,6 @@ else:
 
 with open(TOKEN_PATH) as f:
     TOKEN = f.read()
-
 """
 We craft a path towards the /lang/ folder using the host's information. 
 This path is absolute and independent of the OS in which it may be running.
@@ -51,7 +55,7 @@ hook = '<:bighook:937813704316158072>'
 @bot.event
 async def on_ready():
     print("Online!")
-    print(f"Path towards //lang// is {DATA_DIR}")
+    print(f"Path towards the lang folder is {DATA_DIR}\nCogs loaded: {COGS}")
 
 ############################################################################
 #                             Code starts here                             #
@@ -368,18 +372,7 @@ for i in names:
         belangregions.append(None)
 
 
-cogs = [
-    module[:-3]
-    for module in os.listdir(f"{os.path.dirname(__file__)}/cogs")
-    if module not in ("__init__.py", "template.py") and module[-3:] == ".py"
-]
-
-if cogs or cogs == []:
-    logger.info("Importing %s cogs: %s", len(cogs), ", ".join(cogs))
-else:
-    logger.warning("Could not import any cogs!")
-
-for cog in cogs:
+for cog in COGS:
     bot.load("cogs." + cog)
 while True:
     bot.start()

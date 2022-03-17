@@ -1,5 +1,5 @@
 import interactions, requests
-SCOPES = 906169345007304724
+SCOPES = []
 
 
 class CrowdinCMD(interactions.Extension):
