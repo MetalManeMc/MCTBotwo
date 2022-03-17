@@ -22,6 +22,7 @@ PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, 'lang')
 JAVA_DIR=Path(DATA_DIR, 'java')
 BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
+COGS_DIR = Path(PATH, 'cogs')
 
 Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
 
@@ -384,6 +385,12 @@ for i in names:
     except IndexError:
         belangregions.append(None)
 
-#bot.load("down_checker")
+for filename in os.listdir(COGS_DIR):
+    if filename.endswith(".py"):
+        bot.load(f"cogs.{filename[:-3]}")
+        continue
+    else:
+        continue
+
 while True:
     bot.start()
