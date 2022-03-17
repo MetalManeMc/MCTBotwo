@@ -1,5 +1,5 @@
 import interactions, requests
-from main import SCOPES
+SCOPES = 906169345007304724
 
 
 class CrowdinCMD(interactions.Extension):
@@ -34,7 +34,7 @@ class CrowdinCMD(interactions.Extension):
                 )
             ]
     )
-    async def _profile(ctx: interactions.CommandContext, nick: str):
+    async def _profile(self, ctx: interactions.CommandContext, nick: str):
         re=requests.get(f"https://crowdin.com/profile/{nick}")
         if re.status_code==200:
             await ctx.send(f"https://crowdin.com/profile/{nick}")

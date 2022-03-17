@@ -1,5 +1,5 @@
 import interactions
-from main import SCOPES
+SCOPES = 906169345007304724
 
 
 class HelpCMD(interactions.Extension):
