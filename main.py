@@ -375,4 +375,7 @@ for i in names:
 for cog in COGS:
     bot.load("cogs." + cog)
 while True:
-    bot.start()
+    try:
+        bot.start()
+    except:
+        bot.start()
