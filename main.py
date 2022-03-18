@@ -440,4 +440,7 @@ for i in names:
 
 bot.load("down_checker")
 while True:
-    bot.start()
+    try:
+        bot.start()
+    except:
+        bot.start()
