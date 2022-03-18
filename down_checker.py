@@ -1,5 +1,6 @@
 import interactions
 import asyncio
+import time
 
 class DownChecker(interactions.Extension):
     def __init__(self, bot):
@@ -9,7 +10,7 @@ class DownChecker(interactions.Extension):
     async def run(self):
             while True:
                 await self.check_status()
-                await asyncio.sleep(60)
+                await asyncio.sleep(2*60)
 
     async def check_status(self):
         #print(f"Checking bot status... at {time.strftime('%m-%d-%Y %H:%M:%S')}")
