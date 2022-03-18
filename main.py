@@ -438,6 +438,6 @@ for i in names:
     except IndexError:
         belangregions.append(None)
 
-#bot.load("down_checker")
+bot.load("down_checker")
 while True:
     bot.start()
