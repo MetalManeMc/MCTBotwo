@@ -10,7 +10,7 @@ def rename(initname):
     for x in langs:
         if langs[x]["hash"] == initname:
             tempname=x
-    newname=tempname.replace("minecraft/lang/java", "")
+    newname=tempname.replace("minecraft/lang/", "")
     return newname
 
 
@@ -23,13 +23,14 @@ for dirpath, dirnames, filenames in os.walk("objects"): # Runs through the minec
             os.remove(os.path.join(dirpath, file))      # Deletes them
         elif "json" not in file:                        # Else
             newfile=rename(file)                        # Renames the files variable...
+            print(newfile)
             os.rename(os.path.join(dirpath, file), os.path.join(dirpath, rename(file)))         # ... before renaming the actual file
             print(newfile)
 
 for dirpath, dirnames, filenames in os.walk("objects"):
     for file in filenames:
         print(file)
-        os.replace(os.path.join(dirpath, file), os.path.join("lang/java", file)) # Places the lang files in the "lang/java" folder. The "objects" one should be empty
+        os.replace(os.path.join(dirpath, file), os.path.join("lang\java", file)) # Places the lang files in the "lang/java" folder. The "objects" one should be empty
 
 '''for dirpath, dirnames, filenames in os.walk("lang/java"):
     for file in filenames:
