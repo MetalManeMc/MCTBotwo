@@ -60,6 +60,7 @@ class HelpCMD(interactions.Extension):
 
         elif sub_command == "translate":
             await ctx.send(embeds = interactions.Embed(
+                    title="Minecraft Translator Bot's help",
                     fields = [
                     interactions.EmbedField(name="/translate **<query>** **[target]** **[source]** **[edition]**", value="Searches through the current Miencraft translations, currently present in the game's files, and returns a list of matches.")._json,
                     interactions.EmbedField(name=f"{hook}   **<query>**", value="Specifies what to search for. To search for context (ex. 'block.minecraft.dirt') enter `key` as the language.")._json,
@@ -68,9 +69,7 @@ class HelpCMD(interactions.Extension):
                     interactions.EmbedField(name=f"{hook}   **[edition]**", value="Specifies the Minecraft edition your <query> will be searched in.")._json],
                     color=0x3180F0,
                     thumbnail=interactions.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json))
-        
 
 
-                    
 def setup(bot):
     HelpCMD(bot)
