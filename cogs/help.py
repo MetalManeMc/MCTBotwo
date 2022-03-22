@@ -53,7 +53,7 @@ class HelpCMD(interactions.Extension):
                 interactions.EmbedField(name="/profile **<username>**", value="Generates a Crowdin link for someone's profile if it exists.", inline=True),
                 interactions.EmbedField(name="/search **<string>**", value="Generates a Crowdin link to search for a string in the Minecraft project.", inline=True),
             ],
-            thumbnail=interactions.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json,
+            thumbnail=interactions.EmbedImageStruct(url="https://cdn.discordapp.com/avatars/913119714400677899/3eec5517806481c6165eaddf1e438f33.png")._json,
             color=0x3180F0))
 
         elif sub_command == "translate":
