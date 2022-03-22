@@ -5,17 +5,6 @@ from pathlib import Path
 import interactions as di
 from random import choice
 
-open("bot.log", "w").write("")
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', '%m-%d-%Y %H:%M:%S')
-
-file_handler = logging.FileHandler('bot.log')
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(file_handler)
 
 PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 DATA_DIR = Path(PATH, "lang")
