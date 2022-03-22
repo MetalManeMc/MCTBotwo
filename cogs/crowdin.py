@@ -1,5 +1,7 @@
 import interactions, requests
-SCOPES = []
+import cogs.variables as var
+
+SCOPES = var.SCOPES
 
 
 class CrowdinCMD(interactions.Extension):

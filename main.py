@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import interactions as di
 from random import choice
+import cogs.variables as var
 
 open("bot.log", "w").write("")
 
@@ -29,15 +30,13 @@ COGS = [
 
 Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
 
-if "\\" in str(DATA_DIR): beta=True
-else: beta=False
+beta=var.beta
+SCOPES=var.SCOPES
 
 if beta==True:
     TOKEN_PATH = Path(PATH, "token.txt")
-    SCOPES = [906169345007304724]
 else:
     TOKEN_PATH = Path(PATH, "token-main.txt")
-    SCOPES=[]
     print("Running hosted version")
 
 with open(TOKEN_PATH) as f:
@@ -372,7 +371,8 @@ for i in names:
 
 
 for cog in COGS:
-    bot.load("cogs." + cog)
+    if cog!="variables":
+        bot.load("cogs." + cog)
 
 while True:
     try:

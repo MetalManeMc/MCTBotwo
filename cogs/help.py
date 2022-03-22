@@ -1,5 +1,7 @@
 import interactions
-SCOPES = []
+import cogs.variables as var
+
+SCOPES = var.SCOPES
 
 
 class HelpCMD(interactions.Extension):
