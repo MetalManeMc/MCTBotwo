@@ -363,8 +363,4 @@ for cog in COGS:
     if cog!="variables":
         bot.load("cogs." + cog)
 
-while True:
-    try:
-        bot.start()
-    except:
-        bot.start()
+bot.start()
