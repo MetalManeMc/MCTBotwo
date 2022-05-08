@@ -35,7 +35,7 @@ We craft a path towards the /lang/ folder using the host's information.
 This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
-bot = di.Client(token=TOKEN, log_level=-1)
+bot = di.Client(token=TOKEN)
 
 hook = "<:bighook:937813704316158072>"
 
