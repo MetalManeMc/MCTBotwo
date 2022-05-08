@@ -4,23 +4,13 @@ import os
 from pathlib import Path
 import interactions as di
 from random import choice
+import cogs.variables as var
 
-open("bot.log", "w").write("")
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(message)s', '%m-%d-%Y %H:%M:%S')
-
-file_handler = logging.FileHandler('bot.log')
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(file_handler)
 
 PATH = Path(os.path.dirname(os.path.realpath(__file__)))
-DATA_DIR = Path(PATH, 'lang')
-JAVA_DIR=Path(DATA_DIR, 'java')
-BEDROCK_DIR=Path(DATA_DIR, 'bedrock')
+DATA_DIR = Path(PATH, "lang")
+JAVA_DIR=Path(DATA_DIR, "java")
+BEDROCK_DIR=Path(DATA_DIR, "bedrock")
 COGS = [
     module[:-3]
     for module in os.listdir( f"{Path(PATH, 'cogs')}" )
@@ -29,15 +19,13 @@ COGS = [
 
 Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
 
-if "\\" in str(DATA_DIR): beta=True
-else: beta=False
+beta=var.beta
+SCOPES=var.SCOPES
 
 if beta==True:
-    TOKEN_PATH = Path(PATH, 'token.txt')
-    SCOPES = [906169345007304724]
+    TOKEN_PATH = Path(PATH, "token.txt")
 else:
-    TOKEN_PATH = Path(PATH, 'token-main.txt')
-    SCOPES=[]
+    TOKEN_PATH = Path(PATH, "token-main.txt")
     print("Running hosted version")
 
 with open(TOKEN_PATH) as f:
@@ -47,10 +35,9 @@ We craft a path towards the /lang/ folder using the host's information.
 This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
-
 bot = di.Client(token=TOKEN, log_level=-1)
 
-hook = '<:bighook:937813704316158072>'
+hook = "<:bighook:937813704316158072>"
 
 @bot.event
 async def on_ready():
@@ -92,25 +79,25 @@ def open_json(jsonfile, edition="java"):
         json_path = Path(JAVA_DIR, jsonfile).with_suffix(".json")
     elif edition=="bedrock":
         json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
-    with open(json_path, encoding='utf-8') as js:
+    with open(json_path, encoding="utf-8") as js:
         return json.load(js)
 
 
 def complete(search:str, inside:list):
 
-    '''
+    """
     This function is essentially an autocompletion.
-    It takes a string and a list, in which it's going to find complete strings.
+    It takes a string and a list, in which it"s going to find complete strings.
     Walks through the list and asks whether the search is in the value. If it is,
     it appends the value to result. If none are found, it returns an empty list.
-    '''
+    """
 
     return [i for i in inside if search.lower() in i.lower()]
 
 def fetch_default(code, category, data):
-    '''
+    """
     This function fetches defaults in serverdefaults.json
-    '''
+    """
     f = json.load(open("serverdefaults.json"))
     return f[code][category][data]
 
@@ -159,11 +146,11 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
 
 def lang(search:str, edition):
 
-    '''
+    """
     Returns a complete internal language code to be used for file opening.
     Input can be the expected output too.
     Input can be approved language code, name, region or internal code (searching in this order)
-    '''
+    """
 
     search = search.lower()
     if edition=="java":
@@ -242,12 +229,12 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
 
         if len(list_message)>0:
             if exact == None:
-                message = '\n'.join(list_message)
+                message = "\n".join(list_message)
                 title = "No perfect matches"
                 embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
             else:
                 list_message.remove(exact)
-                message = '\n'.join(list_message)
+                message = "\n".join(list_message)
                 title = exact
                 if len(list_message) == 0:
                     embedfields = []
@@ -373,10 +360,7 @@ for i in names:
 
 
 for cog in COGS:
-    bot.load("cogs." + cog)
+    if cog!="variables" and cog!="down_checker":
+        bot.load("cogs." + cog)
 
-while True:
-    try:
-        bot.start()
-    except:
-        bot.start()
+bot.start()
