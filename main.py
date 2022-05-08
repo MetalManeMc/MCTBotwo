@@ -360,11 +360,7 @@ for i in names:
 
 
 for cog in COGS:
-    if cog!="variables":
+    if cog!="variables" and cog!="down_checker":
         bot.load("cogs." + cog)
 
-while True:
-    try:
-        bot.start()
-    except:
-        bot.start()
+bot.start()
