@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 from pathlib import Path
 import interactions as di
@@ -14,7 +13,7 @@ BEDROCK_DIR=Path(DATA_DIR, "bedrock")
 COGS = [
     module[:-3]
     for module in os.listdir( f"{Path(PATH, 'cogs')}" )
-    if module not in ("__init__.py", "template.py") and module[-3:] == ".py"
+    if module not in ("variables.py", "down_checker.py") and module[-3:] == ".py"
 ]
 
 Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
@@ -363,7 +362,6 @@ for i in names:
 
 
 for cog in COGS:
-    if cog!="variables" and cog!="down_checker":
-        bot.load("cogs." + cog)
+    bot.load("cogs." + cog)
 
 bot.start()
