@@ -157,6 +157,9 @@ def lang(search:str, edition):
         for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
             if search in langcodesapp[i].lower():
                 return langcodes[i]
+        for i in range(len(langcodes)):
+            if search in langcodes[i].lower():
+                return langcodes[i]
         for i in range(len(langnames)):
             if search in langnames[i].lower():
                 return langcodes[i]
