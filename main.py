@@ -363,7 +363,7 @@ for i in names:
 
 
 for cog in COGS:
-    if cog!="variables" and cog!="down_checker":
+    if cog!="variables":
         bot.load("cogs." + cog)
 
 bot.start()
