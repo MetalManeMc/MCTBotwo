@@ -31,6 +31,12 @@ class HelpCMD(interactions.Extension):
                 description="Shows more information about the /translate command",
                 type=interactions.OptionType.SUB_COMMAND,
                 options=[]
+            ),
+            interactions.Option(
+                name="credits",
+                description="Shows the bot credits",
+                type=interactions.OptionType.SUB_COMMAND,
+                options=[]
             )
         ]
     )
@@ -67,6 +73,16 @@ class HelpCMD(interactions.Extension):
                     interactions.EmbedField(name=f"{hook}   **[target]**", value="Specifies the language that your `<query>` will be translated **to**. Takes in a language code, name or region of said language.")._json,
                     interactions.EmbedField(name=f"{hook}   **[source]**", value="Specifies the language that your `<query>` will be translated **from**. Takes in a language code, name or region of said language.")._json,
                     interactions.EmbedField(name=f"{hook}   **[edition]**", value="Specifies the Minecraft edition your <query> will be searched in.")._json],
+                    color=0x3180F0,
+                    thumbnail=interactions.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json))
+        elif sub_command == "credits":
+            await ctx.send(embeds = interactions.Embed(
+                    title="Minecraft Translator Bot's credits",
+                    fields = [
+                    interactions.EmbedField(name=f"**Developpers**", value=f"{hook}   <:flag_fr:1007929012804386816><@668349394529157131>,\n{hook}   <:flag_es:1007929300600758345><@452954731162238987>,\n{hook}   <:flag_sk:1007930291488292885><@275248043828314112>")._json,
+                    interactions.EmbedField(name=f"**Minecraft versions**", value=f"{hook}   **Java Edition:** 1.19.2,\n{hook}   **Bedrock Edition:** 1.19.20")._json,
+                    interactions.EmbedField(name=f"**Java Edition translations**", value=f"The amazing Minecraft Translators community!")._json
+                    ],
                     color=0x3180F0,
                     thumbnail=interactions.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json))
 
