@@ -1,486 +1,490 @@
 {
-    "minecraft/lang/af_za.json": {
-        "hash": "5500434a9631021360a0ea2534db497ee82731be",
-        "size": 331726
-    },
-    "minecraft/lang/ar_sa.json": {
-        "hash": "e3b195f8137a7dc928a3e15bf14342d922575209",
-        "size": 696555
-    },
-    "minecraft/lang/ast_es.json": {
-        "hash": "fbd24d5538f38a64af68088ae43959c0ee70b003d",
-        "size": 318544
-    },
-    "minecraft/lang/az_az.json": {
-        "hash": "11f115ba25c9e5b9e8ce66a52b5a87fa9908ded1",
-        "size": 422283
-    },
-    "minecraft/lang/ba_ru.json": {
-        "hash": "49c25a00ad6c40ff6515771a51f46320e7ee6f73",
-        "size": 780685
-    },
-    "minecraft/lang/bar.json": {
-        "hash": "2604cb14b48fdb28f14284db34e6e9f24adfd49c",
-        "size": 344726
-    },
-    "minecraft/lang/be_by.json": {
-        "hash": "3d66a32ad1d6a2f8aae2958d11491b98c1ed140b",
-        "size": 811546
-    },
-    "minecraft/lang/bg_bg.json": {
-        "hash": "1b80541bb2bfbd62cb5eed3b86d252ca9358dc60",
-        "size": 818986
-    },
-    "minecraft/lang/br_fr.json": {
-        "hash": "84588f1ed547727180b290d9383a5e9047780acf",
-        "size": 267467
-    },
-    "minecraft/lang/brb.json": {
-        "hash": "bbde3a2d7823b321893056c0a1142fc75eb13faf",
-        "size": 347811
-    },
-    "minecraft/lang/bs_ba.json": {
-        "hash": "10e0011a547baf20aa3537d400991c95ae8a38d6",
-        "size": 348427
-    },
-    "minecraft/lang/ca_es.json": {
-        "hash": "eb64bdc8b287e1083aa4d5971db39ecca133f978",
-        "size": 349013
-    },
-    "minecraft/lang/cs_cz.json": {
-        "hash": "52064faff26889add7846ee3d7977403ab2c2dee",
-        "size": 407221
-    },
-    "minecraft/lang/cy_gb.json": {
-        "hash": "70e19becd2e59d1119c5385fb48551b361966e75",
-        "size": 334543
-    },
-    "minecraft/lang/da_dk.json": {
-        "hash": "b04ab00250b18ea7c1a877681e52e2f031141af1",
-        "size": 342187
-    },
-    "minecraft/lang/de_at.json": {
-        "hash": "2a120f707beeba4699a84f0739136ed2f40b4a43",
-        "size": 342423
-    },
-    "minecraft/lang/de_ch.json": {
-        "hash": "9bb2efe5e0d91b85928dbf7d2adf1c2d15b145bd",
-        "size": 349626
-    },
-    "minecraft/lang/de_de.json": {
-        "hash": "16f8510d648b537ba035ca10f1836ef5f4140d05",
-        "size": 351860
-    },
-    "minecraft/lang/el_gr.json": {
-        "hash": "2fe15e058f6c0991290ee2f52fbd3c8fc08cf41f",
-        "size": 896582
-    },
-    "minecraft/lang/en_au.json": {
-        "hash": "2c59919ffd8d5a03818226f5bd16bc92cc990143",
-        "size": 323060
-    },
-    "minecraft/lang/en_ca.json": {
-        "hash": "52f3758922b45542135fe8a74bb5730a26f3be7a",
-        "size": 323076
-    },
-    "minecraft/lang/en_gb.json": {
-        "hash": "85b316bb1dc13c9e09d00641b61cea71b6b42fa9",
-        "size": 323071
-    },
-    "minecraft/lang/en_nz.json": {
-        "hash": "f175748b840afcfee81cc96a20679b5c8fe74302",
-        "size": 323205
-    },
-    "minecraft/lang/en_pt.json": {
-        "hash": "685c9131ee9da7bd54a94bc4c4181682304f96ae",
-        "size": 336368
-    },
-    "minecraft/lang/en_ud.json": {
-        "hash": "b2ec82b77ec3ab561dbfd123b50bd0bc7859ef21",
-        "size": 606322
-    },
-    "minecraft/lang/enp.json": {
-        "hash": "bc272f47ff41304baf34975230f7546a7c6b585f",
-        "size": 326617
-    },
-    "minecraft/lang/enws.json": {
-        "hash": "ef064b12794831d08d23c54352d0c32770a03a11",
-        "size": 331821
-    },
-    "minecraft/lang/eo_uy.json": {
-        "hash": "df8a09b4c879bcc21f70fb57dd3ba28347150a84",
-        "size": 341291
-    },
-    "minecraft/lang/es_ar.json": {
-        "hash": "0916124a72a4b7819e4b0a466472fb1328f70091",
-        "size": 351471
-    },
-    "minecraft/lang/es_cl.json": {
-        "hash": "d0064a1e8e9e7d366d4891ce559f51fb3d32f112",
-        "size": 350427
-    },
-    "minecraft/lang/es_ec.json": {
-        "hash": "ba9ca99f0760bced10ead5a76ba30ba5c31f1dd9",
-        "size": 351643
-    },
-    "minecraft/lang/es_es.json": {
-        "hash": "93befd320acb12a6c6660bef45bfa5faa245b4d8",
-        "size": 352812
-    },
-    "minecraft/lang/es_mx.json": {
-        "hash": "8ba3bb3839296454aa7cf2f1e07301d967721f5e",
-        "size": 350896
-    },
-    "minecraft/lang/es_uy.json": {
-        "hash": "bbedd097c23bc663e24046f7e9703dfe5f83b60b",
-        "size": 352136
-    },
-    "minecraft/lang/es_ve.json": {
-        "hash": "9dab6ff5d4ddc04c057b0ca193387d3054375477",
-        "size": 351449
-    },
-    "minecraft/lang/esan.json": {
-        "hash": "808a929ad4e76c9f684ebe914ffc02236bbeec78",
-        "size": 397728
-    },
-    "minecraft/lang/et_ee.json": {
-        "hash": "528d7c929a8b9896dbfb01838c7ab3de7a880a60",
-        "size": 353107
-    },
-    "minecraft/lang/eu_es.json": {
-        "hash": "b05f4ca05d51f9acab2019a0ff6cd38502cf2f69",
-        "size": 344750
-    },
-    "minecraft/lang/fa_ir.json": {
-        "hash": "3ea02b314bec9a04b8d952949fd7354ff9a8f39c",
-        "size": 723796
-    },
-    "minecraft/lang/fi_fi.json": {
-        "hash": "ff9548208381a9147e048e2de86a70e8b46b7f42",
-        "size": 358332
-    },
-    "minecraft/lang/fil_ph.json": {
-        "hash": "246d36e9209513c812c7bd6301b16de344730457",
-        "size": 350477
-    },
-    "minecraft/lang/fo_fo.json": {
-        "hash": "c800fe2a8703888eb60ee67696d969f5ef02f7e7",
-        "size": 326879
-    },
-    "minecraft/lang/fr_ca.json": {
-        "hash": "3242d76e5a19fdfaa0c60195107baef363e44912",
-        "size": 371730
-    },
-    "minecraft/lang/fr_fr.json": {
-        "hash": "831814c302d79a1e5e9096f275dab1a584e165e6",
-        "size": 371777
-    },
-    "minecraft/lang/fra_de.json": {
-        "hash": "5b7569ed33e2541eab897b0df96d48ea223de6f9",
-        "size": 347537
-    },
-    "minecraft/lang/fur_it.json": {
-        "hash": "c531d1fd4d944b34eece2f144c28e2d04fdadeaf",
-        "size": 351548
-    },
-    "minecraft/lang/fy_nl.json": {
-        "hash": "2a6e4e0c9d1603bbd03387a149aab8f96c33b69b",
-        "size": 341194
-    },
-    "minecraft/lang/ga_ie.json": {
-        "hash": "a3af0dcba53c09bb44958d0b52323ed660c4bb61",
-        "size": 377580
-    },
-    "minecraft/lang/gd_gb.json": {
-        "hash": "57b6f2e3d58ae5450f75561dd0dab7a788b91d7d",
-        "size": 369288
-    },
-    "minecraft/lang/gl_es.json": {
-        "hash": "0ae626a4dc50c6614c8c501712a39a247e982366",
-        "size": 349863
-    },
-    "minecraft/lang/haw_us.json": {
-        "hash": "48316d527711c40cdc934ec8dda1ac4a54942842",
-        "size": 296088
-    },
-    "minecraft/lang/he_il.json": {
-        "hash": "3e317fa062abc789ad6f7cc5cc04335809a50607",
-        "size": 634325
-    },
-    "minecraft/lang/hi_in.json": {
-        "hash": "4bd1f47fb8b8b2dc03c50cd8e8b36a68e4d002aa",
-        "size": 762515
-    },
-    "minecraft/lang/hr_hr.json": {
-        "hash": "dc11d64d66194ad047e6cdfe75452a2c71957fae",
-        "size": 352531
-    },
-    "minecraft/lang/hu_hu.json": {
-        "hash": "dcd0bb8590c53e1ac0d27d7d3fde9f1ef1e1a9d4",
-        "size": 395147
-    },
-    "minecraft/lang/hy_am.json": {
-        "hash": "f500e1cc50caf13555d352fa8b45017ad539b805",
-        "size": 816319
-    },
-    "minecraft/lang/id_id.json": {
-        "hash": "2b5f71bb120900e04cbd9e3af58b1419f8699219",
-        "size": 333722
-    },
-    "minecraft/lang/ig_ng.json": {
-        "hash": "7e5f8ff8ebd2e468a54790b95338c7fab49d8147",
-        "size": 315465
-    },
-    "minecraft/lang/io_en.json": {
-        "hash": "9a530859e740197dfab33c7a2b10bde5685065c4",
-        "size": 278716
-    },
-    "minecraft/lang/is_is.json": {
-        "hash": "ac58c75dae350a82a43544a91bf4835778026172",
-        "size": 378665
-    },
-    "minecraft/lang/isv.json": {
-        "hash": "8876ace2223e0b2955722d22aeffe7ac45cf7c50",
-        "size": 361265
-    },
-    "minecraft/lang/it_it.json": {
-        "hash": "14ea5070a80243782d5f5075be7d91a8ac0af6d4",
-        "size": 349373
-    },
-    "minecraft/lang/ja_jp.json": {
-        "hash": "2ef61fbb027177ad560714843b6af1a92a0a8032",
-        "size": 542115
-    },
-    "minecraft/lang/jbo_en.json": {
-        "hash": "6c12a1fbab92d6d7c869b449b54642cf6973dc30",
-        "size": 218426
-    },
-    "minecraft/lang/ka_ge.json": {
-        "hash": "0bb3b9042ad613ce6583e365e8f394335711cf76",
-        "size": 823823
-    },
-    "minecraft/lang/kk_kz.json": {
-        "hash": "382a0dd8ffd6f1833ad5523877a24c7d8bae76d3",
-        "size": 743580
-    },
-    "minecraft/lang/kn_in.json": {
-        "hash": "7c4370ecf416b134bb70168c10bda7322abbd214",
-        "size": 813841
-    },
-    "minecraft/lang/ko_kr.json": {
-        "hash": "9d2d0324c67693d85ca0296e0e3e21e662c3c475",
-        "size": 492011
-    },
-    "minecraft/lang/ksh.json": {
-        "hash": "77896125af8d5fcb758e4ea28d43d4dd42e73b5e",
-        "size": 351937
-    },
-    "minecraft/lang/kw_gb.json": {
-        "hash": "ba4369f4fdca859e3f5cb8153e847eabf80b5208",
-        "size": 325579
-    },
-    "minecraft/lang/la_la.json": {
-        "hash": "408f0550963bba750739cc99ef2369639f14642b",
-        "size": 338281
-    },
-    "minecraft/lang/lb_lu.json": {
-        "hash": "ff6523aae6c8f9d703c837cf21e5e13d624f39dd",
-        "size": 354800
-    },
-    "minecraft/lang/li_li.json": {
-        "hash": "448b05449f24e720789bc90d8642abf3ec0b0425",
-        "size": 340112
-    },
-    "minecraft/lang/lmo.json": {
-        "hash": "78190cb76a8cd505f8ea4e0513217decf3a70172",
-        "size": 347904
-    },
-    "minecraft/lang/lol_us.json": {
-        "hash": "d552001c5c7389e565e72c6bbc81e466e498fb7b",
-        "size": 323098
-    },
-    "minecraft/lang/lt_lt.json": {
-        "hash": "6435b9456d339d361f0e099dcd2192d22566a3c5",
-        "size": 383049
-    },
-    "minecraft/lang/lv_lv.json": {
-        "hash": "2e8edd1bf40f5b6d42762137ed9d6ceca63b43aa",
-        "size": 387507
-    },
-    "minecraft/lang/lzh.json": {
-        "hash": "e0d1e1d830682188616e52146a05a782085b2c49",
-        "size": 352405
-    },
-    "minecraft/lang/mk_mk.json": {
-        "hash": "41de411b2a0738be3593955c705f6b9712318b5c",
-        "size": 821097
-    },
-    "minecraft/lang/mn_mn.json": {
-        "hash": "9e595c89528df4f4bb89ff397848b292e66972c7",
-        "size": 777556
-    },
-    "minecraft/lang/ms_my.json": {
-        "hash": "abe2719e6fd908cb9049522d3efa10fe19aaab95",
-        "size": 340543
-    },
-    "minecraft/lang/mt_mt.json": {
-        "hash": "c61a8b993c3a0f04531fb7d43a14b32b231700e5",
-        "size": 357536
-    },
-    "minecraft/lang/nds_de.json": {
-        "hash": "8b960a2bfd7c794b3e3161b100aa81d28448cf4e",
-        "size": 350558
-    },
-    "minecraft/lang/nl_be.json": {
-        "hash": "0787b86bb65d6a69fb719cb09cd4b58ba1b778ce",
-        "size": 336134
-    },
-    "minecraft/lang/nl_nl.json": {
-        "hash": "94c5de24852dbcc5aae32a8c83b755e0548d97d6",
-        "size": 336656
-    },
-    "minecraft/lang/nn_no.json": {
-        "hash": "8271180bc95d7228c03617c0d207cff52af8069a",
-        "size": 338011
-    },
-    "minecraft/lang/no_no.json": {
-        "hash": "64616a9e783ab457614c68cd56aa78cb7cb46af5",
-        "size": 336892
-    },
-    "minecraft/lang/oc_fr.json": {
-        "hash": "d576b22e55d6de1ebbee1eb3195cc58213013391",
-        "size": 270009
-    },
-    "minecraft/lang/ovd.json": {
-        "hash": "dcf008f2dac6969d5cb41d4558c2fa635fcf0113",
-        "size": 364296
-    },
-    "minecraft/lang/pl_pl.json": {
-        "hash": "8aed3661402c96d8e9e44d924374f9ae46520519",
-        "size": 374070
-    },
-    "minecraft/lang/pt_br.json": {
-        "hash": "0dab4d3d0871c1e7f365024f889a0451a75ab3a3",
-        "size": 353879
-    },
-    "minecraft/lang/pt_pt.json": {
-        "hash": "7168e8858042a71f718a1adbcff2153748fb4b5e",
-        "size": 354794
-    },
-    "minecraft/lang/qya_aa.json": {
-        "hash": "dce3102bf746b0e5a5eb525a4d40866ce1d93049",
-        "size": 229766
-    },
-    "minecraft/lang/ro_ro.json": {
-        "hash": "bfba96663fa1c481a21da2e28e3c036e7ba79125",
-        "size": 373255
-    },
-    "minecraft/lang/rpr.json": {
-        "hash": "bfa43d783400f78da16bf87438d2c47042d9e15b",
-        "size": 847841
-    },
-    "minecraft/lang/ru_ru.json": {
-        "hash": "2bf2b0799bf5e85129902bf6eea044dfc3ff0e30",
-        "size": 818264
-    },
-    "minecraft/lang/se_no.json": {
-        "hash": "5970648913dbc8f39151176e250cb700a4fe345e",
-        "size": 377458
-    },
-    "minecraft/lang/sk_sk.json": {
-        "hash": "e2bd14d55bb6139481bf0e18f4ad4bd0a9d4989f",
-        "size": 388693
-    },
-    "minecraft/lang/sl_si.json": {
-        "hash": "4fba2162f4ac35d38fa1dbdbb33c113efc2ddb6e",
-        "size": 347910
-    },
-    "minecraft/lang/so_so.json": {
-        "hash": "d53be1365395b339a93916b779ee35c043b4ddcd",
-        "size": 249208
-    },
-    "minecraft/lang/sq_al.json": {
-        "hash": "46c52f52428885cdf9eb022daf1b74ce405146e0",
-        "size": 370608
-    },
-    "minecraft/lang/sr_sp.json": {
-        "hash": "c2990864db64c32aaa5ba67ed622f11688a29ef6",
-        "size": 776878
-    },
-    "minecraft/lang/sv_se.json": {
-        "hash": "e5146139394c190c0618e44cd27b1818016d8cc3",
-        "size": 354423
-    },
-    "minecraft/lang/sxu.json": {
-        "hash": "d5444667de14e85149b7592e1a45bd189abe17c6",
-        "size": 359935
-    },
-    "minecraft/lang/szl.json": {
-        "hash": "f99f6a7f8b1b18bfc8831647b23527f81dad152e",
-        "size": 392580
-    },
-    "minecraft/lang/ta_in.json": {
-        "hash": "07e4229530b8af66f1d23486582b8f0c396a085c",
-        "size": 868789
-    },
-    "minecraft/lang/th_th.json": {
-        "hash": "f8b256873323093b40be369e368b1f253476f02b",
-        "size": 756722
-    },
-    "minecraft/lang/tl_ph.json": {
-        "hash": "f5d0d1fa331853e8fa97f240029896b6e7715923",
-        "size": 350750
-    },
-    "minecraft/lang/tlh_aa.json": {
-        "hash": "1ac2a8bb1665d46e686c67187c6856d346359203",
-        "size": 297209
-    },
-    "minecraft/lang/tok.json": {
-        "hash": "81a42bd8f237024542a9f1005966636e441fe973",
-        "size": 343312
-    },
-    "minecraft/lang/tr_tr.json": {
-        "hash": "4746211bd7b470d26c50ed487573ba293800b02d",
-        "size": 397138
-    },
-    "minecraft/lang/tt_ru.json": {
-        "hash": "ddf2cecf0fae9d5d0e46f5dac0b758a2ab1f0464",
-        "size": 744438
-    },
-    "minecraft/lang/uk_ua.json": {
-        "hash": "b08d787f8a85e89c1717fcc600c78fe18f1dea36",
-        "size": 807057
-    },
-    "minecraft/lang/val_es.json": {
-        "hash": "bb1dd1e73693c95a7eedcdc06a582cf53aa4dbc3",
-        "size": 357728
-    },
-    "minecraft/lang/vec_it.json": {
-        "hash": "b773b02ae35f83c4977810ef02cf2767fc72b337",
-        "size": 364050
-    },
-    "minecraft/lang/vi_vn.json": {
-        "hash": "f72971e7c7e6765d8c8e8da790fe09bef630bb5e",
-        "size": 469760
-    },
-    "minecraft/lang/yi_de.json": {
-        "hash": "9b63416f64b66d90c12e056d6e6abd8d0dba04c3",
-        "size": 804947
-    },
-    "minecraft/lang/yo_ng.json": {
-        "hash": "2b1fb5df05a8c900b8e298ec0836bf512fb69d53",
-        "size": 356527
-    },
-    "minecraft/lang/zh_cn.json": {
-        "hash": "9fabbc798786c7b7364902b31bdb37c2c037e9b8",
-        "size": 409915
-    },
-    "minecraft/lang/zh_hk.json": {
-        "hash": "9f1851cc4b8def61cd3e3a479210da7160654292",
-        "size": 411796
-    },
-    "minecraft/lang/zh_tw.json": {
-        "hash": "7b5f43b3b856f1c3ebca3bd207c2af5d39ce9da1",
-        "size": 414081
+    "af_za.json": {
+        "hash": "d82cb15f4fc1bbb38c4212ac25f5a05dfd7d470f",
+        "size": 350880
+    },
+    "ar_sa.json": {
+        "hash": "0b020fe4f1ad2ea643c9e5d694ddf3b1f5909fa0",
+        "size": 748636
+    },
+    "ast_es.json": {
+        "hash": "1b813edc51208121e814e711336f3e02837a313d",
+        "size": 319890
+    },
+    "az_az.json": {
+        "hash": "e4bf9b6a5c5e2cb5fddad30462d90b30cbe6f3c3",
+        "size": 452497
+    },
+    "ba_ru.json": {
+        "hash": "7072dc5265a3d153029bd79867fc3c9401b97ef7",
+        "size": 814133
+    },
+    "bar.json": {
+        "hash": "b52ba92965c676f528296d723d470e5a6bd8f88a",
+        "size": 369244
+    },
+    "be_by.json": {
+        "hash": "0df85d902bf41d4e1dc5d89a4aed6564a147da7d",
+        "size": 880340
+    },
+    "bg_bg.json": {
+        "hash": "254504dc2fe08394c27f5d69b69883be3032fc03",
+        "size": 883775
+    },
+    "br_fr.json": {
+        "hash": "f3f36e7502598e9f3cba13c507bf8e432a1e4526",
+        "size": 267430
+    },
+    "brb.json": {
+        "hash": "e309d0d6e7e79fa998675059c14b26405eee4e9a",
+        "size": 370125
+    },
+    "bs_ba.json": {
+        "hash": "efe62e579c79933cbb786931fdc2e841aee71ff4",
+        "size": 363291
+    },
+    "ca_es.json": {
+        "hash": "cc58aea134b5a0264fd0be88f84f81ee77b06ec1",
+        "size": 371940
+    },
+    "cs_cz.json": {
+        "hash": "ff0121fa5164d809a26daedfd9d829c95e2f45bd",
+        "size": 435373
+    },
+    "cy_gb.json": {
+        "hash": "e11cbaf8cde4cd4b19e3f1d65152e7626b8057ba",
+        "size": 355391
+    },
+    "da_dk.json": {
+        "hash": "371c7d6c9505559635ec9ec8b8eb50929daa2bf2",
+        "size": 365467
+    },
+    "de_at.json": {
+        "hash": "1806fe18b9047a6ea18291338899ab89774146ed",
+        "size": 365994
+    },
+    "de_ch.json": {
+        "hash": "401a0d75bdb7424f72a5ee50856f5349a857398f",
+        "size": 371450
+    },
+    "de_de.json": {
+        "hash": "a6681282395433debb967c728a9dc07eb4e30566",
+        "size": 376260
+    },
+    "el_gr.json": {
+        "hash": "242d4733a2d41e9eeb0983d8daac3fcd80aa7946",
+        "size": 978989
+    },
+    "en_au.json": {
+        "hash": "84473e1bef034f6bf32f07ae2368d936aea684c1",
+        "size": 344700
+    },
+    "en_ca.json": {
+        "hash": "e24eb087f96714f8a6a78f8a5f074e7fea11738a",
+        "size": 344678
+    },
+    "en_gb.json": {
+        "hash": "482e0dae05abfa35ab5cb076e41fda77b4fb9a08",
+        "size": 344705
+    },
+    "en_nz.json": {
+        "hash": "462f5ed830df2b167bfe900a8ec7a90eff82ed98",
+        "size": 344817
+    },
+    "en_pt.json": {
+        "hash": "3e2de0b3eded49fce833c0972487360de54ae100",
+        "size": 353255
+    },
+    "en_ud.json": {
+        "hash": "fcb6f199e8112c509d15211657dcffd045b7388a",
+        "size": 654866
+    },
+    "enp.json": {
+        "hash": "307d6e4a1efd08774a973652c6411c0ee54228df",
+        "size": 347057
+    },
+    "enws.json": {
+        "hash": "8be4f2099088fe965aef23bbd4f9ec15b9bba7d4",
+        "size": 350627
+    },
+    "eo_uy.json": {
+        "hash": "b4c0710774b9300b223cd19fae9f2c98a098a161",
+        "size": 364910
+    },
+    "es_ar.json": {
+        "hash": "651f5f29bea312caa181b9cae8f8e1dc395458ef",
+        "size": 375811
+    },
+    "es_cl.json": {
+        "hash": "b67d402abefb61146281ef710517d88250838f79",
+        "size": 373815
+    },
+    "es_ec.json": {
+        "hash": "0e87e19b100653e721278abd2e587118cee2996d",
+        "size": 375126
+    },
+    "es_es.json": {
+        "hash": "8f2d64c02f09b76a44b734654bb5a9f7db9ef9de",
+        "size": 376618
+    },
+    "es_mx.json": {
+        "hash": "1e3ca4cdc32fcd65ea8b3b6a60ed6b1619e33756",
+        "size": 374457
+    },
+    "es_uy.json": {
+        "hash": "2f8a3342fe73a2a02561a520426a19b0ea9d3773",
+        "size": 376499
+    },
+    "es_ve.json": {
+        "hash": "921cd0336c82a9a5653bb550338c33d39ce48d38",
+        "size": 374741
+    },
+    "esan.json": {
+        "hash": "bb88451252ad2c4623e7885dc532e761d7784b07",
+        "size": 425028
+    },
+    "et_ee.json": {
+        "hash": "0e33cf22a997f5730581e0bc24c4deb4da3467cc",
+        "size": 376404
+    },
+    "eu_es.json": {
+        "hash": "a8ce865101de052c3d06a70554a6f5c2ccda1d76",
+        "size": 365103
+    },
+    "fa_ir.json": {
+        "hash": "3a4d627d5e2f493ec45e8b84c5f8f27ef1412f97",
+        "size": 786027
+    },
+    "fi_fi.json": {
+        "hash": "94a86a5f34fc65de4fa095994753452e7e425515",
+        "size": 383044
+    },
+    "fil_ph.json": {
+        "hash": "e95ac93e2ccad67cf6ceb7a29e9df80df20047d0",
+        "size": 371020
+    },
+    "fo_fo.json": {
+        "hash": "bd0b7c40697973acb9e7085cec3f5db56b8baed7",
+        "size": 346317
+    },
+    "fr_ca.json": {
+        "hash": "e4ed23a528f5e74e66d68e919fd5b8d440b356ac",
+        "size": 397274
+    },
+    "fr_fr.json": {
+        "hash": "a2acf02b5f04ec2aa9ef963dd212cfecd9f6106f",
+        "size": 396843
+    },
+    "fra_de.json": {
+        "hash": "ba671de1609e50d79f20a6b2e377a6b13b0d3381",
+        "size": 345254
+    },
+    "fur_it.json": {
+        "hash": "9c95bf2c1a57ff8a875eea86f1b2692593d96bc4",
+        "size": 349653
+    },
+    "fy_nl.json": {
+        "hash": "a6c88b409d9992e3639a69da106c5d7737d99c6b",
+        "size": 362987
+    },
+    "ga_ie.json": {
+        "hash": "4a0f9a9664cfc91ebc50210a2e8e5089567100ad",
+        "size": 385993
+    },
+    "gd_gb.json": {
+        "hash": "667de4c148f924e127e3f21c1be3e56b8aa68c46",
+        "size": 366414
+    },
+    "gl_es.json": {
+        "hash": "1d591741abd23692670d91fa40a3b045f825b140",
+        "size": 373047
+    },
+    "haw_us.json": {
+        "hash": "dd7ce95a7e8196b0ea00eb1dd4a5d8d06c681f0b",
+        "size": 298118
+    },
+    "he_il.json": {
+        "hash": "a0e4194e0ca59bc6a48c5de70433b6730bb28bc9",
+        "size": 682309
+    },
+    "hi_in.json": {
+        "hash": "93e6f789c53f302f630535e41606482ca6345875",
+        "size": 822437
+    },
+    "hr_hr.json": {
+        "hash": "6a0137f2066cbda88b8a68ab1912c4b642eaa90d",
+        "size": 376052
+    },
+    "hu_hu.json": {
+        "hash": "77a39c0ad76fba8bf86b0e50ebcd9535b28cc5c3",
+        "size": 423038
+    },
+    "hy_am.json": {
+        "hash": "1d9deed320beb5ae7c197c88d3fdbac2e6bbcf45",
+        "size": 880121
+    },
+    "id_id.json": {
+        "hash": "c4ced346b9973b5cfae5072abddb5a4b57e8242b",
+        "size": 355873
+    },
+    "ig_ng.json": {
+        "hash": "ae7dff670916bee87bc725d132c1614559a855cc",
+        "size": 319951
+    },
+    "io_en.json": {
+        "hash": "cf8fa86b98342b9497cdf2161e8b55848841dfe8",
+        "size": 278535
+    },
+    "is_is.json": {
+        "hash": "88b7f0d38deed853043fff7cf54a63a3b2f8a952",
+        "size": 406064
+    },
+    "isv.json": {
+        "hash": "9b214581c2fb4fe15436ee1ec582c20082748f2a",
+        "size": 369488
+    },
+    "it_it.json": {
+        "hash": "a2f708005e60d9474297080b03f13d43a54dd304",
+        "size": 373520
+    },
+    "ja_jp.json": {
+        "hash": "824843538fb4b3cce304fc9eb94f3b14bb33ad8f",
+        "size": 583278
+    },
+    "jbo_en.json": {
+        "hash": "038027ee519b0c3d65f7528f6756fae1319879c4",
+        "size": 253210
+    },
+    "ka_ge.json": {
+        "hash": "98820b3f4ad1407c3506c599bd43f6658c73363d",
+        "size": 863532
+    },
+    "kk_kz.json": {
+        "hash": "e6df01c16130dde5ab9374a55d2ac2fc5e63508f",
+        "size": 801567
+    },
+    "kn_in.json": {
+        "hash": "85f44d406e31a9fb22c5d986f4fe3720235f5009",
+        "size": 877631
+    },
+    "ko_kr.json": {
+        "hash": "b2ce09b046f779b42eb76947cd27f0d9af178c98",
+        "size": 527266
+    },
+    "ksh.json": {
+        "hash": "4daace531b6812f8851694985a7a3ab58e63a6ae",
+        "size": 376222
+    },
+    "kw_gb.json": {
+        "hash": "a4501a9b46f2061a4d06b8240bfa5e3de87813ca",
+        "size": 342905
+    },
+    "la_la.json": {
+        "hash": "3bede7c774e5c68112a864efb0348c784467e664",
+        "size": 356554
+    },
+    "lb_lu.json": {
+        "hash": "57e9dc75a57d1768e617c11c665a112fc175d07f",
+        "size": 358346
+    },
+    "li_li.json": {
+        "hash": "a785aacad59fc732793521e922e210b26a31285f",
+        "size": 361195
+    },
+    "lmo.json": {
+        "hash": "39c26ce604c95ed9f8fe7d5cf48b731f2c56c93f",
+        "size": 371836
+    },
+    "lol_us.json": {
+        "hash": "a785c246de55dfc8489419d2dae2734d7b5edafc",
+        "size": 344378
+    },
+    "lt_lt.json": {
+        "hash": "d3818470f46f8ed8247c88073dd3982cb3dcdc2d",
+        "size": 407790
+    },
+    "lv_lv.json": {
+        "hash": "930266f62bd2c2adedb91981abfa76d77dd98959",
+        "size": 412698
+    },
+    "lzh.json": {
+        "hash": "6c05e84d447dcc4ecbc048dd0f96dace13856253",
+        "size": 376332
+    },
+    "mk_mk.json": {
+        "hash": "3c6bcc08414f2126ec7de749b6173666941391ce",
+        "size": 830271
+    },
+    "mn_mn.json": {
+        "hash": "0a0a0d85a932b0b552ccf80fdb0495b929aa2e0f",
+        "size": 826233
+    },
+    "ms_my.json": {
+        "hash": "6cd8014b6fab6d8462685c6817ae5474b7997be3",
+        "size": 363384
+    },
+    "mt_mt.json": {
+        "hash": "344b9f7c80408973bbbc6c30f753106d19acda83",
+        "size": 366642
+    },
+    "nds_de.json": {
+        "hash": "69213788f2b3ac7e8df583daf3bada9eb146e68b",
+        "size": 349560
+    },
+    "nl_be.json": {
+        "hash": "8897f2c75ab00029a05d725dd8a62a0196812099",
+        "size": 358655
+    },
+    "nl_nl.json": {
+        "hash": "93833205f6409e0f2badba8ee7531ad2f60e5c9f",
+        "size": 359235
+    },
+    "nn_no.json": {
+        "hash": "698c328d46df55c7f00f7024fbeaa148c7155e39",
+        "size": 360863
+    },
+    "no_no.json": {
+        "hash": "7e07a5a7baa15361ed1bbfdda3396a2d0c72313e",
+        "size": 359954
+    },
+    "oc_fr.json": {
+        "hash": "eeb2b29f634a8f3d4d0e1324912cca31dbf7617e",
+        "size": 281879
+    },
+    "ovd.json": {
+        "hash": "6e0978e8e46a3cf0e26a8609fc88319792ba7090",
+        "size": 388918
+    },
+    "pl_pl.json": {
+        "hash": "4a60d4b09e51139ce37375bf5ad0fa787670d5b5",
+        "size": 400432
+    },
+    "pt_br.json": {
+        "hash": "fda83ee9a52df49ca9ec266aa2e49276cebc0c17",
+        "size": 377013
+    },
+    "pt_pt.json": {
+        "hash": "bf011f6549dfb06b257f9e2c6470ed20bbc05bb1",
+        "size": 378475
+    },
+    "qya_aa.json": {
+        "hash": "a12ec6998c2aeb3d61ca28b7ada4fb8db8f9e8e7",
+        "size": 264412
+    },
+    "ro_ro.json": {
+        "hash": "c605c7cfccbb100532f0bf8b0992cb9e869ccb33",
+        "size": 399529
+    },
+    "rpr.json": {
+        "hash": "ce78ab11fd56047f589fbbcae839a7fa83c0e71e",
+        "size": 912159
+    },
+    "ru_ru.json": {
+        "hash": "7e4fa1f1196dc4248cfeb7db7dfa4c564f9a677b",
+        "size": 882627
+    },
+    "se_no.json": {
+        "hash": "187e788a0df54df369abc778b1862814da3317e9",
+        "size": 400052
+    },
+    "sk_sk.json": {
+        "hash": "c3cdf990906d3a518825b385eae3932f352ee1ba",
+        "size": 414855
+    },
+    "sl_si.json": {
+        "hash": "b76b10a217160feb83a5b69f1a70e935dbbdf6d9",
+        "size": 368119
+    },
+    "so_so.json": {
+        "hash": "430ce60ee7b4872a2f77bf2e8626889edd0faaf0",
+        "size": 266758
+    },
+    "sq_al.json": {
+        "hash": "ce9f50e4acc8ea283af04375c5892a2ce72fd69a",
+        "size": 396389
+    },
+    "sr_sp.json": {
+        "hash": "7ea6c72701a4e5869638c628640cd8b478d651a3",
+        "size": 832549
+    },
+    "sv_se.json": {
+        "hash": "ed480c05ad0e631ad9276046c3b333bcfe64ae2e",
+        "size": 378694
+    },
+    "sxu.json": {
+        "hash": "17580d5831792d168d540c93c2214b2b0f655306",
+        "size": 385227
+    },
+    "szl.json": {
+        "hash": "fb082494dbcf62708f038a2278a824265865e70d",
+        "size": 418872
+    },
+    "ta_in.json": {
+        "hash": "2b29b342e8718606a4aa5925a5c9e70d26c421dd",
+        "size": 926380
+    },
+    "th_th.json": {
+        "hash": "ea78c47ab6f42bcc8b9b67d46e4a884443bd9c3e",
+        "size": 817535
+    },
+    "tl_ph.json": {
+        "hash": "1ba1a1efb91b35d2e1c95497ed20cd4234885d57",
+        "size": 356167
+    },
+    "tlh_aa.json": {
+        "hash": "841cb256567d66d6161e9b3a2e12d36c5d5a728a",
+        "size": 343573
+    },
+    "tok.json": {
+        "hash": "19a8be84bb7a1a942eb9270f815276c561a78e2b",
+        "size": 359704
+    },
+    "tr_tr.json": {
+        "hash": "0938fe592ed985ab730058ffe93583bf94dccc3e",
+        "size": 424152
+    },
+    "tt_ru.json": {
+        "hash": "c4849cc18984533aae033076fb9be298577d306e",
+        "size": 782046
+    },
+    "uk_ua.json": {
+        "hash": "256d26375dc8b41b8e6acd94308acbac4d73dc7a",
+        "size": 874527
+    },
+    "val_es.json": {
+        "hash": "66b09611bc77f1894c265f0394a9dc43243668f1",
+        "size": 381120
+    },
+    "vec_it.json": {
+        "hash": "80f43b48bcb7c9f305e05cfbfead38aa316ad9e8",
+        "size": 383564
+    },
+    "vi_vn.json": {
+        "hash": "cb5206c27cbed7a952896ff4a297cbdfc45602d9",
+        "size": 503520
+    },
+    "yi_de.json": {
+        "hash": "347a2a8e627c19dd3da78c1f269b1f05d26c67fc",
+        "size": 801172
+    },
+    "yo_ng.json": {
+        "hash": "45aaf3f74d105dc8fa2bb78cb6f667dab84db003",
+        "size": 368211
+    },
+    "zh_cn.json": {
+        "hash": "a68eabebe9c731a51708e9208b436d6f7a38c934",
+        "size": 438539
+    },
+    "zh_hk.json": {
+        "hash": "2b9d91fc28c1beb2928c7a9eca8ac32788ad4de1",
+        "size": 440545
+    },
+    "zh_tw.json": {
+        "hash": "dd6059720a69e4b87726234c1e75221d360d8492",
+        "size": 441970
+    },
+    "zlm_arab.json": {
+        "hash": "44c7b4989e0cc6664feb6d90299558ef77e095ca",
+        "size": 774362
     }
 }
