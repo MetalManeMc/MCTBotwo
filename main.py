@@ -107,7 +107,6 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
     """
 
     string = string.lower()
-    # we can put something like find(languages) for user to be able to insert uncomplete languages
     try:
         if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
             jstarget = open_json(lang(targetlang, edition), edition)
@@ -259,7 +258,7 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
                 f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
-    except embederr as e: # This is where it returns when there was an error in the code or user made a mistake
+    except embederr as e:
         embed=di.Embed(
             title=e.title,
             thumbnail=e.image,
@@ -269,12 +268,13 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
             description=e.desc
             )
         hide=e.hidden
-    except Exception:
+    except Exception as ex:
+        print(ex)
         embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except:
-        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json))
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
 
 
 
@@ -303,35 +303,58 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
                     ])])
 async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=None):
     f=json.load(open(Path(PATH,"serverdefaults.json")))
+    hide=False
     if sub_command=="default-target-language":
         try:
             currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
-            if targetlang in langcodes or targetlang in langnames:
-                f[str(ctx.guild_id)]["server"]["targetlang"]=targetlang
-                await ctx.send(f"Default target language changed to `{targetlang}`.")
-            else:
-                await ctx.send(f"`{targetlang}` isn't a valid language. Default target language reset to `{currentlang}`.")
-        except KeyError:
-            if targetlang in langcodes or targetlang in langnames:
-                f[str(ctx.guild_id)]["server"].update({"targetlang": targetlang})
-                await ctx.send(f"Default target language set to `{targetlang}`.")
-            else:
-                await ctx.send(f"`{targetlang}` isn't a valid language.")
+            try:
+                f[str(ctx.guild_id)]["server"]["targetlang"]=lang(targetlang,"java")
+                embed=di.Embed(title=f"Default target language set to `{find_translation('language.name',lang(targetlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(targetlang,'java'),'key','java')[1]}`.",color=0x3180F0)
+            except embederr as e:
+                e.desc=f"Default target language reset to `{find_translation('language.name',lang(currentlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(currentlang,'java'),'key','java')[1]}`."
+                raise e
+        except embederr as e:
+            embed=di.Embed(
+                title=e.title,
+                thumbnail=e.image,
+                url=e.url,
+                fields=e.field,
+                color=e.color,
+                description=e.desc
+                )
+            hide=e.hidden
+        except Exception as ex:
+            print(ex)
+            hide=True
+            embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
     elif sub_command=="default-edition":
         edition=edition.lower()
         try:
             currentedition=f[str(ctx.guild_id)]["server"]["edition"]
             if edition=="java" or edition=="bedrock":
                 f[str(ctx.guild_id)]["server"]["edition"]=edition
-                await ctx.send(f"Default edition changed to `{edition}`.")
+                embed=di.Embed(title=f"Default edition changed to `{edition}`.",color=0x3180F0)
             else:
-                await ctx.send(f"`{edition}` isn't a valid edition. Default edition reset to `{currentedition}`.")
-        except KeyError:
-            if edition=="java" or edition=="bedrock":
-                f[str(ctx.guild_id)]["server"].update({"edition": edition})
-                await ctx.send(f"Default edition set to `{edition}`.")
-            else:
-                await ctx.send(f"`{edition}` isn't a valid edition.")
+                raise embederr("Edition not found",description=f"Default edition reset to `{currentedition}`.")
+        except embederr as e:
+            embed=di.Embed(
+                title=e.title,
+                thumbnail=e.image,
+                url=e.url,
+                fields=e.field,
+                color=e.color,
+                description=e.desc
+                )
+            hide=e.hidden
+        except Exception as ex:
+            print(ex)
+            hide=True
+            embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
+    try:
+        await ctx.send(embeds=embed,ephemeral=hide)
+    except Exception as exc:
+        print(exc)
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
     json.dump(f, open("serverdefaults.json", "w"))
 
 
