@@ -211,7 +211,7 @@ def lang(search:str, edition):
                 )
             ])
 async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us", edition=None):
-    hidden=FALSE
+    hidden=False
     try:
         if target == None:
             try:
@@ -269,12 +269,10 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
             color=e.color,
             description=e.desc
             )
-    except Exception:
-        hide=e.hidden
     except Exception as ex:
         print(ex)
         embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
-        hidden=TRUE
+        hidden=True
     try:
         await ctx.send(embeds=embed, ephemeral=hidden)
     except:
