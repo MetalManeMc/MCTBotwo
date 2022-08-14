@@ -269,6 +269,7 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
             color=e.color,
             description=e.desc
             )
+        hidden=True
     except Exception as ex:
         print(ex)
         embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
