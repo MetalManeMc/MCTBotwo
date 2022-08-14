@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Бяхте премахнати от играта:",
 "disconnect.loginFailed":"Неуспешно влизане",
 "disconnect.loginFailedInfo":"Неуспешно влизане: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Несъответствие в средата на Playfab – Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Несъответствие в средата на Playfab – Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Невалидна сесия (пробвайте да рестартирате играта)",
 "disconnect.loginFailedInfo.serversUnavailable":"Сървърите за удостоверяване в момента са изключени с цел поддръжка.",
 "disconnect.lost":"Връзката е прекъсната",

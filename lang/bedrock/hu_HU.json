@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Eltávolítottak a játékból:",
 "disconnect.loginFailed":"Nem sikerült bejelentkezni",
 "disconnect.loginFailedInfo":"Nem sikerült bejelentkezni: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab környezet eltérése – Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab környezet eltérése – Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Érvénytelen munkamenet (próbáld újraindítani a játékot)",
 "disconnect.loginFailedInfo.serversUnavailable":"A hitelesítési kiszolgálók jelenleg karbantartás miatt le vannak állítva.",
 "disconnect.lost":"Megszakadt a kapcsolat",

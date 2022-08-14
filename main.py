@@ -150,7 +150,6 @@ def lang(search:str, edition):
     Input can be the expected output too.
     Input can be approved language code, name, region or internal code (searching in this order)
     """
-
     search = search.lower()
     if edition=="java":
         for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
@@ -213,6 +212,7 @@ def lang(search:str, edition):
                 )
             ])
 async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us", edition=None):
+    hidden=FALSE
     try:
         if target == None:
             try:
@@ -225,6 +225,8 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
              except:
                  edition="java"
         edition=edition.lower()
+        target=target.lower()
+        source=source.lower()
         found=find_translation(search, target, source, edition)
         list_message = found[0]
         exact = found[1]
@@ -268,17 +270,17 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
             color=e.color,
             description=e.desc
             )
-        hide=e.hidden
     except Exception:
         embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
+        hidden=TRUE
     try:
-        await ctx.send(embeds=embed,ephemeral=hide)
+        await ctx.send(embeds=embed, ephemeral=hidden)
     except:
-        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json))
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json), ephemeral=TRUE)
 
 
 
-@bot.command(name="settings", description="Bot settings", scope=SCOPES,options=[
+@bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
         di.Option(
             name="default-target-language",
             description="Sets the default server target language",
@@ -351,7 +353,7 @@ belangcodes, belangcodesandnames, belangnames, belangregions = [], [], [], []
 
 names=json.load(open("language_names.json", encoding="utf-8"))
 for i in names:
-    belangcodes.append(i[0])
+    belangcodes.append(i[0].lower())
     belangcodesandnames.append(i[1])
     codeandname=i[1].split(" (")
     belangnames.append(codeandname[0])

@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Du blev fjernet fra spillet:",
 "disconnect.loginFailed":"Login mislykkedes",
 "disconnect.loginFailedInfo":"Login mislykkedes: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Uoverensstemmelser i Playfab-miljø – Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Uoverensstemmelser i Playfab-miljø – Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Ugyldig session (prøv at genstarte dit spil)",
 "disconnect.loginFailedInfo.serversUnavailable":"Godkendelsesserverne er nede pga. vedligehold.",
 "disconnect.lost":"Forbindelsen er afbrudt",

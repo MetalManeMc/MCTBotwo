@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"ゲームから追放されました",
 "disconnect.loginFailed":"ログイン失敗",
 "disconnect.loginFailedInfo":"ログイン失敗: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab 環境の不一致 - 検出=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab 環境の不一致 - 検出=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"無効なセッションです（マインクラフトを再起動してください）",
 "disconnect.loginFailedInfo.serversUnavailable":"現在、認証サーバがメンテナンス中です。",
 "disconnect.lost":"接続が切断されました",

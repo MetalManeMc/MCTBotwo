@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Boli ste odstránení z hry:",
 "disconnect.loginFailed":"Nepodarilo sa prihlásiť",
 "disconnect.loginFailedInfo":"Nepodarilo sa prihlásiť: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Nesúlad prostredia Playfabu – Discovery =%s/%s, Playfab ":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Nesúlad prostredia Playfabu – Discovery =%s/%s, Playfab =%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Neplatná relácia (skúste reštartovať hru)",
 "disconnect.loginFailedInfo.serversUnavailable":"Overovacie servery sú momentálne nedostupné pre údržbu.",
 "disconnect.lost":"Pripojenie sa prerušilo",

@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Du togs bort från spelet:",
 "disconnect.loginFailed":"Kunde inte logga in",
 "disconnect.loginFailedInfo":"Kunde inte logga in: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab-miljön matchar inte: Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab-miljön matchar inte: Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Ogiltig session (prova att starta om spelet)",
 "disconnect.loginFailedInfo.serversUnavailable":"Autentiseringsservrarna är avstängda för underhåll just nu.",
 "disconnect.lost":"Anslutningen tappades",

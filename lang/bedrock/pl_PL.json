@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Usunięto cię z gry:",
 "disconnect.loginFailed":"Nie udało się zalogować",
 "disconnect.loginFailedInfo":"Nie udało się zalogować: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Niezgodność środowiska Playfab – Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Niezgodność środowiska Playfab – Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Nieprawidłowa sesja (spróbuj ponownie uruchomić grę)",
 "disconnect.loginFailedInfo.serversUnavailable":"Serwery uwierzytelniające obecnie nie działają z powodu konserwacji.",
 "disconnect.lost":"Utrata połączenia",

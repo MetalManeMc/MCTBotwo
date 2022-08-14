@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Oyundan çıkarıldın:",
 "disconnect.loginFailed":"Oturum açılamadı",
 "disconnect.loginFailedInfo":"Oturum açılamadı: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab ortam uyuşmazlığı - Keşif=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab ortam uyuşmazlığı - Keşif=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Geçersiz oturum (Oyununuzu yeniden başlatmayı deneyin)",
 "disconnect.loginFailedInfo.serversUnavailable":"Kimlik doğrulama sunucuları şu anda bakım nedeniyle kullanılamıyor.",
 "disconnect.lost":"Bağlantı Kaybedildi",

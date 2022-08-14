@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Du wurdest aus dem Spiel entfernt:",
 "disconnect.loginFailed":"Anmeldung fehlgeschlagen",
 "disconnect.loginFailedInfo":"Anmeldung fehlgeschlagen: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab-Umgebungskonflikt – Erkennung=%s/%s, Playfab ":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab-Umgebungskonflikt – Erkennung=%s/%s, Playfab =%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Ungültige Sitzung (versuche das Spiel neu zu starten)",
 "disconnect.loginFailedInfo.serversUnavailable":"Die Anmeldeserver sind derzeit zur Wartung heruntergefahren.",
 "disconnect.lost":"Verbindung unterbrochen",

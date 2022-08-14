@@ -16,7 +16,7 @@ for dirpath, dirnames, filenames in os.walk("texts"):
             os.replace(os.path.join(dirpath, file), os.path.join("lang/bedrock", file)) # Places the lang files in the "lang/bedrock" folder. The "texts" one should be empty
             print(file, "moved")
         else:
-            os.remove(os.path.join(dirpath, file))
+              os.remove(os.path.join(dirpath, file))
 
 for dirpath, dirnames, filenames in os.walk("lang/bedrock"):
     for file in filenames:
@@ -40,6 +40,12 @@ for dirpath, dirnames, filenames in os.walk("lang/bedrock"):
                 except ValueError: pass
                 if "=" in x:
                     y=x.split("=")
+                    try: 
+                        a=y[2]
+                        together=[y[1], y[2]]
+                        y[1]="=".join(together)
+                        del y[2]
+                    except IndexError:pass
                     try: 
                         a=y[2]
                         together=[y[1], y[2]]
