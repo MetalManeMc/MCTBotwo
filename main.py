@@ -137,8 +137,20 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
                 if jssource[i].lower()==string:
                     exact=jstarget[i]
                     break
+
+    added=False
+    print("Len:", len(result))
     if len(result)>10:
         del result[10:]
+        print(result)
+        added=True
+    resfull="|".join(result)
+    if len(resfull)>1000:
+        resfull=resfull[:1000]
+        resfull+="…"
+        result=resfull.split("|")
+        added=True
+    if added:
         result.append("**…and more!**")
     return result,exact
 
@@ -181,36 +193,15 @@ def lang(search:str, edition):
         raise embederr("Language not found")
 
 
-@bot.command(name = "translate",
-             description = "Returns the translation found in-game for a string",
-             scope=SCOPES,
-             options = [
-                di.Option(
-                    name = "search",
-                    description = "String or key to translate.",
-                    type = di.OptionType.STRING,
-                    required = True
-                ),
-                di.Option(
-                    name = "target",
-                    description = "Language code, name or region or 'key' to translate to.",
-                    type = di.OptionType.STRING,
-                    required = False
-                ),
-                di.Option(
-                    name = "source",
-                    description = "Language code, name, or region or 'key' to translate from.",
-                    type = di.OptionType.STRING,
-                    required = False
-                ),
-                di.Option(
-                    name = "edition",
-                    description = "Java or Bedrock Edition translation?",
-                    type = di.OptionType.STRING,
-                    required = False
-                )
-            ])
-async def translate(ctx: di.CommandContext, search: str, target=None, source="en_us", edition=None):
+@bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
+@di.option(str, name = "search", description = "String or key to translate.", required=True)
+@di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False)
+@di.option(str, name = "source", description = "Language code, name or region or 'key' to translate from.", required = False)
+@di.option(str, name = "edition", description = "Java or Bedrock Edition translation?", required=False, choices=[
+    di.Choice(name="java", value="java"),
+    di.Choice(name="bedrock", value="bedrock")
+])
+async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None):
     hidden=False
     try:
         if target == None:
@@ -236,7 +227,9 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
                 title = "No perfect matches"
                 embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
             else:
-                list_message.remove(exact)
+                try:
+                    list_message.remove(exact)
+                except ValueError:pass
                 message = "\n".join(list_message)
                 title = exact
                 if len(list_message) == 0:
@@ -272,12 +265,12 @@ async def translate(ctx: di.CommandContext, search: str, target=None, source="en
         hidden=True
     except Exception as ex:
         print(ex)
-        embed=di.Embed(title="Something happened",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
+        embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
         hidden=True
     try:
         await ctx.send(embeds=embed, ephemeral=hidden)
     except:
-        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
 
 
 
