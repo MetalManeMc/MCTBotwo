@@ -139,10 +139,8 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
                     break
 
     added=False
-    print("Len:", len(result))
     if len(result)>10:
         del result[10:]
-        print(result)
         added=True
     resfull="|".join(result)
     if len(resfull)>1000:
@@ -264,7 +262,6 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             )
         hidden=True
     except Exception as ex:
-        print(ex)
         embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
         hidden=True
     try:
@@ -295,8 +292,11 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                     name="edition",
                     description="Java or Bedrock edition?",
                     type = di.OptionType.STRING,
-                    required=True),
-                    ])])
+                    required=True
+                    , choices=[
+                        di.Choice(name="java", value="java"),
+                        di.Choice(name="bedrock", value="bedrock")
+                        ])])])
 async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=None):
     f=json.load(open(Path(PATH,"serverdefaults.json")))
     hide=False
@@ -320,7 +320,6 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
                 )
             hide=e.hidden
         except Exception as ex:
-            print(ex)
             hide=True
             embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
     elif sub_command=="default-edition":
@@ -343,13 +342,11 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
                 )
             hide=e.hidden
         except Exception as ex:
-            print(ex)
             hide=True
             embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except Exception as exc:
-        print(exc)
         await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
     json.dump(f, open("serverdefaults.json", "w"))
 
