@@ -160,6 +160,7 @@ def lang(search:str, edition):
     Input can be approved language code, name, region or internal code (searching in this order)
     """
     search = search.lower()
+    injava=False
     if edition=="java":
         for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
             if search in langcodesapp[i].lower():
@@ -173,6 +174,9 @@ def lang(search:str, edition):
         for i in range(len(langregions)):
             if search in langregions[i].lower():
                 return langcodes[i]
+        for i in range(len(langfull)):
+            if search in langfull[i].lower():
+                return langcodes[i]
     elif edition=="bedrock":
         for i in range(len(belangcodes)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
             if search in belangcodes[i].lower():
@@ -181,20 +185,39 @@ def lang(search:str, edition):
             if search in belangnames[i].lower():
                 return belangcodes[i]
         for i in range(len(belangregions)):
-            if search in belangregions[i].lower():
-                return belangcodes[i]
+            try:
+                if search in belangregions[i].lower():
+                    return belangcodes[i]
+            except AttributeError:pass
+        for i in range(len(langfull)):
+            if search in langfull[i].lower():
+                injava=True
+                for x in range(len(belangcodes)):
+                    if langcodes[i]==belangcodes[x]:
+                        return belangcodes[x]
+                    
+            
 
     ret=complete(search, langcodes)
     if len(ret)>0:
         return ret[0]
     else:
-        raise embederr("Language not found")
+        if injava==False:
+            raise embederr("Language not found…")
+        elif injava==True:
+            raise embederr("This language does not exist in Bedrock Edition.")
 
+async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
+    items = langfull
+    choices = [
+        di.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
+    ] 
+    await ctx.populate(choices[:25])
 
 @bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
 @di.option(str, name = "search", description = "String or key to translate.", required=True)
-@di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False)
-@di.option(str, name = "source", description = "Language code, name or region or 'key' to translate from.", required = False)
+@di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False, autocomplete=True)
+@di.option(str, name = "source", description = "Language code, name or region or 'key' to translate from.", required = False, autocomplete=True)
 @di.option(str, name = "edition", description = "Java or Bedrock Edition translation?", required=False, choices=[
     di.Choice(name="java", value="java"),
     di.Choice(name="bedrock", value="bedrock")
@@ -235,7 +258,8 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 else:
                     embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
             if edition=="java":
-                url=f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}"
+                targetcode=lang(target, edition).replace("_", "")
+                url=f"https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}"
             elif edition=="bedrock":
                 url=None
             embed=di.Embed(
@@ -262,13 +286,21 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             )
         hidden=True
     except Exception as ex:
-        embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
-        hidden=True
+        if beta==True:
+            raise ex
+        else:
+            embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
+            hidden=True
     try:
         await ctx.send(embeds=embed, ephemeral=hidden)
-    except:
-        await ctx.send(embeds=di.Embed(title="Something happened while sending message",thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
-
+    except Exception as ex:
+        await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
+@bot.autocomplete("translate", "target")
+async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
+    return await lang_autocomplete(ctx, user_input)
+@bot.autocomplete("translate", "source")
+async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
+    return await lang_autocomplete(ctx, user_input)
 
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
@@ -281,7 +313,8 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                     name="targetlang",
                     description="The target language",
                     type = di.OptionType.STRING,
-                    required=True),
+                    required=True,
+                    autocomplete=True),
                     ]),
         di.Option(
             name="default-edition",
@@ -292,8 +325,8 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                     name="edition",
                     description="Java or Bedrock edition?",
                     type = di.OptionType.STRING,
-                    required=True
-                    , choices=[
+                    required=True,
+                    choices=[
                         di.Choice(name="java", value="java"),
                         di.Choice(name="bedrock", value="bedrock")
                         ])])])
@@ -349,10 +382,12 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
     except Exception as exc:
         await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
     json.dump(f, open("serverdefaults.json", "w"))
+@bot.autocomplete("settings", "targetlang")
+async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
+    return await lang_autocomplete(ctx, user_input)
 
 
-
-langcodes, langcodesapp, langnames, langregions = [], [], [], []
+langcodes, langcodesapp, langnames, langregions, langfull = [], [], [], [], []
 
 for a, b, c in os.walk(JAVA_DIR): # Gives a list of java language codes, names and regions, so i can search in them
     for i in c:
@@ -360,6 +395,7 @@ for a, b, c in os.walk(JAVA_DIR): # Gives a list of java language codes, names a
         langnames.append(open_json(i)["language.name"].lower())
         langcodesapp.append(open_json(i)["language.code"].lower())
         langregions.append(open_json(i)["language.region"].lower())
+        langfull.append(open_json(i)["language.name"] + " ("+ open_json(i)["language.region"] + ")")
     break
 
 
@@ -375,7 +411,6 @@ for i in names:
         belangregions.append(codeandname[1].replace(")", ""))
     except IndexError:
         belangregions.append(None)
-
 
 for cog in COGS:
     if cog!="variables":
