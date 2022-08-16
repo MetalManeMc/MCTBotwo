@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"게임에서 제외되었습니다:",
 "disconnect.loginFailed":"로그인에 실패했습니다",
 "disconnect.loginFailedInfo":"로그인에 실패했습니다: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab 환경 불일치 - 발견=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab 환경 불일치 - 발견=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"유효하지 않은 세션입니다 (게임을 다시 시작하세요)",
 "disconnect.loginFailedInfo.serversUnavailable":"현재 인증 서버가 점검 중에 있으며 사용이 불가능합니다.",
 "disconnect.lost":"접속이 끊어졌습니다",

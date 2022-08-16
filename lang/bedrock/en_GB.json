@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"You were removed from the game:",
 "disconnect.loginFailed":"Failed to login",
 "disconnect.loginFailedInfo":"Failed to login: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab environment mismatch – Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab environment mismatch – Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Invalid session (Try restarting your game)",
 "disconnect.loginFailedInfo.serversUnavailable":"The authentication servers are currently down for maintenance.",
 "disconnect.lost":"Connection Lost",

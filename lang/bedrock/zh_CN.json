@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"您已被移除出游戏：",
 "disconnect.loginFailed":"登入失败",
 "disconnect.loginFailedInfo":"登入失败：%s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab 环境不匹配 - 发现 =%s/%s， Playfab ":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab 环境不匹配 - 发现 =%s/%s， Playfab =%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"无效的会话 (请尝试重启你的游戏)",
 "disconnect.loginFailedInfo.serversUnavailable":"身份验证目前正在停机维护。",
 "disconnect.lost":"连接已丢失",

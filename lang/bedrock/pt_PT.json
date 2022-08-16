@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Foste removido(a) do jogo:",
 "disconnect.loginFailed":"Não foi possível iniciar sessão",
 "disconnect.loginFailedInfo":"Não foi possível iniciar sessão: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Erro de correspondência do ambiente Playfab - Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Erro de correspondência do ambiente Playfab - Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Sessão inválida (tenta reiniciar o jogo)",
 "disconnect.loginFailedInfo.serversUnavailable":"Os servidores de autenticação encontram-se desativados para manutenção.",
 "disconnect.lost":"Ligação perdida",

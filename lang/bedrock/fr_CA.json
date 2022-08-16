@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Vous avez été retiré(e) du jeu :",
 "disconnect.loginFailed":"Échec de l'authentification",
 "disconnect.loginFailedInfo":"Échec de l'authentification : %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Incompatibilité d’environnement Playfab – Découverte=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Incompatibilité d’environnement Playfab – Découverte=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Session invalide (essayez de redémarrer le jeu)",
 "disconnect.loginFailedInfo.serversUnavailable":"Le service d'authentification est actuellement hors service pour maintenance.",
 "disconnect.lost":"Connexion perdue",

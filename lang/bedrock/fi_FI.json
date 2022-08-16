@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Sinut poistettiin pelistä:",
 "disconnect.loginFailed":"Kirjautuminen epäonnistui",
 "disconnect.loginFailedInfo":"Kirjautuminen epäonnistui: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Ristiriita Playfab-ympäristössä - Discovery=%s/%s, Playfab ":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Ristiriita Playfab-ympäristössä - Discovery=%s/%s, Playfab =%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Virheellinen sessio (yritä käynnistää pelisi uudelleen)",
 "disconnect.loginFailedInfo.serversUnavailable":"Todennuspalvelimet eivät ole käytettävissä, koska niitä huolletaan.",
 "disconnect.lost":"Yhteys katkesi",

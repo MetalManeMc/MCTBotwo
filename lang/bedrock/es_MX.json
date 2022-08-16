@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Te sacaron del juego:",
 "disconnect.loginFailed":"Error al iniciar sesión",
 "disconnect.loginFailedInfo":"Error al iniciar sesión: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Desajuste del entorno de PlayFab: Discovery=%s/%s, PlayFab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Desajuste del entorno de PlayFab: Discovery=%s/%s, PlayFab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Sesión inválida (prueba reabrir el juego)",
 "disconnect.loginFailedInfo.serversUnavailable":"La autentificación está actualmente desactivada por mantenimiento.",
 "disconnect.lost":"Se perdió la conexión",

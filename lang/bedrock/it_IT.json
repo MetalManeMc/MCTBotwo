@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Sei stato rimosso dalla partita:",
 "disconnect.loginFailed":"L'accesso è fallito",
 "disconnect.loginFailedInfo":"L'accesso è fallito: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Mancata corrispondenza dell'ambiente Playfab - Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Mancata corrispondenza dell'ambiente Playfab - Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Sessione non valida (prova a riavviare il gioco)",
 "disconnect.loginFailedInfo.serversUnavailable":"Le autenticazioni sono momentaneamente fuori servizio per manutenzione.",
 "disconnect.lost":"La connessione è stata persa",

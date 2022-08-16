@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Byli jste odebráni ze hry:",
 "disconnect.loginFailed":"Přihlášení se nezdařilo",
 "disconnect.loginFailedInfo":"Přihlášení se nezdařilo: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Neshoda prostředí Playfab – Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Neshoda prostředí Playfab – Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Neplatná relace (zkuste restartovat hru)",
 "disconnect.loginFailedInfo.serversUnavailable":"Servery ověřování jsou aktuálně mimo provoz z důvodu údržby.",
 "disconnect.lost":"Připojení přerušeno",

@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Je bent uit het spel verwijderd:",
 "disconnect.loginFailed":"Aanmelden mislukt",
 "disconnect.loginFailedInfo":"Aanmelden mislukt: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"PlayFab-omgeving komt niet overeen - Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"PlayFab-omgeving komt niet overeen - Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Ongeldige sessie (probeer je spel opnieuw te starten)",
 "disconnect.loginFailedInfo.serversUnavailable":"De verificatieservers zijn momenteel niet actief voor onderhoud.",
 "disconnect.lost":"Verbinding verbroken",

@@ -32,6 +32,21 @@ for dirpath, dirnames, filenames in os.walk("objects"):
         print(file)
         os.replace(os.path.join(dirpath, file), os.path.join("lang\java", file)) # Places the lang files in the "lang/java" folder. The "objects" one should be empty
 
+en=json.load(open(os.path.join("lang/java", file), "r", encoding="utf-8")) # Opens the english file
+for dirpath, dirnames, filenames in os.walk("lang\java"):
+    for file in filenames:
+        if file!="en_us.json":
+            with open(os.path.join("lang/java", file), "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for x in list(en.keys()):
+                    try:
+                        n=data[x]
+                    except KeyError:
+                        data[x]=""
+                        print(f"{x} added to {file}")
+                json.dump(data, open(os.path.join("lang/java", file), "w"))
+            
+
 '''for dirpath, dirnames, filenames in os.walk("lang/java"):
     for file in filenames:
         if "-" not in file:                                                             # If not already done...

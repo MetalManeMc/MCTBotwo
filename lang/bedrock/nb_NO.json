@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Du ble fjernet fra spillet:",
 "disconnect.loginFailed":"Kunne ikke logge på",
 "disconnect.loginFailedInfo":"Kunne ikke logge på: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Ikke samsvar mellom Playfab-miljøer – oppdagelse=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Ikke samsvar mellom Playfab-miljøer – oppdagelse=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Ugyldig økt (prøv å starte spillet på nytt)",
 "disconnect.loginFailedInfo.serversUnavailable":"Godkjenningsserverne er nede for øyeblikket på grunn av vedlikehold.",
 "disconnect.lost":"Tilkoblingen er brutt",

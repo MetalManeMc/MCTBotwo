@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Καταργήθηκες από το παιχνίδι:",
 "disconnect.loginFailed":"Αποτυχία σύνδεσης",
 "disconnect.loginFailedInfo":"Αποτυχία σύνδεσης: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Αναντιστοιχία περιβάλλοντος Playfab - Ανακάλυψη=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Αναντιστοιχία περιβάλλοντος Playfab - Ανακάλυψη=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Μη έγκυρη περίοδος λειτουργίας (Συνιστάται επανεκκίνηση του παιχνιδιού)",
 "disconnect.loginFailedInfo.serversUnavailable":"Οι διακομιστές ελέγχου ταυτότητας είναι απενεργοποιημένοι για λόγους συντήρησης αυτή τη στιγμή.",
 "disconnect.lost":"Η σύνδεση χάθηκε",

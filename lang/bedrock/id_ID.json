@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Kamu dikeluarkan dari permainan:",
 "disconnect.loginFailed":"Gagal masuk",
 "disconnect.loginFailedInfo":"Gagal masuk: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Ketidakcocokan lingkungan playfab - Discovery=%s/%s, Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Ketidakcocokan lingkungan playfab - Discovery=%s/%s, Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Sesi tidak valid (Coba mulai ulang permainanmu)",
 "disconnect.loginFailedInfo.serversUnavailable":"Server autentikasi saat ini tidak beroperasi karena ada pemeliharaan.",
 "disconnect.lost":"Sambungan Terputus",

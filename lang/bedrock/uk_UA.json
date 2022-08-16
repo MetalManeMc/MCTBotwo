@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"Вас вилучено з гри:",
 "disconnect.loginFailed":"Помилка входу",
 "disconnect.loginFailedInfo":"Помилка входу: %s",
-"disconnect.loginFailedInfo.environmentMismatch":"Невідповідність середовища Playfab - Discovery=%s/%s, Playfab ":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Невідповідність середовища Playfab - Discovery=%s/%s, Playfab =%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"Неправильний сеанс (спробуйте перезапустити гру)",
 "disconnect.loginFailedInfo.serversUnavailable":"Сервери автентифікації наразі на технічному обслуговуванні.",
 "disconnect.lost":"З’єднання втрачено",

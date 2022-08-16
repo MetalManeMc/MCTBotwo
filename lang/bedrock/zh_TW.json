@@ -2304,7 +2304,7 @@
 "disconnect.removed.reason":"您已從遊戲移除：",
 "disconnect.loginFailed":"登入失敗",
 "disconnect.loginFailedInfo":"登入失敗：%s",
-"disconnect.loginFailedInfo.environmentMismatch":"Playfab 環境不符 - 發現=%s/%s，Playfab":"%s/%s",
+"disconnect.loginFailedInfo.environmentMismatch":"Playfab 環境不符 - 發現=%s/%s，Playfab=%s/%s",
 "disconnect.loginFailedInfo.invalidSession":"無效的階段 (請重新啟動遊戲)",
 "disconnect.loginFailedInfo.serversUnavailable":"正版驗證系統下線維修中。",
 "disconnect.lost":"失去連線",
