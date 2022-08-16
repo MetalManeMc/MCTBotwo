@@ -73,6 +73,7 @@ for dirpath, dirnames, filenames in os.walk("lang/bedrock"):
             f = list(filter(("").__ne__, f))
             f = list(filter((" ").__ne__, f))
             f="{"+",\n".join(f)+"}"
+            f=f+"\n"
             open(os.path.join(dirpath, file), "r+", encoding='utf-8').write(f)
             #print(f)
         except UnicodeDecodeError:pass
