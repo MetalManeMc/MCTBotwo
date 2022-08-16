@@ -236,8 +236,8 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
              except:
                  edition="java"
         edition=edition.lower()
-        target=target.lower()
-        source=source.lower()
+        target=target
+        source=source
         found=find_translation(search, target, source, edition)
         list_message = found[0]
         exact = found[1]

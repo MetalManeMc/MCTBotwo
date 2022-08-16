@@ -6,6 +6,7 @@ import json
 def rename(initname):
     name=initname.replace('lang', "")
     name=name+"json"
+    name=name.lower()
     return name
 
 for dirpath, dirnames, filenames in os.walk("texts"):
