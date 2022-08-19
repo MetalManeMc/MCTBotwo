@@ -134,8 +134,7 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 
 @bot.component("nextpage")
 async def nextpage(ctx: di.CommandContext):
-    #di.Message(ctx.message.channel_id, ctx.message.id).edit()
-    await ctx.send("Clicked on next page!")
+    await ctx.message.edit('That message was edited bc you pressed on "next" noob!', embeds=di.Embed())
 
 @bot.component("prevpage")
 async def nextpage(ctx: di.CommandContext):
@@ -230,6 +229,6 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 
 for cog in COGS:
     if cog!="variables" and cog!="translatefuncs":
-      bot.load("cogs." + cog)
+        bot.load("cogs." + cog)
 
 bot.start()
