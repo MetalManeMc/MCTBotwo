@@ -93,12 +93,14 @@ def complete(search:str, inside:list):
 
     return [i for i in inside if search.lower() in i.lower()]
 
+
 def fetch_default(code, category, data):
     """
     This function fetches defaults in serverdefaults.json
     """
     f = json.load(open("serverdefaults.json"))
     return f[code][category][data]
+
 
 def find_translation(string:str, targetlang:str, sourcelang:str, edition):
 
@@ -152,6 +154,7 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
         result.append("**…and more!**")
     return result,exact
 
+
 def lang(search:str, edition):
 
     """
@@ -197,7 +200,6 @@ def lang(search:str, edition):
                         return belangcodes[x]
                     
             
-
     ret=complete(search, langcodes)
     if len(ret)>0:
         return ret[0]
@@ -207,12 +209,14 @@ def lang(search:str, edition):
         elif injava==True:
             raise embederr("This language does not exist in Bedrock Edition.")
 
+
 async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
     items = langfull
     choices = [
         di.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
     ] 
     await ctx.populate(choices[:25])
+
 
 @bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
 @di.option(str, name = "search", description = "String or key to translate.", required=True)
@@ -258,7 +262,10 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 else:
                     embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
             if edition=="java":
-                targetcode=lang(target, edition).replace("_", "")
+                try:
+                    targetcode=lang(target, edition).replace("_", "")
+                except embederr:
+                    targetcode="enuk"
                 url=f"https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}"
             elif edition=="bedrock":
                 url=None
@@ -276,15 +283,18 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e:
-        embed=di.Embed(
-            title=e.title,
-            thumbnail=e.image,
-            url=e.url,
-            fields=e.field,
-            color=e.color,
-            description=e.desc
-            )
-        hidden=True
+        if beta==True:
+            raise e
+        else:
+            embed=di.Embed(
+                title=e.title,
+                thumbnail=e.image,
+                url=e.url,
+                fields=e.field,
+                color=e.color,
+                description=e.desc
+                )
+            hidden=True
     except Exception as ex:
         if beta==True:
             raise ex
@@ -301,6 +311,7 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 @bot.autocomplete("translate", "source")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
     return await lang_autocomplete(ctx, user_input)
+
 
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
@@ -389,6 +400,7 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 
 langcodes, langcodesapp, langnames, langregions, langfull = [], [], [], [], []
 
+
 for a, b, c in os.walk(JAVA_DIR): # Gives a list of java language codes, names and regions, so i can search in them
     for i in c:
         langcodes.append(i.split(".")[0].lower())
@@ -396,10 +408,13 @@ for a, b, c in os.walk(JAVA_DIR): # Gives a list of java language codes, names a
         langcodesapp.append(open_json(i)["language.code"].lower())
         langregions.append(open_json(i)["language.region"].lower())
         langfull.append(open_json(i)["language.name"] + " ("+ open_json(i)["language.region"] + ")")
+    langcodes.append("key")
+    langfull.append("key")
     break
 
 
 belangcodes, belangcodesandnames, belangnames, belangregions = [], [], [], []
+
 
 names=json.load(open("language_names.json", encoding="utf-8"))
 for i in names:
@@ -411,6 +426,7 @@ for i in names:
         belangregions.append(codeandname[1].replace(")", ""))
     except IndexError:
         belangregions.append(None)
+
 
 for cog in COGS:
     if cog!="variables":
