@@ -228,6 +228,7 @@ async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
 ])
 async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None):
     hidden=False
+    crowdin_url=None
     try:
         if target == None:
             try:
@@ -275,17 +276,24 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 url=url,
                 footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
                 color=0x3180F0)
+            embed_linkless=di.Embed(
+                title=title,
+                fields=embedfields,
+                url=None,
+                footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+                color=0x3180F0)
             hide=False
         else:
+            targetcode=lang(target, edition).replace("_", "")
             raise embederr(
                 "Couldn't find the translation",
-                f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
+                f"https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}",
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e:
-        if beta==True:
+            """if beta==True:
             raise e
-        else:
+        else:"""
             embed=di.Embed(
                 title=e.title,
                 thumbnail=e.image,
@@ -294,6 +302,15 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=e.color,
                 description=e.desc
                 )
+            embed_linkless=di.Embed(
+                title=e.title,
+                thumbnail=e.image,
+                url=None,
+                fields=e.field,
+                color=e.color,
+                description=e.desc
+                )
+            crowdin_url=e.url
             hidden=True
     except Exception as ex:
         if beta==True:
@@ -302,7 +319,10 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
             hidden=True
     try:
-        await ctx.send(embeds=embed, ephemeral=hidden)
+        try:
+            await ctx.send(embeds=embed, ephemeral=hidden)
+        except:
+            await ctx.send(f'{crowdin_url}',embeds=embed_linkless, ephemeral=hidden)
     except Exception as ex:
         await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
 @bot.autocomplete("translate", "target")
