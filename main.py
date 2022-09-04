@@ -228,7 +228,6 @@ async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
 ])
 async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None):
     hidden=False
-    crowdin_url=None
     try:
         if target == None:
             try:
@@ -274,14 +273,8 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 title=title,
                 fields=embedfields,
                 url=url,
-                footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-                color=0x3180F0)
-            embed_linkless=di.Embed(
-                title=title,
-                fields=embedfields,
-                url=None,
-                footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-                color=0x3180F0)
+                footer=di.EmbedFooter(text=choice(Footers), icon_url=var.avatar)._json,
+                color=0x10F20F)
             hide=False
         else:
             targetcode=lang(target, edition).replace("_", "")
@@ -302,15 +295,6 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=e.color,
                 description=e.desc
                 )
-            embed_linkless=di.Embed(
-                title=e.title,
-                thumbnail=e.image,
-                url=None,
-                fields=e.field,
-                color=e.color,
-                description=e.desc
-                )
-            crowdin_url=e.url
             hidden=True
     except Exception as ex:
         if beta==True:
@@ -319,10 +303,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
             hidden=True
     try:
-        try:
-            await ctx.send(embeds=embed, ephemeral=hidden)
-        except:
-            await ctx.send(f'{crowdin_url}',embeds=embed_linkless, ephemeral=hidden)
+        await ctx.send(embeds=embed, ephemeral=hidden)
     except Exception as ex:
         await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
 @bot.autocomplete("translate", "target")
@@ -369,7 +350,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
             currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
             try:
                 f[str(ctx.guild_id)]["server"]["targetlang"]=lang(targetlang,"java")
-                embed=di.Embed(title=f"Default target language set to `{find_translation('language.name',lang(targetlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(targetlang,'java'),'key','java')[1]}`.",color=0x3180F0)
+                embed=di.Embed(title=f"Default target language set to `{find_translation('language.name',lang(targetlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(targetlang,'java'),'key','java')[1]}`.",color=0x10F20F)
             except embederr as e:
                 e.desc=f"Default target language reset to `{find_translation('language.name',lang(currentlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(currentlang,'java'),'key','java')[1]}`."
                 raise e
@@ -392,7 +373,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
             currentedition=f[str(ctx.guild_id)]["server"]["edition"]
             if edition=="java" or edition=="bedrock":
                 f[str(ctx.guild_id)]["server"]["edition"]=edition
-                embed=di.Embed(title=f"Default edition changed to `{edition}`.",color=0x3180F0)
+                embed=di.Embed(title=f"Default edition changed to `{edition}`.",color=0x10F20F)
             else:
                 raise embederr("Edition not found",description=f"Default edition reset to `{currentedition}`.")
         except embederr as e:
