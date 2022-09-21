@@ -1,5 +1,6 @@
 import json
 import asyncio
+from msilib.schema import Component
 from pathlib import Path
 import interactions as di
 from interactions.ext.wait_for import setup
@@ -130,26 +131,31 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
 
     try:
-        button_ctx: di.ComponentContext = await bot.wait_for_component(
-            components=nextbutton, timeout=2
-        )
-        pagenum=get_pagenum(embed)+1
-        embed=embed
-        found=find_translation(search, target, source, edition, pagenum)
-        npages=found[3]
-        newtext="\n".join(found[0])
-        newfooter=f"Page {str(pagenum)}/{npages}"
-        embed=di.Embed(
-            title=embed.title,
-            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
-            url=embed.url,
-            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-            color=0x3180F0
+        while True:
+            button_ctx: di.ComponentContext = await bot.wait_for_component(
+                components=nextbutton, timeout=60
             )
-        await ctx.edit(embeds=embed)
+            embed=button_ctx.message.embeds[0]
+            print(embed._json)
+            pagenum=get_pagenum(embed)
+            if pagenum[0]==None:
+                pass
+            else:
+                found=find_translation(search, target, source, edition, pagenum[0])
+                npages=found[3]
+                newtext="\n".join(found[0])
+                newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
+                embed=di.Embed(
+                    title=embed.title,
+                    fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+                    url=embed.url,
+                    footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+                    color=0x3180F0
+                    )
+            await button_ctx.edit(embeds=embed)
 
     except asyncio.TimeoutError:
-        return await ctx.edit("Letse go!")
+        await ctx.edit(components=None)
 
 @bot.autocomplete("translate", "target")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):

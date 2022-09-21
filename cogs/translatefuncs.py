@@ -154,9 +154,14 @@ def lang(search:str, edition):
 def get_pagenum(embed):
     pagenum=embed.footer.text
     pagenum=pagenum.split("/")
+    max=int(pagenum[1])
     pagenum=pagenum[0].split(" ")
-    pagenum=pagenum[1]
-    return int(pagenum)
+    pagenum=int(pagenum[1])
+    if pagenum-max>=0:
+        pagenum=None
+    else:
+        pagenum+=1
+    return pagenum, max
 
 
 async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
