@@ -23,12 +23,11 @@ def fetch_default(code, category, data):
     return f[code][category][data]
 
 
-def find_translation(string:str, targetlang:str, sourcelang:str, edition):
+def find_translation(string:str, targetlang:str, sourcelang:str, edition:str, page:int=1, pagesize:int=10):
 
     """
     This function finds translations and returns the list of matches.
     """
-
     string = string.lower()
     try:
         if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
@@ -61,21 +60,23 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
                     exact=jstarget[i]
                     break
 
+    reslen=len(result)
     added=False
     cut=False
     if len(result)>10:
-        result=result[:10]
+        result=result[10*(page-1):pagesize*page]
         added=True
     n=len(result)
-    resfull="|".join(result)
-    while not cut:
-        if len(resfull)>1000:
-            result=result[:-1]
-            resfull="|".join(result)
-            added=True
-            n-=1
-        else:
-            cut=True
+    if page==1:
+        resfull="|".join(result)
+        while not cut:
+            if len(resfull)>1000:
+                result=result[:-1]
+                resfull="|".join(result)
+                added=True
+                n-=1
+            else:
+                cut=True
     try:
         while True:
             result.remove("")
@@ -88,9 +89,12 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition):
     else:
         buttons=None
 
+    pagenum=int(reslen/n) + (reslen % n>0)
+
+
     if added:
         result.append("**…and more!**")
-    return result, exact, buttons
+    return result, exact, buttons, pagenum
 
 
 def lang(search:str, edition):
@@ -146,6 +150,13 @@ def lang(search:str, edition):
             raise embederr("Language not found…")
         elif injava==True:
             raise embederr("This language does not exist in Bedrock Edition.")
+
+def get_pagenum(embed):
+    pagenum=embed.footer.text
+    pagenum=pagenum.split("/")
+    pagenum=pagenum[0].split(" ")
+    pagenum=pagenum[1]
+    return int(pagenum)
 
 
 async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):

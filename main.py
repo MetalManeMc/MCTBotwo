@@ -1,8 +1,8 @@
 import json
-import os
+import asyncio
 from pathlib import Path
 import interactions as di
-from random import choice
+from interactions.ext.wait_for import setup
 from cogs.variables import *
 from cogs.translatefuncs import *
 
@@ -21,6 +21,8 @@ This path is absolute and independent of the OS in which it may be running.
 DATA_DIR should *not* be altered at any point.
 """
 bot = di.Client(token=TOKEN)
+
+setup(bot)
 
 hook = "<:bighook:937813704316158072>"
 
@@ -62,6 +64,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         list_message = found[0]
         exact = found[1]
         buttons = found[2]
+        npages = found[3]
 
         if len(list_message)>0:
             if exact == None:
@@ -90,7 +93,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 title=title,
                 fields=embedfields,
                 url=url,
-                footer=di.EmbedFooter(text=choice(Footers), icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+                footer=di.EmbedFooter(text=f"Page 1/{npages}", icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
                 color=0x3180F0)
             hide=False
         else:
@@ -113,7 +116,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 )
             hidden=True
     except Exception as ex:
-        if beta==True:
+        if beta:
             raise ex
         else:
             embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
@@ -121,10 +124,28 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
     try:
         await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
     except Exception as ex:
-        if beta==True:
+        if beta:
             raise ex
         else:
             await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
+
+    try:
+        button_ctx: di.ComponentContext = await bot.wait_for_component(
+            components=nextbutton, timeout=2
+        )
+        pagenum=get_pagenum(embed)
+        embed=embed
+        found=find_translation(search, target, source, edition, pagenum)
+        npages=found[3]
+        embed.fields[0].value="\n".join(found[0])
+        embed.footer.text=f"Page {str(pagenum)}/{npages}"
+        print(embed._json)
+        await button_ctx.send(f"Page: {str(pagenum + 1)}/{npages}\nContent: {str(embed.fields[0].value)}")
+        await button_ctx.send(embeds=embed)
+
+    except asyncio.TimeoutError:
+        return await ctx.edit("Letse go!")
+
 @bot.autocomplete("translate", "target")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
     return await lang_autocomplete(ctx, user_input)
@@ -132,14 +153,9 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
     return await lang_autocomplete(ctx, user_input)
 
-@bot.component("nextpage")
-async def nextpage(ctx: di.CommandContext):
-    await ctx.message.edit('That message was edited bc you pressed on "next" noob!', embeds=di.Embed())
-
 @bot.component("prevpage")
-async def nextpage(ctx: di.CommandContext):
+async def prevpage(ctx: di.CommandContext):
     await ctx.send("Clicked on previous page!")
-
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
         di.Option(
