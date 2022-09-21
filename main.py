@@ -133,15 +133,20 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         button_ctx: di.ComponentContext = await bot.wait_for_component(
             components=nextbutton, timeout=2
         )
-        pagenum=get_pagenum(embed)
+        pagenum=get_pagenum(embed)+1
         embed=embed
         found=find_translation(search, target, source, edition, pagenum)
         npages=found[3]
-        embed.fields[0].value="\n".join(found[0])
-        embed.footer.text=f"Page {str(pagenum)}/{npages}"
-        print(embed._json)
-        await button_ctx.send(f"Page: {str(pagenum + 1)}/{npages}\nContent: {str(embed.fields[0].value)}")
-        await button_ctx.send(embeds=embed)
+        newtext="\n".join(found[0])
+        newfooter=f"Page {str(pagenum)}/{npages}"
+        embed=di.Embed(
+            title=embed.title,
+            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            url=embed.url,
+            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0
+            )
+        await ctx.edit(embeds=embed)
 
     except asyncio.TimeoutError:
         return await ctx.edit("Letse go!")
