@@ -1,5 +1,7 @@
 import interactions as di
 import json
+import time
+import os
 from cogs.variables import *
 
 
@@ -163,6 +165,9 @@ def get_pagenum(embed):
         pagenum+=1
     return pagenum, max
 
+def register_comp(id:int):
+    with json.load(open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "loadedmessages.jsonc"), "r+")) as f:
+        print(f)
 
 async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
     items = langfull

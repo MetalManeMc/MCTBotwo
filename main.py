@@ -66,7 +66,6 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         exact = found[1]
         buttons = found[2]
         npages = found[3]
-
         if len(list_message)>0:
             if exact == None:
                 message = "\n".join(list_message)
@@ -123,7 +122,8 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
             hidden=True
     try:
-        await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
+        msg=await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
+        register_comp(msg.id)
     except Exception as ex:
         if beta:
             raise ex
@@ -152,8 +152,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                     footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
                     color=0x3180F0
                     )
-            await button_ctx.edit(embeds=embed)
-
+            await button_ctx.edit(embeds=embed, components=buttons)
     except asyncio.TimeoutError:
         await ctx.edit(components=None)
 
@@ -166,7 +165,24 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 
 @bot.component("prevpage")
 async def prevpage(ctx: di.CommandContext):
-    await ctx.send("Clicked on previous page!")
+    embed=ctx.message.embeds[0]
+    #print(embed._json, ctx.message.id)
+    """pagenum=get_pagenum(embed)
+    if pagenum[0]==None:
+        pass
+    else:
+        found=find_translation(search, target, source, edition, pagenum[0])
+        npages=found[3]
+        newtext="\n".join(found[0])
+        newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
+        embed=di.Embed(
+            title=embed.title,
+            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            url=embed.url,
+            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0
+            )"""
+    await ctx.edit(embeds=embed)
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
         di.Option(
