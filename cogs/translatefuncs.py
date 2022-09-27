@@ -165,9 +165,18 @@ def get_pagenum(embed):
         pagenum+=1
     return pagenum, max
 
-def register_comp(id:int):
-    with json.load(open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "loadedmessages.jsonc"), "r+")) as f:
-        print(f)
+def register_comp(id:int, search, target, source, edition):
+    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "loadedmessages.json"), "r") as f:
+        t=time.time()
+        cont=json.load(f)
+        deletes=[]
+        for x in cont.items():
+            if float(x[1][4])+900<t:
+                deletes.append(x[0])
+        for i in deletes:
+            cont.pop(i)
+        cont[str(id)]=[search, target, source, edition, str(t)]
+        json.dump(cont, open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "loadedmessages.json"), "w"))
 
 async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
     items = langfull

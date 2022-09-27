@@ -1,6 +1,5 @@
 import json
 import asyncio
-from msilib.schema import Component
 from pathlib import Path
 import interactions as di
 from interactions.ext.wait_for import setup
@@ -29,6 +28,8 @@ hook = "<:bighook:937813704316158072>"
 
 @bot.event
 async def on_ready():
+    if beta:
+        json.dump({"0000000000000000000": ["search", "target", "source", "edition", "9999999999.9999999"]}, open("loadedmessages.json", "w"))
     print("Online!")
     print(f"Path towards the lang folder is {DATA_DIR}\nCogs loaded: {COGS}")
 
@@ -123,7 +124,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             hidden=True
     try:
         msg=await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
-        register_comp(msg.id)
+        register_comp(msg.id, search, target, source, edition)
     except Exception as ex:
         if beta:
             raise ex
