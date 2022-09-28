@@ -1,8 +1,6 @@
 import json
-import asyncio
 from pathlib import Path
 import interactions as di
-from interactions.ext.wait_for import setup
 from cogs.variables import *
 from cogs.translatefuncs import *
 
@@ -22,14 +20,12 @@ DATA_DIR should *not* be altered at any point.
 """
 bot = di.Client(token=TOKEN)
 
-setup(bot)
-
 hook = "<:bighook:937813704316158072>"
 
 @bot.event
 async def on_ready():
     if beta:
-        json.dump({"0000000000000000000": ["search", "target", "source", "edition", "9999999999.9999999"]}, open("loadedmessages.json", "w"))
+        json.dump({"0000000000000000000": ["search", "target", "source", "edition", "9999999999.9999999", "000000000000000000"]}, open("loadedmessages.json", "w"))
     print("Online!")
     print(f"Path towards the lang folder is {DATA_DIR}\nCogs loaded: {COGS}")
 
@@ -124,38 +120,15 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             hidden=True
     try:
         msg=await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
-        register_comp(msg.id, search, target, source, edition)
+        remove = register_comp(msg.id, search, target, source, edition, msg.channel_id)
+        for i in remove.items():
+            rem_message=await di.get(bot, di.Message, object_id=i[0], parent_id=i[1])
+            await rem_message.edit(components=None)
     except Exception as ex:
         if beta:
             raise ex
         else:
             await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
-
-    try:
-        while True:
-            button_ctx: di.ComponentContext = await bot.wait_for_component(
-                components=nextbutton, timeout=60
-            )
-            embed=button_ctx.message.embeds[0]
-            print(embed._json)
-            pagenum=get_pagenum(embed)
-            if pagenum[0]==None:
-                pass
-            else:
-                found=find_translation(search, target, source, edition, pagenum[0])
-                npages=found[3]
-                newtext="\n".join(found[0])
-                newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
-                embed=di.Embed(
-                    title=embed.title,
-                    fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
-                    url=embed.url,
-                    footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-                    color=0x3180F0
-                    )
-            await button_ctx.edit(embeds=embed, components=buttons)
-    except asyncio.TimeoutError:
-        await ctx.edit(components=None)
 
 @bot.autocomplete("translate", "target")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
@@ -167,13 +140,13 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 @bot.component("prevpage")
 async def prevpage(ctx: di.CommandContext):
     embed=ctx.message.embeds[0]
+    msg=json.load(open("loadedmessages.json"))[str(ctx.message.id)]
     #print(embed._json, ctx.message.id)
-    """pagenum=get_pagenum(embed)
+    pagenum=get_pagenum(embed, "-")
     if pagenum[0]==None:
         pass
     else:
-        found=find_translation(search, target, source, edition, pagenum[0])
-        npages=found[3]
+        found=find_translation(msg[0], msg[1], msg[2], msg[3], pagenum[0])
         newtext="\n".join(found[0])
         newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
         embed=di.Embed(
@@ -182,7 +155,27 @@ async def prevpage(ctx: di.CommandContext):
             url=embed.url,
             footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
             color=0x3180F0
-            )"""
+            )
+    await ctx.edit(embeds=embed)
+@bot.component("nextpage")
+async def nextpage(ctx: di.CommandContext):
+    embed=ctx.message.embeds[0]
+    msg=json.load(open("loadedmessages.json"))[str(ctx.message.id)]
+    #print(embed._json, ctx.message.id)
+    pagenum=get_pagenum(embed, "+")
+    if pagenum[0]==None:
+        pass
+    else:
+        found=find_translation(msg[0], msg[1], msg[2], msg[3], pagenum[0])
+        newtext="\n".join(found[0])
+        newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
+        embed=di.Embed(
+            title=embed.title,
+            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            url=embed.url,
+            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0
+            )
     await ctx.edit(embeds=embed)
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[

@@ -153,30 +153,37 @@ def lang(search:str, edition):
         elif injava==True:
             raise embederr("This language does not exist in Bedrock Edition.")
 
-def get_pagenum(embed):
+def get_pagenum(embed, op="+"):
     pagenum=embed.footer.text
     pagenum=pagenum.split("/")
     max=int(pagenum[1])
     pagenum=pagenum[0].split(" ")
     pagenum=int(pagenum[1])
-    if pagenum-max>=0:
-        pagenum=None
+    if op=="+":
+        if pagenum-max>=0:
+            pagenum=None
+        else:
+            pagenum+=1
     else:
-        pagenum+=1
+        if pagenum<=1:
+            pagenum=None
+        else:
+            pagenum-=1
     return pagenum, max
 
-def register_comp(id:int, search, target, source, edition):
+def register_comp(id:int, search, target, source, edition, channel):
     with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "loadedmessages.json"), "r") as f:
         t=time.time()
         cont=json.load(f)
-        deletes=[]
+        deletes={}
         for x in cont.items():
             if float(x[1][4])+900<t:
-                deletes.append(x[0])
+                deletes[x[0]]=x[1][5]
         for i in deletes:
             cont.pop(i)
-        cont[str(id)]=[search, target, source, edition, str(t)]
+        cont[str(id)]=[search, target, source, edition, str(t), str(channel)]
         json.dump(cont, open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "loadedmessages.json"), "w"))
+    return deletes
 
 async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
     items = langfull
