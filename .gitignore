@@ -4,3 +4,4 @@ tests.py
 token.txt
 token-main.txt
 serverdefaults.json
+loadedmessages.json
