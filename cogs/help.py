@@ -80,7 +80,7 @@ class HelpCMD(interactions.Extension):
                     title="Minecraft Translator Bot's credits",
                     fields = [
                     interactions.EmbedField(name=f"**Developers**", value=f"{hook}   <:flag_fr:1007929012804386816><@668349394529157131>,\n{hook}   <:flag_es:1007929300600758345><@452954731162238987>,\n{hook}   <:flag_sk:1007930291488292885><@275248043828314112>")._json,
-                    interactions.EmbedField(name=f"**Minecraft versions**", value=f"{hook}   **Java Edition:** 1.19.2,\n{hook}   **Bedrock Edition:** 1.19.20")._json,
+                    interactions.EmbedField(name=f"**Minecraft versions**", value=f"{hook}   **Java Edition:** 1.19.2,\n{hook}   **Bedrock Edition:** 1.19.30")._json,
                     interactions.EmbedField(name=f"**Java Edition translations**", value=f"The amazing Minecraft Translators community!")._json
                     ],
                     color=0x10F20F,
