@@ -1,25 +1,9 @@
 import json
-import os
 from pathlib import Path
 import interactions as di
-from random import choice
-import cogs.variables as var
+from cogs.variables import *
+from cogs.translatefuncs import *
 
-
-PATH = Path(os.path.dirname(os.path.realpath(__file__)))
-DATA_DIR = Path(PATH, "lang")
-JAVA_DIR=Path(DATA_DIR, "java")
-BEDROCK_DIR=Path(DATA_DIR, "bedrock")
-COGS = [
-    module[:-3]
-    for module in os.listdir( f"{Path(PATH, 'cogs')}" )
-    if module not in ("variables.py", "down_checker.py") and module[-3:] == ".py"
-]
-
-Footers="See /help for more info.","The blue text will be an exact match, if one is found.", "This is NOT a machine translation (except maybe if you used the Bedrock translations)."
-
-beta=var.beta
-SCOPES=var.SCOPES
 
 if beta==True:
     TOKEN_PATH = Path(PATH, "token.txt")
@@ -40,182 +24,14 @@ hook = "<:bighook:937813704316158072>"
 
 @bot.event
 async def on_ready():
+    if beta:
+        json.dump({"0000000000000000000": ["search", "target", "source", "edition", "9999999999.9999999", "000000000000000000"]}, open("loadedmessages.json", "w"))
     print("Online!")
     print(f"Path towards the lang folder is {DATA_DIR}\nCogs loaded: {COGS}")
 
 ############################################################################
 #                             Code starts here                             #
 ############################################################################
-
-class embederr(Exception):
-    def __init__(c, title=None, url=None, hidden=True, color=0xff0000, description=None, hasfield=False, field=["name","value"], hasimage=True, image="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg") -> None:
-        c.title=title
-        c.url=url
-        c.hidden=hidden
-        c.color=color
-        c.desc=description
-        if hasimage:
-            c.image=di.EmbedImageStruct(url=image)._json
-        else:c.image=None
-        if hasfield:
-            c.field=[di.EmbedField(name=field[0],value=field[1])._json]
-        else:c.field=None
-
-
-def open_json(jsonfile, edition="java"): 
-
-    """
-    This function open a file that's specified through the command.
-    The first line establishes that json_path is 
-    Path (a .join for paths, part of the Pathlib) DATA_DIR (the base path towards /lang/)
-    and jsonfile, jsonfile is established by the command and automatically 
-    transforms an input such as "es_es" into "es_es.json". 
-    After this, it json.loads the file into memory by turning it into a 
-    dictionary called dictionary_json. The file is then closed and 
-    from now on ONLY the dictionary that was returned will be used.
-    """
-    if edition=="java":
-        json_path = Path(JAVA_DIR, jsonfile).with_suffix(".json")
-    elif edition=="bedrock":
-        json_path = Path(BEDROCK_DIR, jsonfile).with_suffix(".json")
-    with open(json_path, encoding="utf-8") as js:
-        return json.load(js)
-
-
-def complete(search:str, inside:list):
-
-    """
-    This function is essentially an autocompletion.
-    It takes a string and a list, in which it"s going to find complete strings.
-    Walks through the list and asks whether the search is in the value. If it is,
-    it appends the value to result. If none are found, it returns an empty list.
-    """
-
-    return [i for i in inside if search.lower() in i.lower()]
-
-
-def fetch_default(code, category, data):
-    """
-    This function fetches defaults in serverdefaults.json
-    """
-    f = json.load(open("serverdefaults.json"))
-    return f[code][category][data]
-
-
-def find_translation(string:str, targetlang:str, sourcelang:str, edition):
-
-    """
-    This function finds translations and returns the list of matches.
-    """
-
-    string = string.lower()
-    try:
-        if targetlang!="key": # if either are key, they should not be searched for as files, instead use jsdef
-            jstarget = open_json(lang(targetlang, edition), edition)
-        if sourcelang!="key":
-            jssource = open_json(lang(sourcelang, edition), edition)
-        jsdef = open_json("en_us") # this will get used everytime to key or from key is used... (json default... change the name if you want)
-    except IndexError:
-        return
-
-    exact=None
-    if targetlang=="key": # figures out, which mode to use
-        if sourcelang=="key":
-            result = complete(string, jsdef) #ktk
-        else:
-            result = [i for i in jsdef if string in jssource[i].lower()] #stk
-            for i in result:
-                if jssource[i].lower()==string:
-                    exact=i
-                    break
-    else:
-        if sourcelang=="key":
-            result = [jstarget[i] for i in complete(string, jsdef)] #kts
-            try: exact=jstarget[string]
-            except: pass
-        else:
-            result = [jstarget[i] for i in [i for i in jssource if string in jssource[i].lower()]] #sts(string, jstarget, jssource)
-            for i in jssource:
-                if jssource[i].lower()==string:
-                    exact=jstarget[i]
-                    break
-
-    added=False
-    if len(result)>10:
-        del result[10:]
-        added=True
-    resfull="|".join(result)
-    if len(resfull)>1000:
-        resfull=resfull[:1000]
-        resfull+="…"
-        result=resfull.split("|")
-        added=True
-    if added:
-        result.append("**…and more!**")
-    return result,exact
-
-
-def lang(search:str, edition):
-
-    """
-    Returns a complete internal language code to be used for file opening.
-    Input can be the expected output too.
-    Input can be approved language code, name, region or internal code (searching in this order)
-    """
-    search = search.lower()
-    injava=False
-    if edition=="java":
-        for i in range(len(langcodesapp)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
-            if search in langcodesapp[i].lower():
-                return langcodes[i]
-        for i in range(len(langcodes)):
-            if search in langcodes[i].lower():
-                return langcodes[i]
-        for i in range(len(langnames)):
-            if search in langnames[i].lower():
-                return langcodes[i]
-        for i in range(len(langregions)):
-            if search in langregions[i].lower():
-                return langcodes[i]
-        for i in range(len(langfull)):
-            if search in langfull[i].lower():
-                return langcodes[i]
-    elif edition=="bedrock":
-        for i in range(len(belangcodes)): # We can't use complete here because we would have no clue which langcode to use. The thing we need is index of langcode, not completed langname or whatever.
-            if search in belangcodes[i].lower():
-                return belangcodes[i]
-        for i in range(len(belangnames)):
-            if search in belangnames[i].lower():
-                return belangcodes[i]
-        for i in range(len(belangregions)):
-            try:
-                if search in belangregions[i].lower():
-                    return belangcodes[i]
-            except AttributeError:pass
-        for i in range(len(langfull)):
-            if search in langfull[i].lower():
-                injava=True
-                for x in range(len(belangcodes)):
-                    if langcodes[i]==belangcodes[x]:
-                        return belangcodes[x]
-                    
-            
-    ret=complete(search, langcodes)
-    if len(ret)>0:
-        return ret[0]
-    else:
-        if injava==False:
-            raise embederr("Language not found…")
-        elif injava==True:
-            raise embederr("This language does not exist in Bedrock Edition.")
-
-
-async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
-    items = langfull
-    choices = [
-        di.Choice(name=item, value=item) for item in items if value.lower() in item.lower()
-    ] 
-    await ctx.populate(choices[:25])
 
 
 @bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
@@ -226,7 +42,8 @@ async def lang_autocomplete(ctx: di.CommandContext, value: str = ""):
     di.Choice(name="java", value="java"),
     di.Choice(name="bedrock", value="bedrock")
 ])
-async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None):
+@di.option(int, name = "page", description = "Result page number.", required=False)
+async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None, page:int=1):
     hidden=False
     try:
         if target == None:
@@ -242,10 +59,12 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         edition=edition.lower()
         target=target
         source=source
-        found=find_translation(search, target, source, edition)
+        found=find_translation(search, target, source, edition, page)
         list_message = found[0]
         exact = found[1]
-
+        buttons = found[2]
+        npages = found[3]
+        pagenum = found[4]
         if len(list_message)>0:
             if exact == None:
                 message = "\n".join(list_message)
@@ -297,15 +116,23 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 )
             hidden=True
     except Exception as ex:
-        if beta==True:
+        if beta:
             raise ex
         else:
             embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
             hidden=True
     try:
-        await ctx.send(embeds=embed, ephemeral=hidden)
+        msg=await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
+        remove = register_comp(msg.id, search, target, source, edition, msg.channel_id)
+        for i in remove.items():
+            rem_message=await di.get(bot, di.Message, object_id=i[0], parent_id=i[1])
+            await rem_message.edit(components=None)
     except Exception as ex:
-        await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
+        if beta:
+            raise ex
+        else:
+            await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
+
 @bot.autocomplete("translate", "target")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
     return await lang_autocomplete(ctx, user_input)
@@ -313,7 +140,46 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
     return await lang_autocomplete(ctx, user_input)
 
-
+@bot.component("prevpage")
+async def prevpage(ctx: di.CommandContext):
+    embed=ctx.message.embeds[0]
+    msg=json.load(open("loadedmessages.json"))[str(ctx.message.id)]
+    #print(embed._json, ctx.message.id)
+    pagenum=get_pagenum(embed, "-")
+    if pagenum[0]==None:
+        pass
+    else:
+        found=find_translation(msg[0], msg[1], msg[2], msg[3], pagenum[0])
+        newtext="\n".join(found[0])
+        newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
+        embed=di.Embed(
+            title=embed.title,
+            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            url=embed.url,
+            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0
+            )
+    await ctx.edit(embeds=embed)
+@bot.component("nextpage")
+async def nextpage(ctx: di.CommandContext):
+    embed=ctx.message.embeds[0]
+    msg=json.load(open("loadedmessages.json"))[str(ctx.message.id)]
+    #print(embed._json, ctx.message.id)
+    pagenum=get_pagenum(embed, "+")
+    if pagenum[0]==None:
+        pass
+    else:
+        found=find_translation(msg[0], msg[1], msg[2], msg[3], pagenum[0])
+        newtext="\n".join(found[0])
+        newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
+        embed=di.Embed(
+            title=embed.title,
+            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            url=embed.url,
+            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+            color=0x3180F0
+            )
+    await ctx.edit(embeds=embed)
 
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
         di.Option(
@@ -392,45 +258,17 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except Exception as exc:
-        await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
+        if beta==True:
+            raise exc
+        else:
+            await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
     json.dump(f, open("serverdefaults.json", "w"))
 @bot.autocomplete("settings", "targetlang")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
     return await lang_autocomplete(ctx, user_input)
 
-
-langcodes, langcodesapp, langnames, langregions, langfull = [], [], [], [], []
-
-
-for a, b, c in os.walk(JAVA_DIR): # Gives a list of java language codes, names and regions, so i can search in them
-    for i in c:
-        langcodes.append(i.split(".")[0].lower())
-        langnames.append(open_json(i)["language.name"].lower())
-        langcodesapp.append(open_json(i)["language.code"].lower())
-        langregions.append(open_json(i)["language.region"].lower())
-        langfull.append(open_json(i)["language.name"] + " ("+ open_json(i)["language.region"] + ")")
-    langcodes.append("key")
-    langfull.append("key")
-    break
-
-
-belangcodes, belangcodesandnames, belangnames, belangregions = [], [], [], []
-
-
-names=json.load(open("language_names.json", encoding="utf-8"))
-for i in names:
-    belangcodes.append(i[0].lower())
-    belangcodesandnames.append(i[1])
-    codeandname=i[1].split(" (")
-    belangnames.append(codeandname[0])
-    try:
-        belangregions.append(codeandname[1].replace(")", ""))
-    except IndexError:
-        belangregions.append(None)
-
-
 for cog in COGS:
-    if cog!="variables":
-      bot.load("cogs." + cog)
+    if cog!="variables" and cog!="translatefuncs":
+        bot.load("cogs." + cog)
 
 bot.start()

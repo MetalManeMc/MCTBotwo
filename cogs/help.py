@@ -72,8 +72,10 @@ class HelpCMD(interactions.Extension):
                     interactions.EmbedField(name=f"{hook}   **<query>**", value="Specifies what to search for. To search for context (ex. 'block.minecraft.dirt') enter `key` as the language.")._json,
                     interactions.EmbedField(name=f"{hook}   **[target]**", value="Specifies the language that your `<query>` will be translated **to**. Takes in a language code, name or region of said language.")._json,
                     interactions.EmbedField(name=f"{hook}   **[source]**", value="Specifies the language that your `<query>` will be translated **from**. Takes in a language code, name or region of said language.")._json,
-                    interactions.EmbedField(name=f"{hook}   **[edition]**", value="Specifies the Minecraft edition your <query> will be searched in.")._json],
+                    interactions.EmbedField(name=f"{hook}   **[edition]**", value="Specifies the Minecraft edition your `<query>` will be searched in.")._json,
+                    interactions.EmbedField(name=f"{hook}   **[page]**", value="Specifies the page of results shown. Defaults to `1`.")._json],
                     color=0x10F20F,
+
                     thumbnail=interactions.EmbedImageStruct(url="https://cdn.discordapp.com/icons/906169345007304724/abb4f8f7659b9e790d4f02d24a500a37")._json))
         elif sub_command == "credits":
             await ctx.send(embeds = interactions.Embed(
