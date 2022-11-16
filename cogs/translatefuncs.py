@@ -62,41 +62,39 @@ def find_translation(string:str, targetlang:str, sourcelang:str, edition:str, pa
                     exact=jstarget[i]
                     break
 
-    reslen=len(result)
-    added=False
-    cut=False
-    if len(result)>10:
-        result=result[10*(page-1):pagesize*page]
-        added=True
-    n=len(result)
-    if page==1:
-        resfull="|".join(result)
-        while not cut:
-            if len(resfull)>1000:
-                result=result[:-1]
-                resfull="|".join(result)
-                added=True
-                n-=1
-            else:
-                cut=True
-    try:
+    try:    #removes blank results
         while True:
             result.remove("")
-            n-=1
     except ValueError:
         pass
+
+    k=0    
+    while True: #iterates through all results to make sure lat page number is consistant
+        k+=1
+        opagelen=len(" ".join(result[pagesize*(k-1):pagesize*k]))
+        if opagelen==0:
+            pagenum=k-1
+            break
+        elif opagelen>1000:
+            pagesize-=1
+            k=0
+    
+    if page>pagenum:page=pagenum
+    elif page<1:page=1
+
+    added=False
+    if len(result)>10:  # if there are more than 10 results, sets result to the 10 strings following (page-1)
+        result=result[pagesize*(page-1):pagesize*page]
+        added=True
 
     if added:
         buttons = di.ActionRow.new(prevbutton, nextbutton)
     else:
         buttons=None
 
-    pagenum=int(reslen/n) + (reslen % n>0)
-
-
-    if added:
+    if added and page<pagenum:
         result.append("**…and more!**")
-    return result, exact, buttons, pagenum
+    return result, exact, buttons, pagenum, page
 
 
 def lang(search:str, edition):

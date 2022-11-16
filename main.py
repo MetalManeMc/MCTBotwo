@@ -42,7 +42,8 @@ async def on_ready():
     di.Choice(name="java", value="java"),
     di.Choice(name="bedrock", value="bedrock")
 ])
-async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None):
+@di.option(int, name = "page", description = "Result page number.", required=False)
+async def translate(ctx: di.CommandContext, search: str, target:str=None, source:str="en_us", edition:str=None, page:int=1):
     hidden=False
     try:
         if target == None:
@@ -58,11 +59,12 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         edition=edition.lower()
         target=target
         source=source
-        found=find_translation(search, target, source, edition)
+        found=find_translation(search, target, source, edition, page)
         list_message = found[0]
         exact = found[1]
         buttons = found[2]
         npages = found[3]
+        pagenum = found[4]
         if len(list_message)>0:
             if exact == None:
                 message = "\n".join(list_message)
@@ -90,7 +92,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 title=title,
                 fields=embedfields,
                 url=url,
-                footer=di.EmbedFooter(text=f"Page 1/{npages}", icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
+                footer=di.EmbedFooter(text=f"Page {pagenum}/{npages}", icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
                 color=0x3180F0)
             hide=False
         else:
