@@ -41,9 +41,9 @@ class CrowdinCMD(interactions.Extension):
         if re.status_code==200:
             await ctx.send(f"https://crowdin.com/profile/{nick}")
         elif re.status_code==404:
-            await ctx.send("This user doesn't exist",ephemeral=True)
+            await ctx.send("This user doesn't exist", ephemeral=True)
         else:
-            await ctx.send(f"A {re.status_code} error occured.",ephemeral=True)
+            await ctx.send(f"A {re.status_code} error occured.", ephemeral=True)
 
 def setup(bot):
     CrowdinCMD(bot)
