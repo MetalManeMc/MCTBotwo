@@ -92,19 +92,20 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 title=title,
                 fields=embedfields,
                 url=url,
-                footer=di.EmbedFooter(text=f"Page {pagenum}/{npages}", icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-                color=0x3180F0)
+                footer=di.EmbedFooter(text=choice(Footers), icon_url=var.avatar)._json,
+                color=0x10F20F)
             hide=False
         else:
+            targetcode=lang(target, edition).replace("_", "")
             raise embederr(
                 "Couldn't find the translation",
-                f"https://crowdin.com/translate/minecraft/all/enus-{target}?filter=basic&value=0#q={search.replace(' ', '%20')}",
+                f"https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}",
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e:
-        if beta==True:
+            """if beta==True:
             raise e
-        else:
+        else:"""
             embed=di.Embed(
                 title=e.title,
                 thumbnail=e.image,
@@ -215,7 +216,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
             currentlang=f[str(ctx.guild_id)]["server"]["targetlang"]
             try:
                 f[str(ctx.guild_id)]["server"]["targetlang"]=lang(targetlang,"java")
-                embed=di.Embed(title=f"Default target language set to `{find_translation('language.name',lang(targetlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(targetlang,'java'),'key','java')[1]}`.",color=0x3180F0)
+                embed=di.Embed(title=f"Default target language set to `{find_translation('language.name',lang(targetlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(targetlang,'java'),'key','java')[1]}`.",color=0x10F20F)
             except embederr as e:
                 e.desc=f"Default target language reset to `{find_translation('language.name',lang(currentlang,'java'),'key','java')[1]+', '+find_translation('language.region',lang(currentlang,'java'),'key','java')[1]}`."
                 raise e
@@ -238,7 +239,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
             currentedition=f[str(ctx.guild_id)]["server"]["edition"]
             if edition=="java" or edition=="bedrock":
                 f[str(ctx.guild_id)]["server"]["edition"]=edition
-                embed=di.Embed(title=f"Default edition changed to `{edition}`.",color=0x3180F0)
+                embed=di.Embed(title=f"Default edition changed to `{edition}`.",color=0x10F20F)
             else:
                 raise embederr("Edition not found",description=f"Default edition reset to `{currentedition}`.")
         except embederr as e:

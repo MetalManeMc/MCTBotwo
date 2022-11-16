@@ -1,7 +1,6 @@
 # This filters the lang files from the default rp
 
 import os
-import json
 
 def rename(initname):
     name=initname.replace('lang', "")
