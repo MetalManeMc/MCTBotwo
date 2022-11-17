@@ -98,4 +98,4 @@ for i in names:
     except IndexError:
         belangregions.append(None)
 
-avatar="https://cdn.discordapp.com/avatars/913119714400677899/aa2670b8669f0301e47b097639a1959a.webp"
+avatar="https://cdn.discordapp.com/avatars/913119714400677899/aa2670b8669f0301e47b097639a1959a"
