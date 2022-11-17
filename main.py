@@ -4,7 +4,6 @@ import interactions as di
 from cogs.variables import *
 from cogs.translatefuncs import *
 
-
 if beta==True:
     TOKEN_PATH = Path(PATH, "token.txt")
 else:
@@ -92,7 +91,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 title=title,
                 fields=embedfields,
                 url=url,
-                footer=di.EmbedFooter(text=choice(Footers), icon_url=var.avatar)._json,
+                footer=di.EmbedFooter(text=f"Page {pagenum}/{npages}", icon_url=avatar)._json,
                 color=0x10F20F)
             hide=False
         else:
@@ -156,8 +155,8 @@ async def prevpage(ctx: di.CommandContext):
             title=embed.title,
             fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
             url=embed.url,
-            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-            color=0x3180F0
+            footer=di.EmbedFooter(text=newfooter, icon_url=avatar)._json,
+            color=0x10F20F
             )
     await ctx.edit(embeds=embed)
 @bot.component("nextpage")
@@ -176,8 +175,8 @@ async def nextpage(ctx: di.CommandContext):
             title=embed.title,
             fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
             url=embed.url,
-            footer=di.EmbedFooter(text=newfooter, icon_url="https://cdn.discordapp.com/avatars/906169526259957810/d3d26f58da5eeec0d9c133da7b5d13fe.webp?size=128")._json,
-            color=0x3180F0
+            footer=di.EmbedFooter(text=newfooter, icon_url=avatar)._json,
+            color=0x10F20F
             )
     await ctx.edit(embeds=embed)
 
