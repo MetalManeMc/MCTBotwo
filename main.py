@@ -6,6 +6,7 @@ from cogs.translatefuncs import *
 
 if beta==True:
     TOKEN_PATH = Path(PATH, "token.txt")
+    print("Running beta version")
 else:
     TOKEN_PATH = Path(PATH, "token-main.txt")
     print("Running hosted version")
