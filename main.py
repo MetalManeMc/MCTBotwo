@@ -33,7 +33,7 @@ async def on_ready():
 #                             Code starts here                             #
 ############################################################################
 
-
+@di.autodefer()
 @bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
 @di.option(str, name = "search", description = "String or key to translate.", required=True)
 @di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False, autocomplete=True)
@@ -69,7 +69,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
             if exact == None:
                 message = "\n".join(list_message)
                 title = "No perfect matches"
-                embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+                embedfields = [di.EmbedField(name="Close matches:",value=message)]
             else:
                 try:
                     list_message.remove(exact)
@@ -79,7 +79,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 if len(list_message) == 0:
                     embedfields = []
                 else:
-                    embedfields = [di.EmbedField(name="Close matches:",value=message)._json]
+                    embedfields = [di.EmbedField(name="Close matches:",value=message)]
             if edition=="java":
                 try:
                     targetcode=lang(target, edition).replace("_", "")
@@ -92,7 +92,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 title=title,
                 fields=embedfields,
                 url=url,
-                footer=di.EmbedFooter(text=f"Page {pagenum}/{npages}", icon_url=avatar)._json,
+                footer=di.EmbedFooter(text=f"Page {pagenum}/{npages}", icon_url=avatar),
                 color=0x10F20F)
             hide=False
         else:
@@ -119,7 +119,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         if beta:
             raise ex
         else:
-            embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000)
+            embed=di.Embed(title="Something happened", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg"), color=0xff0000)
             hidden=True
     try:
         msg=await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
@@ -131,7 +131,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
         if beta:
             raise ex
         else:
-            await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json, color=0xff0000),ephemeral=True)
+            await ctx.send(embeds=di.Embed(title="Something happened while sending message", description=f"Error description:\n{ex}", thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg"), color=0xff0000),ephemeral=True)
 
 @bot.autocomplete("translate", "target")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
@@ -144,7 +144,7 @@ async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
 async def prevpage(ctx: di.CommandContext):
     embed=ctx.message.embeds[0]
     msg=json.load(open("loadedmessages.json"))[str(ctx.message.id)]
-    #print(embed._json, ctx.message.id)
+    #print(embed, ctx.message.id)
     pagenum=get_pagenum(embed, "-")
     if pagenum[0]==None:
         pass
@@ -154,9 +154,10 @@ async def prevpage(ctx: di.CommandContext):
         newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
         embed=di.Embed(
             title=embed.title,
-            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            fields=[di.EmbedField(name="Close matches:",value=newtext)],
             url=embed.url,
-            footer=di.EmbedFooter(text=newfooter, icon_url=avatar)._json,
+            footer=di.EmbedFooter(text=newfooter, icon_url=avatar)
+            ,
             color=0x10F20F
             )
     await ctx.edit(embeds=embed)
@@ -164,7 +165,7 @@ async def prevpage(ctx: di.CommandContext):
 async def nextpage(ctx: di.CommandContext):
     embed=ctx.message.embeds[0]
     msg=json.load(open("loadedmessages.json"))[str(ctx.message.id)]
-    #print(embed._json, ctx.message.id)
+    #print(embed, ctx.message.id)
     pagenum=get_pagenum(embed, "+")
     if pagenum[0]==None:
         pass
@@ -174,9 +175,9 @@ async def nextpage(ctx: di.CommandContext):
         newfooter=f"Page {str(pagenum[0])}/{str(pagenum[1])}"
         embed=di.Embed(
             title=embed.title,
-            fields=[di.EmbedField(name="Close matches:",value=newtext)._json],
+            fields=[di.EmbedField(name="Close matches:",value=newtext)],
             url=embed.url,
-            footer=di.EmbedFooter(text=newfooter, icon_url=avatar)._json,
+            footer=di.EmbedFooter(text=newfooter, icon_url=avatar),
             color=0x10F20F
             )
     await ctx.edit(embeds=embed)
@@ -232,7 +233,7 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
             hide=e.hidden
         except Exception as ex:
             hide=True
-            embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
+            embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg"))
     elif sub_command=="default-edition":
         edition=edition.lower()
         try:
@@ -254,14 +255,14 @@ async def settings(ctx:di.CommandContext, sub_command, targetlang=None, edition=
             hide=e.hidden
         except Exception as ex:
             hide=True
-            embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json)
+            embed=di.Embed(title="Something happened",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg"))
     try:
         await ctx.send(embeds=embed,ephemeral=hide)
     except Exception as exc:
         if beta==True:
             raise exc
         else:
-            await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")._json),ephemeral=True)
+            await ctx.send(embeds=di.Embed(title="Something happened while sending message",color=0xff0000,thumbnail=di.EmbedImageStruct(url="https://cdn.discordapp.com/attachments/823557655804379146/940260826059776020/218-2188461_thinking-meme-png-thinking-meme-with-cup.jpg")),ephemeral=True)
     json.dump(f, open("serverdefaults.json", "w"))
 @bot.autocomplete("settings", "targetlang")
 async def autocomplete(ctx: di.CommandContext, user_input: str = ""):
