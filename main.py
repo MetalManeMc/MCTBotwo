@@ -6,6 +6,7 @@ from cogs.translatefuncs import *
 
 if beta==True:
     TOKEN_PATH = Path(PATH, "token.txt")
+    print("Running beta version")
 else:
     TOKEN_PATH = Path(PATH, "token-main.txt")
     print("Running hosted version")
@@ -102,9 +103,9 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e:
-            """if beta==True:
+        if beta==True:
             raise e
-        else:"""
+        else:
             embed=di.Embed(
                 title=e.title,
                 thumbnail=e.image,
