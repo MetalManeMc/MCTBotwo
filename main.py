@@ -103,9 +103,9 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e:
-            """if beta==True:
+        if beta==True:
             raise e
-        else:"""
+        else:
             embed=di.Embed(
                 title=e.title,
                 thumbnail=e.image,
