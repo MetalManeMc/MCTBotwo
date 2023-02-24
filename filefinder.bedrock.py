@@ -62,16 +62,10 @@ for dirpath, dirnames, filenames in os.walk("lang/bedrock"):
                     x=":".join(y)
                     #print(x)
                 else:pass
-            delete=[]
-            for i in f:
-                if "#" in i:
-                    delete.append(f.index(i))
-            for k in delete:
-                i=delete.index(k)
-                f.remove(f[delete[-(i+1)]])
+            f = [line for line in f if "#" not in line]
             f = list(filter(("").__ne__, f))
             f = list(filter((" ").__ne__, f))
-            f="{"+",\n".join(f)+"}"
+            f = "{"+",\n".join(f)+"}"
             open(os.path.join(dirpath, file), "r+", encoding='utf-8').write(f)
             #print(f)
         except UnicodeDecodeError:pass
