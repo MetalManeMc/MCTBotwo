@@ -182,6 +182,7 @@ async def nextpage(ctx: di.CommandContext):
             )
     await ctx.edit(embeds=embed)
 
+@di.autodefer()
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
         di.Option(
             name="default-target-language",
