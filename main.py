@@ -36,8 +36,8 @@ async def on_ready():
 @di.autodefer()
 @bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
 @di.option(str, name = "search", description = "String or key to translate.", required=True)
-@di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False, autocomplete=True)
-@di.option(str, name = "source", description = "Language code, name or region or 'key' to translate from.", required = False, autocomplete=True)
+@di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False)##, autocomplete=true
+@di.option(str, name = "source", description = "Language code, name or region or 'key' to translate from.", required = False)##, autocomplete=true
 @di.option(str, name = "edition", description = "Java or Bedrock Edition translation?", required=False, choices=[
     di.Choice(name="java", value="java"),
     di.Choice(name="bedrock", value="bedrock")
@@ -103,10 +103,10 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=0xff7f00,
                 description="Click the title to search in Crowdin.")
     except embederr as e:
-        if beta==True:
+        """if beta==True:
             raise e
-        else:
-            embed=di.Embed(
+        else:"""
+        embed=di.Embed(
                 title=e.title,
                 thumbnail=e.image,
                 url=e.url,
@@ -114,7 +114,7 @@ async def translate(ctx: di.CommandContext, search: str, target:str=None, source
                 color=e.color,
                 description=e.desc
                 )
-            hidden=True
+        hidden=True
     except Exception as ex:
         if beta:
             raise ex
@@ -182,7 +182,6 @@ async def nextpage(ctx: di.CommandContext):
             )
     await ctx.edit(embeds=embed)
 
-@di.autodefer()
 @bot.command(name="settings", description="Bot settings", scope=SCOPES, default_member_permissions=di.Permissions.ADMINISTRATOR, options=[
         di.Option(
             name="default-target-language",
