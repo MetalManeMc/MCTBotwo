@@ -33,7 +33,7 @@ async def on_ready():
 #                             Code starts here                             #
 ############################################################################
 
-@di.autodefer()
+@di.defer()
 @bot.command(name = "translate", description = "Returns the translation found in-game for a string", scope=SCOPES)
 @di.option(str, name = "search", description = "String or key to translate.", required=True)
 @di.option(str, name = "target", description = "Language code, name or region or 'key' to translate to.", required = False)##, autocomplete=true
