@@ -50,11 +50,11 @@ Footers="See /help for more info.","The blue text will be an exact match, if one
 
 
 if "\\" in str(Path(os.path.dirname(os.path.realpath(__file__)))):
-    beta=True
+    BETA=True
 else:
-    beta=False
+    BETA=False
 
-if beta==True:
+if BETA==True:
     SCOPES=[906169345007304724]
 else:
     SCOPES=[]
