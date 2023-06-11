@@ -16,12 +16,15 @@ def complete(search: str, inside: list):
     return [i for i in inside if search.lower() in i.lower()]
 
 
-def fetch_default(code, category, data):
+def fetch_default(code, category, data, edition: str = None):
     """
     This function fetches defaults in serverdefaults.json
     """
-    f = json.load(open("serverdefaults.json"))
-    return f[code][category][data]
+    file = json.load(open("serverdefaults.json", encoding="utf-8"))
+    if edition is None:
+        return file[code][category][data]
+    print(edition)
+    return file[code][category][data][edition]
 
 
 def find_translation(
@@ -170,7 +173,7 @@ def lang(search: str, edition):
         return ret[0]
     else:
         if injava == False:
-            raise embederr("Language not found…")
+            raise embederr("This language has not been found in Java Edition")
         elif injava == True:
             raise embederr("This language does not exist in Bedrock Edition.")
 
@@ -220,11 +223,11 @@ def register_comp(id: int, search, target, source, edition, channel):
     return deletes
 
 
-async def lang_autocomplete(ctx: di.SlashContext, value: str = ""):
-    items = langfull
+def lang_autocomplete(current: str = ""):
+    """Returns list of 25 languages for user to coose from"""
     choices = [
-        di.Choice(name=item, value=item)
-        for item in items
-        if value.lower() in item.lower()
+        {"name": item, "value": item}
+        for item in ALL_LANGUAGES
+        if current.lower() in item.lower()
     ]
-    await ctx.populate(choices[:25])
+    return choices[:25]
