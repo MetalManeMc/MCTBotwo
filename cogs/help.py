@@ -126,7 +126,7 @@ class HelpCMD(interactions.Extension):
                         ),
                         interactions.EmbedField(
                             name="**Minecraft versions**",
-                            value=f"{var.HOOK}   **Java Edition:** 1.19.2,\n{var.HOOK}   **Bedrock Edition:** 1.19.60",
+                            value=f"{var.HOOK}   **Java Edition:** 1.20,\n{var.HOOK}   **Bedrock Edition:** 1.20.0",
                         ),
                         interactions.EmbedField(
                             name="**Java Edition translations**",

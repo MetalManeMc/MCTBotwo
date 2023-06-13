@@ -195,7 +195,6 @@ async def translate(
         remove = register_comp(msg.id, search, target, source, edition, msg.guild.id)
         for i in remove.items():
             rem_message = await bot.fetch_channel(i[1]).fetch_message(i[0])
-            # rem_message=await di.get(bot, di.Message, object_id=i[0], parent_id=i[1])
             await rem_message.edit(components=None)
     except Exception as ex:
         if BETA:

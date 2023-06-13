@@ -1,7 +1,13 @@
-# This filters the lang files from the assets
-
+"""This filters the lang files from the assets"""
 import os
 import json
+
+# Important: How to use
+# 1 - Copy the latest index from .minecraft\assets\indexes
+# 2 - Delete all non-language indexes and rename the file to langcodes.json
+# 3 - Copy the objects folder from .minecraft\assets
+# 4 - Run the filefinder
+# 5 - Extract en_us form the version jar and manually insert it in the java lang folder
 
 langs = json.load(open("langcodes.json"))   # Opens the language index (from the minecraft assets)
 codes = []
