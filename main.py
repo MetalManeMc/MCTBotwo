@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import interactions as di
 from interactions.api.events import Startup
-from cogs.variables import PATH, BETA, DATA_DIR, COGS, SCOPES, AVATAR, belangamedict, HOOK
+from cogs.variables import PATH, BETA, DATA_DIR, COGS, SCOPES, AVATAR, belangamedict
 from cogs.translatefuncs import (lang_autocomplete, fetch_default, find_translation, lang,
                                  embederr, register_comp, get_pagenum)
 
