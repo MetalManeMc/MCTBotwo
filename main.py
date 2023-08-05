@@ -59,7 +59,6 @@ async def on_ready(event: Startup):
 #                             Code starts here                             #
 ############################################################################
 
-
 @di.slash_command(
     name="translate",
     description="Returns the translation found in-game for a string",
