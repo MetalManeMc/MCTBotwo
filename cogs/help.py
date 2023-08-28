@@ -117,21 +117,25 @@ class HelpCMD(interactions.Extension):
                     title="Minecraft Translator Bot's credits",
                     fields=[
                         interactions.EmbedField(
-                            name="**Developers**",
+                            name="Developers",
                             value=f"{var.HOOK}   <:flag_fr:1007929012804386816><@668349394529157131>,\n{var.HOOK}   <:flag_sk:1007930291488292885><@275248043828314112>",
                         ),
                         interactions.EmbedField(
-                            name="**Former Developers**",
+                            name="Former Developers",
                             value=f"{var.HOOK}   <:flag_es:1007929300600758345><@452954731162238987>",
                         ),
                         interactions.EmbedField(
-                            name="**Minecraft versions**",
+                            name="Minecraft versions",
                             value=f"{var.HOOK}   **Java Edition:** 1.20,\n{var.HOOK}   **Bedrock Edition:** 1.20.0",
                         ),
                         interactions.EmbedField(
-                            name="**Java Edition translations**",
+                            name="Java Edition translations",
                             value="The amazing Minecraft Translators community!",
                         ),
+                        interactions.EmbedField(
+                            name="Have a question? Found a bug? Want to help?",
+                            value="[Join our Discord server!](https://discord.gg/t8dtssPmK2)"
+                        )
                     ],
                     color=0x10F20F,
                     thumbnail=interactions.EmbedAttachment(

@@ -160,11 +160,14 @@ async def translate(
             )
         else:
             targetcode = lang(target, edition).replace("_", "")
+            clickbutton = ""
+            if edition=="java":
+                clickbutton=f"\nClick [here](https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}) to search on Crowdin."
             raise embederr(
                 "Couldn't find the translation",
-                f"https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}",
+                None,
                 color=0xFF7F00,
-                description="Click the title to search in Crowdin.",
+                description=f"Could not find translation for the following string: \"{search}\"."+clickbutton,
             )
     except embederr as err:
         embed = di.Embed(
@@ -175,7 +178,6 @@ async def translate(
             color=err.color,
             description=err.desc,
         )
-        hidden = True
     except Exception as ex:
         if BETA:
             raise ex
@@ -193,7 +195,8 @@ async def translate(
         msg = await ctx.send(embeds=embed, ephemeral=hidden, components=buttons)
         remove = register_comp(msg.id, search, target, source, edition, msg.guild.id)
         for i in remove.items():
-            rem_message = await bot.fetch_channel(i[1]).fetch_message(i[0])
+            rem_channel = await bot.fetch_channel(i[1])
+            rem_message = await rem_channel.fetch_message(i[0])
             await rem_message.edit(components=None)
     except Exception as ex:
         if BETA:

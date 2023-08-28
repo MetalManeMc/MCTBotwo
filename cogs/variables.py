@@ -48,7 +48,7 @@ class embederr(Exception):
         if hasfield:
             self.field = [di.EmbedField(name=field[0], value=field[1])]
         else:
-            self.field = None
+            self.field = []
 
 
 PATH = Path(os.path.dirname(os.path.realpath(__file__))).parent
