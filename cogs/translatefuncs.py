@@ -23,7 +23,6 @@ def fetch_default(code, category, data, edition: str = None):
     file = json.load(open("serverdefaults.json", encoding="utf-8"))
     if edition is None:
         return file[code][category][data]
-    print(edition)
     return file[code][category][data][edition]
 
 
