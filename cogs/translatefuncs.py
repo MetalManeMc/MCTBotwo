@@ -50,9 +50,11 @@ def find_translation(
         )  # this will get used everytime to key or from key is used... (json default... change the name if you want)
     except IndexError:
         return
+    except embederr:  # Ugly fix, but a welcome one nonetheless
+        return None, None, None, None, None, f'"{targetlang}" is not a valid language in {edition.capitalize()} Edition.'
 
     exact = None
-    if targetlang == "key":  # figures out, which mode to use
+    if targetlang == "key":  # figures out which mode to use
         if sourcelang == "key":
             result = complete(string, jsdef)  # ktk
         else:
@@ -116,7 +118,7 @@ def find_translation(
 
     if added and page < pagenum:
         result.append("**…and more!**")
-    return result, exact, buttons, pagenum, page
+    return result, exact, buttons, pagenum, page, None
 
 
 def lang(search: str, edition):
