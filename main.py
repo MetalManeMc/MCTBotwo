@@ -3,13 +3,21 @@ Imports Path & JSON tools
 Interactions for Discord bot managment
 Variable and functions for cogs
 """
+
 import json
 from pathlib import Path
 import interactions as di
 from interactions.api.events import Startup
 from cogs.variables import PATH, BETA, DATA_DIR, COGS, SCOPES, AVATAR, belangamedict
-from cogs.translatefuncs import (lang_autocomplete, fetch_default, find_translation, lang,
-                                 embederr, register_comp, get_pagenum)
+from cogs.translatefuncs import (
+    lang_autocomplete,
+    fetch_default,
+    find_translation,
+    lang,
+    embederr,
+    register_comp,
+    get_pagenum,
+)
 
 if BETA:
     TOKEN_PATH = Path(PATH, "token.txt")
@@ -21,16 +29,12 @@ else:
 with open(TOKEN_PATH, encoding="utf-8") as f:
     TOKEN = f.read()
 
-# We craft a path towards the /lang/ folder using the host's information.
-# This path is absolute and independent of the OS in which it may be running.
-# DATA_DIR should *not* be altered at any point.
 
 bot = di.Client(
     token=TOKEN,
     auto_defer=True,
     send_command_tracebacks=False,
 )
-
 
 
 @di.listen()
@@ -58,6 +62,7 @@ async def on_ready(event: Startup):
 ############################################################################
 #                             Code starts here                             #
 ############################################################################
+
 
 @di.slash_command(
     name="translate",
@@ -124,9 +129,11 @@ async def translate(
             except KeyError:
                 target = "en_us"
         edition = edition.lower()
-        list_message, exact, buttons, npages, pagenum = find_translation(
+        list_message, exact, buttons, npages, pagenum, error = find_translation(
             search, target, source, edition, page
         )
+        if error:
+            raise embederr("Invalid input", None, color=0xFF7F00, description=error)
         if len(list_message) > 0:
             if exact is None:
                 message = "\n".join(list_message)
@@ -161,13 +168,14 @@ async def translate(
         else:
             targetcode = lang(target, edition).replace("_", "")
             clickbutton = ""
-            if edition=="java":
-                clickbutton=f"\nClick [here](https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}) to search on Crowdin."
+            if edition == "java":
+                clickbutton = f"\nClick [here](https://crowdin.com/translate/minecraft/all/enus-{targetcode}?filter=basic&value=0#q={search.replace(' ', '%20')}) to search on Crowdin."
             raise embederr(
                 "Couldn't find the translation",
                 None,
                 color=0xFF7F00,
-                description=f"Could not find translation for the following string: \"{search}\"."+clickbutton,
+                description=f'Could not find translation for the following string: "{search}".'
+                + clickbutton,
             )
     except embederr as err:
         embed = di.Embed(

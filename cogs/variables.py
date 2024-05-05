@@ -50,7 +50,11 @@ class embederr(Exception):
         else:
             self.field = []
 
-
+"""
+We craft a path towards the /lang/ folder using the host's information.
+This path is absolute and independent of the OS in which it may be running.
+DATA_DIR should *not* be altered at any point.
+"""
 PATH = Path(os.path.dirname(os.path.realpath(__file__))).parent
 DATA_DIR = Path(PATH, "lang")
 JAVA_DIR = Path(DATA_DIR, "java")
